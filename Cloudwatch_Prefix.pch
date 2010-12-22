@@ -1,0 +1,10 @@
+//
+// Prefix header for all source files of the 'Cloudwatch' target in the 'Cloudwatch' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+#import "TB_DEBUG.h"
+#import "TB_MACROS.h"
