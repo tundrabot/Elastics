@@ -1,5 +1,5 @@
 //
-//  EC2Request.h
+//  MonitoringRequest.h
 //  Cloudwatch
 //
 //  Created by Dmitri Goutnik on 22/12/2010.
@@ -8,7 +8,7 @@
 
 #import "AWSRequest.h"
 
-@interface EC2Request : AWSRequest
+@interface MonitoringRequest : AWSRequest
 
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate;
 

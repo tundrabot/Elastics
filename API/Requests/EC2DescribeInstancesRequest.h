@@ -6,7 +6,6 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "EC2Request.h"
 #import "EC2DescribeInstancesResponse.h"	
 

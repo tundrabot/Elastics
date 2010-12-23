@@ -15,6 +15,7 @@ NSString *const kDataSourceAllRequestsCompletedNotification = @"DataSourceAllReq
 @property (nonatomic, retain) NSDate *completedAt;
 @property (nonatomic, retain) NSMutableSet *runningRequests;
 @property (nonatomic, retain) EC2DescribeInstancesRequest *describeInstancesRequest;
+@property (nonatomic, retain) MonitoringGetMetricStatisticsRequest *getMetricStatisticsRequest;
 @end
 
 @implementation DataSource
@@ -23,6 +24,7 @@ NSString *const kDataSourceAllRequestsCompletedNotification = @"DataSourceAllReq
 @synthesize completedAt = _completedAt;
 @synthesize runningRequests = _runningRequests;
 @synthesize describeInstancesRequest = _describeInstancesRequest;
+@synthesize getMetricStatisticsRequest = _getMetricStatisticsRequest;
 
 #pragma mark -
 #pragma mark Initialization
@@ -42,6 +44,7 @@ NSString *const kDataSourceAllRequestsCompletedNotification = @"DataSourceAllReq
 	TB_RELEASE(_completedAt);
 	TB_RELEASE(_runningRequests);
 	TB_RELEASE(_describeInstancesRequest);
+	TB_RELEASE(_getMetricStatisticsRequest);
 	[super dealloc];
 }
 
@@ -116,6 +119,7 @@ static DataSource * _sharedInstance = nil;
 	[_runningRequests removeAllObjects];
 	
 	[self describeInstances:nil];
+	[self getMetricStatistics:nil];
 }
 
 #pragma mark -
@@ -138,6 +142,24 @@ static DataSource * _sharedInstance = nil;
 - (NSArray *)instances
 {
 	return _describeInstancesRequest.response.instancesSet;
+}
+
+#pragma mark -
+#pragma mark Monitoring
+
+- (void)getMetricStatistics:(NSDictionary *)parameters
+{
+	@synchronized(self) {
+		if (!_getMetricStatisticsRequest)
+			self.getMetricStatisticsRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
+		[_runningRequests addObject:_getMetricStatisticsRequest];
+	}
+	[_getMetricStatisticsRequest startWithParameters:parameters];
+}
+
+- (NSArray *)datapoints
+{
+	return _getMetricStatisticsRequest.response.result.datapoints;
 }
 
 #pragma mark -

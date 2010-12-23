@@ -1,20 +1,20 @@
 //
-//  EC2Request.m
+//  MonitoringRequest.m
 //  Cloudwatch
 //
 //  Created by Dmitri Goutnik on 22/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import "EC2Request.h"
+#import "MonitoringRequest.h"
 
-@implementation EC2Request
+@implementation MonitoringRequest
 
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate
 {
 	self = [super initWithOptions:options delegate:delegate];
 	if (self) {
-		self.service = kAWSEC2Service;
+		self.service = kAWSMonitoringService;
 	}
 	return self;
 }

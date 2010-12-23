@@ -32,8 +32,6 @@
 				self.code = [[TBXML textForElement:element] integerValue];
 			else if ([elementName isEqualToString:@"name"])
 				self.name = [TBXML textForElement:element];
-			else
-				NSAssert(FALSE, @"Unable to parse element %@", elementName);
 			
 			element = element->nextSibling;
 		}
@@ -44,7 +42,7 @@
 
 - (void)dealloc
 {
-	[_name release];
+	TB_RELEASE(_name);
 	[super dealloc];
 }
 

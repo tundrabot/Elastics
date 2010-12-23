@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CloudwatchAppDelegate : NSObject <NSApplicationDelegate> {
+@interface CloudwatchAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 	NSStatusItem		*_statusItem;
 	NSMenu				*_statusMenu;
 	BOOL				_isRefreshInProgress;

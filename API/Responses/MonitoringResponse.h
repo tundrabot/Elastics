@@ -1,5 +1,5 @@
 //
-//  EC2Response.h
+//  MonitoringResponse.h
 //  Cloudwatch
 //
 //  Created by Dmitri Goutnik on 22/12/2010.
@@ -8,10 +8,6 @@
 
 #import "AWSResponse.h"
 
-@interface EC2Response : AWSResponse {
-	NSString	*_requestId;
-}
-
-@property (nonatomic, retain, readonly) NSString *requestId;
+@interface MonitoringResponse : AWSResponse
 
 @end

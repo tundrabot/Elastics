@@ -19,14 +19,7 @@
 @synthesize reservationSet = _reservationSet;
 @synthesize instancesSet = _instancesSet;
 
-- (void)dealloc
-{
-	[_reservationSet release];
-	[_instancesSet release];
-	[super dealloc];
-}
-
-- (NSString *)rootElementName
+- (NSString *)_rootElementName
 {
 	return @"DescribeInstancesResponse";
 }
@@ -46,6 +39,13 @@
 		[instances addObjectsFromArray:reservation.instancesSet];
 	}
 	self.instancesSet = instances;
+}
+
+- (void)dealloc
+{
+	TB_RELEASE(_reservationSet);
+	TB_RELEASE(_instancesSet);
+	[super dealloc];
 }
 
 @end

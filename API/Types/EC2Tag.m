@@ -32,8 +32,6 @@
 				self.key = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"value"])
 				self.value = [TBXML textForElement:element];
-			else
-				NSAssert(FALSE, @"Unable to parse element %@", elementName);
 
 			element = element->nextSibling;
 		}
@@ -44,8 +42,8 @@
 
 - (void)dealloc
 {
-	[_key release];
-	[_value release];
+	TB_RELEASE(_key);
+	TB_RELEASE(_value);
 	[super dealloc];
 }
 

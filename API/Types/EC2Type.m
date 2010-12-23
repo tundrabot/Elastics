@@ -28,32 +28,31 @@
 
 - (void)dealloc
 {
-	[_parent release];
+	TB_RELEASE(_parent);
 	[super dealloc];
 }
 
-+ (NSString *)stringFromDate:(NSDate *)value
-{
-	return [NSDateFormatter localizedStringFromDate:value
-										  dateStyle:NSDateFormatterMediumStyle
-										  timeStyle:NSDateFormatterShortStyle];
-	
-}
+//+ (NSString *)stringFromDate:(NSDate *)value
+//{
+//	return [NSDateFormatter localizedStringFromDate:value
+//										  dateStyle:NSDateFormatterMediumStyle
+//										  timeStyle:NSDateFormatterShortStyle];
+//}
 
 + (NSString *)stringFromBool:(BOOL)value
 {
 	return value ? @"Yes" : @"No";
 }
 
-+ (NSDate *)dateFromString:(NSString *)dateString
-{
-	// parse timestamp from ISO 8601 string
-	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.S'Z'"];
-	[dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-	
-	return [dateFormatter dateFromString:dateString];
-}
+//+ (NSDate *)dateFromString:(NSString *)dateString
+//{
+//	// parse timestamp from ISO 8601 string
+//	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+//	[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.S'Z'"];
+//	[dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+//	
+//	return [dateFormatter dateFromString:dateString];
+//}
 
 - (NSArray *)_parseXMLElement:(TBXMLElement *)element asArrayOf:(Class)class
 {
@@ -63,7 +62,7 @@
 	while (element) {
 		NSString *elementName = [TBXML elementName:element];
 		
-		if ([elementName isEqualToString:@"item"])
+		if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"member"])
 			[result addObject:[class typeFromXMLElement:element parent:self]];
 		else
 			NSAssert(FALSE, @"Unable to parse element %@", elementName);

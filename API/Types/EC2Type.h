@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "TBXML.h"
 
-
 @interface EC2Type : NSObject {
 @private
 	EC2Type		*_parent;
@@ -20,9 +19,9 @@
 
 @property (nonatomic, retain, readonly) EC2Type *parent;
 
-+ (NSString *)stringFromDate:(NSDate *)value;
+//+ (NSString *)stringFromDate:(NSDate *)value;
 + (NSString *)stringFromBool:(BOOL)value;
-+ (NSDate *)dateFromString:(NSString *)dateString;
+//+ (NSDate *)dateFromString:(NSString *)dateString;
 
 // protected
 

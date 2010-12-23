@@ -6,6 +6,7 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
+#import "NSString+DateConversions.h"
 #import "EC2Instance.h"
 #import "EC2InstanceState.h"
 #import "EC2Tag.h"
@@ -51,7 +52,7 @@
 			else if ([elementName isEqualToString:@"dnsName"])
 				self.dnsName = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"launchTime"])
-				self.launchTime = [EC2Type dateFromString:[TBXML textForElement:element]];
+				self.launchTime = [[TBXML textForElement:element] iso8601Date];
 			else if ([elementName isEqualToString:@"privateIpAddress"])
 				self.privateIpAddress = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"ipAddress"])

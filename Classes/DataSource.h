@@ -7,18 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "EC2DescribeInstancesRequest.h"
-#import "EC2DescribeInstancesResponse.h"
 #import "EC2Instance.h"
+
+#import "MonitoringGetMetricStatisticsRequest.h"
+#import "MonitoringDatapoint.h"
 
 // Sent when all requests started by startAllRequests have completed
 extern NSString *const kDataSourceAllRequestsCompletedNotification;
 
-@interface DataSource : NSObject <EC2RequestDelegate> {
-	NSDate								*_startedAt;
-	NSDate								*_completedAt;
-	NSMutableSet						*_runningRequests;
-	EC2DescribeInstancesRequest			*_describeInstancesRequest;
+@interface DataSource : NSObject <AWSRequestDelegate> {
+	NSDate									*_startedAt;
+	NSDate									*_completedAt;
+	NSMutableSet							*_runningRequests;
+	EC2DescribeInstancesRequest				*_describeInstancesRequest;
+	MonitoringGetMetricStatisticsRequest	*_getMetricStatisticsRequest;
 }
 
 + (DataSource *)sharedInstance;
@@ -36,4 +40,7 @@ extern NSString *const kDataSourceAllRequestsCompletedNotification;
 @property (nonatomic, retain, readonly) NSArray *reservations;
 @property (nonatomic, retain, readonly) NSArray *instances;
 
+// Monitoring
+- (void)getMetricStatistics:(NSDictionary *)parameters;
+@property (nonatomic, retain, readonly) NSArray *datapoints;
 @end
