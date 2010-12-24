@@ -11,7 +11,6 @@
 #import "ChartView.h"
 
 @interface CloudwatchAppDelegate ()
-- (void)refreshCompleted:(NSNotification *)notification;
 - (void)resetStatusMenu;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance;
@@ -19,7 +18,8 @@
 - (NSMenuItem *)actionItemWithLabel:(NSString *)label action:(SEL)action;
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance;
 - (NSMenuItem *)submenuItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action tooltip:(NSString *)tooltip;
-- (void)refreshAction:(id)sender;
+- (void)refresh:(NSString *)instanceId;
+- (void)refreshCompleted:(NSNotification *)notification;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
@@ -130,11 +130,11 @@ static NSDictionary *_infoColumnAttributes;
 	// subscribe to data source notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(refreshCompleted:)
-												 name:kDataSourceAllRequestsCompletedNotification
+												 name:kDataSourceRefreshCompletedNotification
 											   object:[DataSource sharedInstance]];
 
 	// perform initial refresh
-	[self refreshAction:nil];
+	[self refresh:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
@@ -157,7 +157,7 @@ static NSDictionary *_infoColumnAttributes;
 {
 	[_statusMenu removeAllItems];
 	
-	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
@@ -249,6 +249,8 @@ static NSDictionary *_infoColumnAttributes;
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance
 {
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+	[menu setDelegate:self];
+	[menu setTitle:instance.instanceId];
 	[menu setShowsStateColumn:NO];
 	
 	[menu addItem:[self titleItemWithTitle:@"INSTANCE DETAILS"]];
@@ -264,7 +266,7 @@ static NSDictionary *_infoColumnAttributes;
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-	[menu addItem:[self chartItemWithRange:TBChartRangeLastHour datapoints:nil]];
+	[menu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:nil]];
 
 	[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
@@ -322,42 +324,57 @@ static NSDictionary *_infoColumnAttributes;
 }
 
 #pragma mark -
-#pragma mark DataSource notifications
+#pragma mark DataSource operations and notifications
+
+- (void)refresh:(NSString *)instanceId
+{
+	if ([instanceId length] > 0) {
+		// Refresh monitoring data for a single instance
+		[[DataSource sharedInstance] refreshInstance:instanceId];
+	}
+	else {
+		// Refresh instances and composite monitoring data for all instances
+		[[DataSource sharedInstance] refresh];
+	}
+}
 
 - (void)refreshCompleted:(NSNotification *)notification
 {
-	if ([notification.name isEqualToString:kDataSourceAllRequestsCompletedNotification]) {
+	DataSource *dataSource = [DataSource sharedInstance];
+	if ([dataSource.instances count] > 0) {
+		NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
+		NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
 		
-		// Enumarate instances
-		DataSource *dataSource = [DataSource sharedInstance];
-		if ([dataSource.instances count] > 0) {
-
-			[_statusMenu removeAllItems];
-
-			[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
-			for (EC2Instance *instance in dataSource.instances) {
-				[_statusMenu addItem:[self instanceItemWithInstance:instance]];
-			}
-			
-			// Add chart item
-			//[_statusMenu addItem:[NSMenuItem separatorItem]];
-			//[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-			//[_statusMenu addItem:[self chartItemWithLabel:nil]];
-			
-			// Add action menu items
-			[_statusMenu addItem:[NSMenuItem separatorItem]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
-			[_statusMenu addItem:[NSMenuItem separatorItem]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+		if (error) {
+			// TODO: handle error notification
 		}
-		
-		// Add chart
-		[_statusMenu addItem:[NSMenuItem separatorItem]];
-		[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-		[_statusMenu addItem:[self chartItemWithRange:TBChartRangeLastHour datapoints:[dataSource datapoints]]];
-		
-		_isRefreshInProgress = NO;
+		else {
+			if ([instanceId length] > 0) {
+				TB_TRACE(@"refreshCompleted: %@", instanceId);
+			}
+			else {
+				TB_TRACE(@"refreshCompleted:");
+				
+				[_statusMenu removeAllItems];
+				
+				[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
+				for (EC2Instance *instance in dataSource.instances) {
+					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
+				}
+				
+				// Add chart
+				[_statusMenu addItem:[NSMenuItem separatorItem]];
+				[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
+				[_statusMenu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource compositeStatisticsForMetric:kAWSCPUUtilizationMetric]]];
+				
+				// Add action menu items
+				//			[_statusMenu addItem:[NSMenuItem separatorItem]];
+				//			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+				[_statusMenu addItem:[NSMenuItem separatorItem]];
+				[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+				[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+			}
+		}
 	}
 }
 
@@ -366,19 +383,11 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)menuWillOpen:(NSMenu *)menu
 {
-	[self refreshAction:self];
+	[self refresh:[menu title]];
 }
 
 #pragma mark -
 #pragma mark Actions
-
-- (void)refreshAction:(id)sender
-{
-	if (_isRefreshInProgress == NO) {
-		_isRefreshInProgress = YES;
-		[[DataSource sharedInstance] startAllRequests];
-	}
-}
 
 - (void)quitAction:(id)sender
 {

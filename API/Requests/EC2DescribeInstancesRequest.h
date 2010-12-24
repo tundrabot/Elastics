@@ -13,7 +13,8 @@
 	EC2DescribeInstancesResponse	*_response;
 }
 
-- (BOOL)startWithParameters:(NSDictionary *)parameters;
+- (BOOL)start;
+
 @property (nonatomic, retain, readonly) EC2DescribeInstancesResponse *response;
 
 @end

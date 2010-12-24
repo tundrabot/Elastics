@@ -10,7 +10,6 @@
 #import "MonitoringDatapoint.h"
 
 @interface MonitoringDatapoint ()
-@property (nonatomic, retain) NSDate *timestamp;
 @property (nonatomic, retain) NSString *unit;
 @end
 
@@ -33,7 +32,7 @@
 			NSString *elementName = [TBXML elementName:element];
 			
 			if ([elementName isEqualToString:@"Timestamp"])
-				self.timestamp = [[TBXML textForElement:element] iso8601Date];
+				_timestamp = [[[TBXML textForElement:element] iso8601Date] timeIntervalSinceReferenceDate];
 			else if ([elementName isEqualToString:@"Unit"])
 				self.unit = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"Minimum"])
@@ -52,7 +51,12 @@
 
 - (NSComparisonResult)compare:(MonitoringDatapoint *)anotherDatapoint
 {
-	return [_timestamp compare:anotherDatapoint.timestamp];
+	if (_timestamp < anotherDatapoint.timestamp)
+		return NSOrderedAscending;
+	else if (_timestamp > anotherDatapoint.timestamp)
+		return NSOrderedDescending;
+	else
+		return NSOrderedSame;
 }
 
 - (NSString *)description
@@ -62,7 +66,6 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_timestamp);
 	TB_RELEASE(_unit);
 	[super dealloc];
 }

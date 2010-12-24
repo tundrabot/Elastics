@@ -8,23 +8,28 @@
 
 #import "DataSource.h"
 
-NSString *const kDataSourceAllRequestsCompletedNotification = @"DataSourceAllRequestsCompletedNotification";
+#define MAX_STATISTICS_AGE	60.f
+
+NSString *const kDataSourceRefreshCompletedNotification = @"DataSourceRefreshCompletedNotification";
+
+NSString *const kDataSourceInstanceIdInfoKey = @"InstanceId";
+NSString *const kDataSourceErrorInfoKey = @"Error";
 
 @interface DataSource ()
 @property (nonatomic, retain) NSDate *startedAt;
 @property (nonatomic, retain) NSDate *completedAt;
-@property (nonatomic, retain) NSMutableSet *runningRequests;
-@property (nonatomic, retain) EC2DescribeInstancesRequest *describeInstancesRequest;
-@property (nonatomic, retain) MonitoringGetMetricStatisticsRequest *getMetricStatisticsRequest;
+@property (nonatomic, retain) NSMutableDictionary *completionNotificationUserInfo;
+@property (nonatomic, retain) EC2DescribeInstancesRequest *instancesRequest;
 @end
 
 @implementation DataSource
 
+@synthesize compositeMonitoringMetrics = _compositeMonitoringMetrics;
+@synthesize instanceMonitoringMetrics = _instanceMonitoringMetrics;
 @synthesize startedAt = _startedAt;
 @synthesize completedAt = _completedAt;
-@synthesize runningRequests = _runningRequests;
-@synthesize describeInstancesRequest = _describeInstancesRequest;
-@synthesize getMetricStatisticsRequest = _getMetricStatisticsRequest;
+@synthesize completionNotificationUserInfo = _completionNotificationUserInfo;
+@synthesize instancesRequest = _instancesRequest;
 
 #pragma mark -
 #pragma mark Initialization
@@ -34,17 +39,24 @@ NSString *const kDataSourceAllRequestsCompletedNotification = @"DataSourceAllReq
 	self = [super init];
 	if (self) {
 		_runningRequests = [[NSMutableSet alloc] init];
+		_compositeMonitoringMetrics = [[NSSet alloc] initWithObjects:kAWSCPUUtilizationMetric, nil];
+		_instanceMonitoringMetrics = [[NSSet alloc] initWithObjects:kAWSCPUUtilizationMetric, nil];
+		_compositeMonitoringRequests = [[NSMutableDictionary alloc] init];
+		_instanceMonitoringRequests = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
 - (void)dealloc
 {
+	TB_RELEASE(_compositeMonitoringMetrics);
+	TB_RELEASE(_instanceMonitoringMetrics);
 	TB_RELEASE(_startedAt);
 	TB_RELEASE(_completedAt);
 	TB_RELEASE(_runningRequests);
-	TB_RELEASE(_describeInstancesRequest);
-	TB_RELEASE(_getMetricStatisticsRequest);
+	TB_RELEASE(_completionNotificationUserInfo);
+	TB_RELEASE(_compositeMonitoringRequests);
+	TB_RELEASE(_instanceMonitoringRequests);
 	[super dealloc];
 }
 
@@ -111,55 +123,113 @@ static DataSource * _sharedInstance = nil;
 }
 
 #pragma mark -
-#pragma mark 
+#pragma mark Requests
 
-- (void)startAllRequests
-{
-	self.startedAt = [NSDate date];
-	[_runningRequests removeAllObjects];
-	
-	[self describeInstances:nil];
-	[self getMetricStatistics:nil];
-}
-
-#pragma mark -
-#pragma mark Instances
-
-- (void)describeInstances:(NSDictionary *)parameters
+- (void)refresh
 {
 	@synchronized(self) {
-		if (!_describeInstancesRequest)
-			self.describeInstancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
-		[_runningRequests addObject:_describeInstancesRequest];
+		if ([_runningRequests count] > 0) {
+			TB_TRACE(@"refresh is already in progress.");
+			return;
+		}
+		
+		self.startedAt = [NSDate date];
+		self.completionNotificationUserInfo = [NSMutableDictionary dictionary];
+		[_runningRequests removeAllObjects];
+
+		// Schedule instances refresh
+		if (!_instancesRequest)
+			self.instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
+		[_runningRequests addObject:_instancesRequest];
+		
+		// Schedule composite monitoring stats refresh
+		for (NSString *metric in _compositeMonitoringMetrics) {
+			MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
+			
+			if (!monitoringRequest) {
+				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
+				[_compositeMonitoringRequests setObject:monitoringRequest forKey:metric];
+			}
+			
+			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
+			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
+				[_runningRequests addObject:monitoringRequest];
+			}
+			else {
+				TB_TRACE(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+			}
+
+		}
 	}
-	[_describeInstancesRequest startWithParameters:parameters];
+	
+	// Start scheduled requests
+	for (AWSRequest *request in _runningRequests) {
+		[request start];
+	}
 }
 
-- (NSArray *)reservations
+- (void)refreshInstance:(NSString *)instanceId
 {
-	return _describeInstancesRequest.response.reservationSet;
+	@synchronized(self) {
+		if ([_runningRequests count] > 0) {
+			TB_TRACE(@"refreshInstance: %@ is already in progress.", instanceId);
+			return;
+		}
+
+		self.startedAt = [NSDate date];
+		self.completionNotificationUserInfo = [NSMutableDictionary dictionaryWithObject:instanceId forKey:kDataSourceInstanceIdInfoKey];
+		[_runningRequests removeAllObjects];
+		
+		// Schedule instance monitoring stats refresh
+
+		NSMutableDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
+		
+		if (!instanceMonitoringRequests) {
+			instanceMonitoringRequests = [NSMutableDictionary dictionary];
+			[_instanceMonitoringRequests setObject:instanceMonitoringRequests forKey:instanceId];
+		}
+		
+		for (NSString *metric in _instanceMonitoringMetrics) {
+			MonitoringGetMetricStatisticsRequest *monitoringRequest = [instanceMonitoringRequests objectForKey:metric];
+		
+			if (!monitoringRequest) {
+				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
+				monitoringRequest.instanceId = instanceId;
+				monitoringRequest.metric = metric;
+				[instanceMonitoringRequests setObject:monitoringRequest forKey:metric];
+			}
+			
+			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
+			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
+				[_runningRequests addObject:monitoringRequest];
+			}
+			else {
+				TB_TRACE(@"Skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+			}
+		}
+	}
+	
+	for (AWSRequest *request in _runningRequests) {
+		[request start];
+	}
 }
+
 - (NSArray *)instances
 {
-	return _describeInstancesRequest.response.instancesSet;
+	return _instancesRequest.response.instancesSet;
 }
 
-#pragma mark -
-#pragma mark Monitoring
-
-- (void)getMetricStatistics:(NSDictionary *)parameters
+- (NSArray *)compositeStatisticsForMetric:(NSString *)metric
 {
-	@synchronized(self) {
-		if (!_getMetricStatisticsRequest)
-			self.getMetricStatisticsRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
-		[_runningRequests addObject:_getMetricStatisticsRequest];
-	}
-	[_getMetricStatisticsRequest startWithParameters:parameters];
+	MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
+	return monitoringRequest.response.result.datapoints;
 }
 
-- (NSArray *)datapoints
+- (NSArray *)instanceStatisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId
 {
-	return _getMetricStatisticsRequest.response.result.datapoints;
+	NSDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
+	MonitoringGetMetricStatisticsRequest *monitoringRequest = [instanceMonitoringRequests objectForKey:metric];
+	return monitoringRequest.response.result.datapoints;
 }
 
 #pragma mark -
@@ -174,15 +244,23 @@ static DataSource * _sharedInstance = nil;
 {
 	TB_TRACE(@"requestDidFinishLoading: %@", NSStringFromClass([request class]));
 	
-	// notify observers that data is ready, notification name is the name of the request class
-	[[NSNotificationCenter defaultCenter] postNotificationName:NSStringFromClass([request class]) object:self];
+	BOOL refreshCompleted = NO;
+	@synchronized(self) {
+		[_runningRequests removeObject:request];
+		if ([_runningRequests count] == 0) {
+			refreshCompleted = YES;
+			self.completedAt = [NSDate date];
+		}
+	}
+	
+	if (refreshCompleted) {
+		// Notify observers that refresh has completed
+		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec)", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt]);
 
-	[_runningRequests removeObject:request];
-	if ([_runningRequests count] == 0) {
-		// notify observers that refresh is completed
-		self.completedAt = [NSDate date];
-		TB_TRACE(@"kDataSourceAllRequestsCompletedNotification: %@ (duration %.2f sec)", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt]);
-		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceAllRequestsCompletedNotification object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
+															object:self
+														  userInfo:_completionNotificationUserInfo];
+		self.completionNotificationUserInfo = nil;
 	}
 }
 
@@ -190,14 +268,24 @@ static DataSource * _sharedInstance = nil;
 {
 	TB_TRACE(@"request:didFailWithError: %@", error);
 	
-	// TODO: error notification
-	
-	[_runningRequests removeObject:request];
-	if ([_runningRequests count] == 0) {
-		// notify observers that refresh is completed
-		self.completedAt = [NSDate date];
-		TB_TRACE(@"kDataSourceAllRequestsCompletedNotification: %@ (duration %.2f sec)", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt]);
-		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceAllRequestsCompletedNotification object:self];
+	BOOL refreshCompleted = NO;
+	@synchronized(self) {
+		[_runningRequests removeObject:request];
+		if ([_runningRequests count] == 0) {
+			refreshCompleted = YES;
+			self.completedAt = [NSDate date];
+		}
+	}
+
+	if (refreshCompleted) {
+		// Notify observers that refresh has completed
+		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec) error: %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], error);
+		
+		[_completionNotificationUserInfo setObject:error forKey:kDataSourceErrorInfoKey];
+		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
+															object:self
+														  userInfo:_completionNotificationUserInfo];
+		self.completionNotificationUserInfo = nil;
 	}
 }
 

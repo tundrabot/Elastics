@@ -44,6 +44,7 @@ extern NSString *const kAWSUseSSLOption;
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic) BOOL useSSL;
 
+- (BOOL)start;
 - (BOOL)startWithParameters:(NSDictionary *)parameters;
 
 @property (nonatomic, retain, readonly) NSDate *startedAt;
@@ -53,6 +54,7 @@ extern NSString *const kAWSUseSSLOption;
 
 - (NSDictionary *)_parameterListFromArray:(NSArray *)array key:(NSString *)key;
 - (NSDictionary *)_filterListFromDictionary:(NSDictionary *)dictionary;
+- (NSDictionary *)_dimensionListFromDictionary:(NSDictionary *)dictionary;
 - (BOOL)_startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters;
 - (void)_parseResponseData;
 

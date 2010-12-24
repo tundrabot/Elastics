@@ -22,18 +22,9 @@
 	[super dealloc];
 }
 
-//
-//	InstanceId	-> array
-//	Filter		-> name/value hash
-//
-- (BOOL)startWithParameters:(NSDictionary *)parameters
+- (BOOL)start
 {
-	NSMutableDictionary *requestParameters = [NSMutableDictionary dictionary];
-	
-	NSArray *instanceId = [parameters valueForKey:kAWSInstanceIdParameter];
-	[requestParameters addEntriesFromDictionary:[self _parameterListFromArray:instanceId key:kAWSInstanceIdParameter]];
-	
-	return [self _startRequestWithAction:@"DescribeInstances" parameters:requestParameters];
+	return [self _startRequestWithAction:@"DescribeInstances" parameters:nil];
 }
 
 - (void)_parseResponseData

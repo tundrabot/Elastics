@@ -214,7 +214,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
 	
-	for (id key in [dictionary allKeys]) {
+	for (NSString *key in [dictionary allKeys]) {
 		id value = [dictionary objectForKey:key];
 		NSArray *valuesArray = nil;
 		NSUInteger valueIdx = 1;
@@ -232,6 +232,36 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		for (id valueItem in valuesArray) {
 			NSString *awsValueKey = [NSString stringWithFormat:@"Filter.%d.Value.%d", idx, valueIdx];
 			[parameters setObject:valueItem forKey:awsValueKey];
+			valueIdx++;
+		}
+		idx++;
+	}
+	
+	return parameters;
+}
+
+- (NSDictionary *)_dimensionListFromDictionary:(NSDictionary *)dictionary
+{
+	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+	NSUInteger idx = 1;
+	
+	for (NSString *key in [dictionary allKeys]) {
+		id value = [dictionary objectForKey:key];
+		NSArray *valuesArray = nil;
+		
+		if ([value isKindOfClass:[NSArray class]]) {
+			valuesArray = value;
+		}
+		else {
+			valuesArray = [NSArray arrayWithObject:value];
+		}
+		
+		for (NSString *valueItem in valuesArray) {
+			NSString *awsNameKey = [NSString stringWithFormat:@"Dimensions.member.%d.Name", idx];
+			[parameters setObject:key forKey:awsNameKey];
+			NSString *awsValueKey = [NSString stringWithFormat:@"Dimensions.member.%d.Value", idx];
+			[parameters setObject:valueItem forKey:awsValueKey];
+			idx++;
 		}
 	}
 	
@@ -308,6 +338,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 #pragma mark -
 #pragma mark Request handling
+
+- (BOOL)start
+{
+	return [self startWithParameters:nil];
+}
 
 - (BOOL)startWithParameters:(NSDictionary *)parameters
 {
@@ -418,10 +453,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFinishLoading {
 #ifdef TB_DEBUG
-	NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
-	TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
-	//	TB_TRACE(@"%@", responseString);
-	[responseString release];
+	//NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
+	//TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
+//	TB_TRACE(@"%@", responseString);
+	//[responseString release];
 #endif
 	
 	[self _parseResponseData];

@@ -18,10 +18,25 @@ extern NSString *const kAWSMonitoringService;
 
 // Parameters
 extern NSString *const kAWSInstanceIdParameter;
-
 extern NSString *const kAWSMetricNameParameter;
 extern NSString *const kAWSStatisticsParameter;
 extern NSString *const kAWSNamespaceParameter;
 extern NSString *const kAWSStartTimeParameter;
 extern NSString *const kAWSEndTimeParameter;
 extern NSString *const kAWSPeriodParameter;
+
+// Metrics
+extern NSString *const kAWSCPUUtilizationMetric;
+extern NSString *const kAWSDiskReadBytesMetric;
+extern NSString *const kAWSDiskReadOpsMetric;
+extern NSString *const kAWSDiskWriteBytesMetric;
+extern NSString *const kAWSDiskWriteOpsMetric;
+extern NSString *const kAWSNetworkInMetric;
+extern NSString *const kAWSNetworkOutMetric;
+
+// Supported metric statistics ranges
+#define kAWSLastHourRange		3600
+#define kAWSLast3HoursRange		10800
+#define kAWSLast6HoursRange		21600
+#define kAWSLast12HoursRange	43200
+#define kAWSLast24HoursRange	86400

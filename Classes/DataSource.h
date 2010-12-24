@@ -7,22 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "EC2DescribeInstancesRequest.h"
 #import "EC2Instance.h"
-
 #import "MonitoringGetMetricStatisticsRequest.h"
 #import "MonitoringDatapoint.h"
 
-// Sent when all requests started by startAllRequests have completed
-extern NSString *const kDataSourceAllRequestsCompletedNotification;
+// Notifies observers that all requests started by refresh have been completed
+extern NSString *const kDataSourceRefreshCompletedNotification;
+
+extern NSString *const kDataSourceInstanceIdInfoKey;
+extern NSString *const kDataSourceErrorInfoKey;
 
 @interface DataSource : NSObject <AWSRequestDelegate> {
-	NSDate									*_startedAt;
-	NSDate									*_completedAt;
-	NSMutableSet							*_runningRequests;
-	EC2DescribeInstancesRequest				*_describeInstancesRequest;
-	MonitoringGetMetricStatisticsRequest	*_getMetricStatisticsRequest;
+	NSSet							*_compositeMonitoringMetrics;
+	NSSet							*_instanceMonitoringMetrics;
+	NSDate							*_startedAt;
+	NSDate							*_completedAt;
+	NSMutableSet					*_runningRequests;
+	NSMutableDictionary				*_completionNotificationUserInfo;
+	EC2DescribeInstancesRequest		*_instancesRequest;
+	NSMutableDictionary				*_compositeMonitoringRequests;
+	NSMutableDictionary				*_instanceMonitoringRequests;
 }
 
 + (DataSource *)sharedInstance;
@@ -30,17 +35,22 @@ extern NSString *const kDataSourceAllRequestsCompletedNotification;
 + (NSDictionary *)defaultRequestOptions;
 + (void)setDefaultRequestOptions:(NSDictionary *)options;
 
-// Start loading all requests in parallel
-- (void)startAllRequests;
-@property (nonatomic, retain, readonly) NSDate *startedAt;
-@property (nonatomic, retain, readonly) NSDate *completedAt;
+// Set of metric names to monitor globally
+@property (nonatomic, retain) NSSet *compositeMonitoringMetrics;
+// Set of metric names to monitor for each instance
+@property (nonatomic, retain) NSSet *instanceMonitoringMetrics;
 
-// Instances
-- (void)describeInstances:(NSDictionary *)parameters;
-@property (nonatomic, retain, readonly) NSArray *reservations;
+// Refresh instances and global monitoring stats
+- (void)refresh;
+
+// Refresh instance monitoring stats
+- (void)refreshInstance:(NSString *)instanceId;
+
+// Array of EC2Instance
 @property (nonatomic, retain, readonly) NSArray *instances;
 
-// Monitoring
-- (void)getMetricStatistics:(NSDictionary *)parameters;
-@property (nonatomic, retain, readonly) NSArray *datapoints;
+// Array of MonitoringDatapoint
+- (NSArray *)compositeStatisticsForMetric:(NSString *)metric;
+- (NSArray *)instanceStatisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId;
+
 @end

@@ -11,14 +11,14 @@
 
 @interface MonitoringDatapoint : EC2Type {
 @private
-	NSDate		*_timestamp;
-	NSString	*_unit;
-	float		_minimum;
-	float		_maximum;
-	float		_average;
+	NSTimeInterval		_timestamp;
+	NSString			*_unit;
+	float				_minimum;
+	float				_maximum;
+	float				_average;
 }
 
-@property (nonatomic, retain, readonly) NSDate *timestamp;
+@property (nonatomic, readonly) NSTimeInterval timestamp;
 @property (nonatomic, retain, readonly) NSString *unit;
 @property (nonatomic, readonly) float minimum;
 @property (nonatomic, readonly) float maximum;

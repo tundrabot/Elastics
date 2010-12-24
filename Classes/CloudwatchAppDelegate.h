@@ -11,7 +11,6 @@
 @interface CloudwatchAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 	NSStatusItem		*_statusItem;
 	NSMenu				*_statusMenu;
-	BOOL				_isRefreshInProgress;
 }
 
 @end
