@@ -46,6 +46,7 @@
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
+		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -125,6 +126,8 @@
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
 		C3DAED6C12C34DE200A0106D /* ChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChartView.h; sourceTree = "<group>"; };
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
+		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
+		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +296,8 @@
 				C32C293C12C0C60900F2C136 /* EC2Instance.m */,
 				C32C294112C0C60900F2C136 /* EC2InstanceState.h */,
 				C32C294212C0C60900F2C136 /* EC2InstanceState.m */,
+				C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */,
+				C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */,
 				C32C29BC12C0C93500F2C136 /* EC2Reservation.h */,
 				C32C29BD12C0C93500F2C136 /* EC2Reservation.m */,
 				C32C295512C0C60900F2C136 /* EC2Tag.h */,
@@ -427,6 +432,7 @@
 				C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */,
 				C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */,
 				C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */,
+				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

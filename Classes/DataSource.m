@@ -219,17 +219,147 @@ static DataSource * _sharedInstance = nil;
 	return _instancesRequest.response.instancesSet;
 }
 
-- (NSArray *)compositeStatisticsForMetric:(NSString *)metric
+- (NSArray *)statisticsForMetric:(NSString *)metric
 {
 	MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
 	return monitoringRequest.response.result.datapoints;
 }
 
-- (NSArray *)instanceStatisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId
+- (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId
 {
 	NSDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
 	MonitoringGetMetricStatisticsRequest *monitoringRequest = [instanceMonitoringRequests objectForKey:metric];
 	return monitoringRequest.response.result.datapoints;
+}
+
+- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric];
+	
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat result = 0.;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
+				result = datapoint.maximum;
+			}
+		}];
+		
+		return result;
+	}
+	else
+		return 0.;
+}
+
+- (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric];
+
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat result = MAXFLOAT;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
+				result = datapoint.minimum;
+			}
+		}];
+		
+		return result;
+	}
+	else
+		return 0.;
+}
+
+- (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric];
+
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat sum = 0.;
+		__block NSUInteger count = 0;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp) {
+				sum += datapoint.average;
+				count++;
+			}
+		}];
+		
+		return sum/count;
+	}
+	else
+		return 0.;
+}
+
+- (CGFloat)maximumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric forInstance:instanceId];
+	
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat result = 0.;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
+				result = datapoint.maximum;
+			}
+		}];
+		
+		return result;
+	}
+	else
+		return 0.;
+}
+
+- (CGFloat)minimumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric forInstance:instanceId];
+
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat result = MAXFLOAT;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
+				result = datapoint.minimum;
+			}
+		}];
+		
+		return result;
+	}
+	else
+		return 0.;
+}
+
+- (CGFloat)averageValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
+{
+	NSArray *stats = [self statisticsForMetric:metric forInstance:instanceId];
+
+	if ([stats count] > 0) {
+		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+		__block CGFloat sum = 0.;
+		__block NSUInteger count = 0;
+		
+		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+			if (datapoint.timestamp > startTimestamp) {
+				sum += datapoint.average;
+				count++;
+			}
+		}];
+		
+		return sum/count;
+	}
+	else
+		return 0.;
 }
 
 #pragma mark -

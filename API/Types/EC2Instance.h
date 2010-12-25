@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EC2Type.h"
 #import "EC2InstanceState.h"
+#import "EC2Monitoring.h"
 
 @interface EC2Instance : EC2Type {
 @private
@@ -17,6 +18,7 @@
 	EC2InstanceState	*_instanceState;
 	NSString			*_dnsName;
 	NSDate				*_launchTime;
+	EC2Monitoring		*_monitoring;
 	NSString			*_privateIpAddress;
 	NSString			*_ipAddress;
 	NSArray				*_tagSet;					// EC2Tag
@@ -27,6 +29,7 @@
 @property (nonatomic, retain, readonly) EC2InstanceState *instanceState;
 @property (nonatomic, retain, readonly) NSString *dnsName;
 @property (nonatomic, retain, readonly) NSDate *launchTime;
+@property (nonatomic, retain, readonly) EC2Monitoring *monitoring;
 @property (nonatomic, retain, readonly) NSString *ipAddress;
 @property (nonatomic, retain, readonly) NSString *privateIpAddress;
 @property (nonatomic, retain, readonly) NSArray *tagSet;

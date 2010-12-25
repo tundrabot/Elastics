@@ -93,7 +93,7 @@
 			NSAssert(FALSE, @"Unsuported range value: %d", _range);
 			break;
 	}
-	[parameters setObject:[[[NSDate date] dateByAddingTimeInterval:-((NSTimeInterval)_range)] iso8601String] forKey:kAWSStartTimeParameter];
+	[parameters setObject:[[[NSDate date] dateByAddingTimeInterval:-((NSTimeInterval)_range + 360.0)] iso8601String] forKey:kAWSStartTimeParameter];
 	[parameters setObject:period forKey:kAWSPeriodParameter];
 
 	return [self startWithParameters:parameters];

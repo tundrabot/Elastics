@@ -13,15 +13,15 @@
 @private
 	NSTimeInterval		_timestamp;
 	NSString			*_unit;
-	float				_minimum;
-	float				_maximum;
-	float				_average;
+	CGFloat				_minimum;
+	CGFloat				_maximum;
+	CGFloat				_average;
 }
 
 @property (nonatomic, readonly) NSTimeInterval timestamp;
 @property (nonatomic, retain, readonly) NSString *unit;
-@property (nonatomic, readonly) float minimum;
-@property (nonatomic, readonly) float maximum;
-@property (nonatomic, readonly) float average;
+@property (nonatomic, readonly) CGFloat minimum;
+@property (nonatomic, readonly) CGFloat maximum;
+@property (nonatomic, readonly) CGFloat average;
 
 @end

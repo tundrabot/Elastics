@@ -453,9 +453,9 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFinishLoading {
 #ifdef TB_DEBUG
-	//NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
+//	NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
 	//TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
-//	TB_TRACE(@"%@", responseString);
+	//	TB_TRACE(@"%@", responseString);
 	//[responseString release];
 #endif
 	
