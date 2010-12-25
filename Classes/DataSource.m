@@ -385,7 +385,7 @@ static DataSource * _sharedInstance = nil;
 	
 	if (refreshCompleted) {
 		// Notify observers that refresh has completed
-		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec)", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt]);
+		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec): %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], _completionNotificationUserInfo);
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
 															object:self

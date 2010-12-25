@@ -142,10 +142,11 @@
 				[path closePath];
 				
 //				[[NSGraphicsContext currentContext] setShouldAntialias:NO];
-			
-				NSGradient *chartGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:(87.f/255.f) green:(177.f/255.f) blue:(230.f/255.f) alpha:1.f]
+
+				[path setClip];
+				NSGradient *chartGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:(118.f/255.f) green:(186.f/255.f) blue:(250.f/255.f) alpha:1.f]
 																		  endingColor:[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f]];
-				[chartGradient drawInBezierPath:path angle:-90.f];
+				[chartGradient drawInBezierPath:clipPath angle:-90.f];
 				[chartGradient release];
 				
 //				[[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] set];
