@@ -19,6 +19,7 @@ extern NSString *const kDataSourceInstanceIdInfoKey;
 extern NSString *const kDataSourceErrorInfoKey;
 
 @interface DataSource : NSObject <AWSRequestDelegate> {
+@private
 	NSSet							*_compositeMonitoringMetrics;
 	NSSet							*_instanceMonitoringMetrics;
 	NSDate							*_startedAt;

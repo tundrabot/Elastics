@@ -9,6 +9,7 @@
 #import "CloudwatchAppDelegate.h"
 #import "DataSource.h"
 #import "ChartView.h"
+#import "PreferencesController.h"
 
 @interface CloudwatchAppDelegate ()
 - (void)resetMenu;
@@ -149,6 +150,7 @@ static NSDictionary *_infoColumnAttributes;
 {
 	TB_RELEASE(_statusItem);
 	TB_RELEASE(_statusMenu);
+	TB_RELEASE(_preferencesController);
 	[super dealloc];
 }
 
@@ -461,6 +463,10 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)editPreferencesAction:(id)sender
 {
+	if (_preferencesController == nil) {
+		_preferencesController = [[PreferencesController alloc] initWithWindowNibName:@"PreferencesWindow"];
+	}
+	[_preferencesController showWindow:nil];
 }
 
 - (void)copyToPasteboardAction:(id)sender

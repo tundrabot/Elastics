@@ -8,15 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-//enum {
-//	TBChartRangeLastHour		= 3600,
-//	TBChartRangeLast3Hours		= 10800,
-//	TBChartRangeLast6Hours		= 21600,
-//	TBChartRangeLast12Hours		= 43200,
-//	TBChartRangeLast24Hours		= 86400,
-//};
-
 @interface ChartView : NSView {
+@private
 	NSUInteger				_chartRange;
 	NSArray					*_datapoints;
 	NSProgressIndicator		*_spinner;

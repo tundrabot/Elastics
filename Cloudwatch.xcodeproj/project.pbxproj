@@ -47,6 +47,8 @@
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
+		C3F1A18D12C63641001AB554 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A18C12C63641001AB554 /* PreferencesController.m */; };
+		C3F1A19512C63697001AB554 /* PreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A19412C63697001AB554 /* PreferencesWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +130,9 @@
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
 		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
+		C3F1A18B12C63641001AB554 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesController.h; sourceTree = "<group>"; };
+		C3F1A18C12C63641001AB554 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesController.m; sourceTree = "<group>"; };
+		C3F1A19212C63688001AB554 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PreferencesWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +158,8 @@
 				C32C2A0112C0CF2000F2C136 /* DataSource.m */,
 				C3DAED6C12C34DE200A0106D /* ChartView.h */,
 				C3DAED6D12C34DE200A0106D /* ChartView.m */,
+				C3F1A18B12C63641001AB554 /* PreferencesController.h */,
+				C3F1A18C12C63641001AB554 /* PreferencesController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -218,6 +225,7 @@
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				C3F1A19412C63697001AB554 /* PreferencesWindow.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -393,6 +401,7 @@
 				C32C2B5512C0E2B600F2C136 /* InstanceStateStopped.png in Resources */,
 				C32C2B5612C0E2B600F2C136 /* InstanceStateTerminated.png in Resources */,
 				C32C2B5712C0E2B600F2C136 /* StatusItem.png in Resources */,
+				C3F1A19512C63697001AB554 /* PreferencesWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +442,7 @@
 				C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */,
 				C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */,
 				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
+				C3F1A18D12C63641001AB554 /* PreferencesController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +463,14 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		C3F1A19412C63697001AB554 /* PreferencesWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C3F1A19212C63688001AB554 /* English */,
+			);
+			name = PreferencesWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
