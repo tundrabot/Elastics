@@ -9,7 +9,7 @@
 #import "CloudwatchAppDelegate.h"
 #import "DataSource.h"
 #import "ChartView.h"
-#import "PreferencesController.h"
+#import "PreferenceKeys.h"
 
 @interface CloudwatchAppDelegate ()
 - (void)resetMenu;
@@ -109,6 +109,14 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+	[[NSUserDefaults standardUserDefaults] addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
+	[[NSUserDefaults standardUserDefaults] addObserver:self
+											forKeyPath:kPreferencesAWSAccessKeyIdKey
+											   options:NSKeyValueObservingOptionNew
+											   context:NULL];
+	
+	TB_TRACE(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
+	
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
 	[_statusMenu setShowsStateColumn:NO];
@@ -454,6 +462,15 @@ static NSDictionary *_infoColumnAttributes;
 }
 
 #pragma mark -
+#pragma mark User Defaults
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	TB_TRACE(@"%@", keyPath);
+}
+
+
+#pragma mark -
 #pragma mark Actions
 
 - (void)quitAction:(id)sender
@@ -463,10 +480,8 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)editPreferencesAction:(id)sender
 {
-	if (_preferencesController == nil) {
-		_preferencesController = [[PreferencesController alloc] initWithWindowNibName:@"PreferencesWindow"];
-	}
-	[_preferencesController showWindow:nil];
+	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Helpers/CloudwatchPreferences.app"];
+	[[NSWorkspace sharedWorkspace] launchApplication:preferencesBundlePath];
 }
 
 - (void)copyToPasteboardAction:(id)sender

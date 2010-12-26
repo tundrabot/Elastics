@@ -47,9 +47,41 @@
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
-		C3F1A18D12C63641001AB554 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A18C12C63641001AB554 /* PreferencesController.m */; };
-		C3F1A19512C63697001AB554 /* PreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A19412C63697001AB554 /* PreferencesWindow.xib */; };
+		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
+		C3F1A4B912C78460001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A4B812C78460001AB554 /* Icon.icns */; };
+		C3F1A56012C79022001AB554 /* CloudwatchPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */; };
+		C3F1A65E12C7A7EF001AB554 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C3F1A55212C78F98001AB554 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D1107320486CEB800E47090 /* CloudwatchPreferences.app */;
+			remoteInfo = CloudwatchPreferences;
+		};
+		C3F1A55412C78FB3001AB554 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090 /* CloudwatchPreferences */;
+			remoteInfo = CloudwatchPreferences;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C3F1A56A12C79033001AB554 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (
+				C3F1A56012C79022001AB554 /* CloudwatchPreferences.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -130,9 +162,12 @@
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
 		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
-		C3F1A18B12C63641001AB554 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesController.h; sourceTree = "<group>"; };
-		C3F1A18C12C63641001AB554 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesController.m; sourceTree = "<group>"; };
-		C3F1A19212C63688001AB554 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PreferencesWindow.xib; sourceTree = "<group>"; };
+		C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCryptor.h"; sourceTree = "<group>"; };
+		C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCryptor.m"; sourceTree = "<group>"; };
+		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
+		C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CloudwatchPreferences.xcodeproj; path = CloudwatchPreferences/CloudwatchPreferences.xcodeproj; sourceTree = "<group>"; };
+		C3F1A65C12C7A7EF001AB554 /* PreferenceKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferenceKeys.h; path = CloudwatchPreferences/Classes/PreferenceKeys.h; sourceTree = SOURCE_ROOT; };
+		C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferenceKeys.m; path = CloudwatchPreferences/Classes/PreferenceKeys.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,8 +193,10 @@
 				C32C2A0112C0CF2000F2C136 /* DataSource.m */,
 				C3DAED6C12C34DE200A0106D /* ChartView.h */,
 				C3DAED6D12C34DE200A0106D /* ChartView.m */,
-				C3F1A18B12C63641001AB554 /* PreferencesController.h */,
-				C3F1A18C12C63641001AB554 /* PreferencesController.m */,
+				C3F1A65C12C7A7EF001AB554 /* PreferenceKeys.h */,
+				C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */,
+				C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */,
+				C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -195,6 +232,7 @@
 		29B97314FDCFA39411CA2CEA /* Cloudwatch */ = {
 			isa = PBXGroup;
 			children = (
+				C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C32C298712C0C63900F2C136 /* TBXML */,
@@ -223,9 +261,9 @@
 			children = (
 				C32C29EA12C0CB7200F2C136 /* Images */,
 				8D1107310486CEB800E47090 /* Info.plist */,
+				C3F1A4B812C78460001AB554 /* Icon.icns */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
-				C3F1A19412C63697001AB554 /* PreferencesWindow.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -341,6 +379,14 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		C3F1A54C12C78F98001AB554 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -351,10 +397,12 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				C3F1A56A12C79033001AB554 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C3F1A55512C78FB3001AB554 /* PBXTargetDependency */,
 			);
 			name = Cloudwatch;
 			productInstallPath = "$(HOME)/Applications";
@@ -382,12 +430,28 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Cloudwatch */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C3F1A54C12C78F98001AB554 /* Products */;
+					ProjectRef = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Cloudwatch */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = CloudwatchPreferences.app;
+			remoteRef = C3F1A55212C78F98001AB554 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8D1107290486CEB800E47090 /* Resources */ = {
@@ -401,7 +465,7 @@
 				C32C2B5512C0E2B600F2C136 /* InstanceStateStopped.png in Resources */,
 				C32C2B5612C0E2B600F2C136 /* InstanceStateTerminated.png in Resources */,
 				C32C2B5712C0E2B600F2C136 /* StatusItem.png in Resources */,
-				C3F1A19512C63697001AB554 /* PreferencesWindow.xib in Resources */,
+				C3F1A4B912C78460001AB554 /* Icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,11 +506,20 @@
 				C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */,
 				C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */,
 				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
-				C3F1A18D12C63641001AB554 /* PreferencesController.m in Sources */,
+				C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */,
+				C3F1A65E12C7A7EF001AB554 /* PreferenceKeys.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C3F1A55512C78FB3001AB554 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CloudwatchPreferences;
+			targetProxy = C3F1A55412C78FB3001AB554 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -463,14 +536,6 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		C3F1A19412C63697001AB554 /* PreferencesWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C3F1A19212C63688001AB554 /* English */,
-			);
-			name = PreferencesWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -518,6 +583,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx;
@@ -533,6 +599,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PREBINDING = NO;
 				SDKROOT = macosx;
 			};
