@@ -15,4 +15,4 @@
 #	define TB_TRACE(format, ...)
 #endif
 
-#define TB_LOG(format, ...) NSLog(@"%@:(%d) %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(format), ##__VA_ARGS__])
+#define TB_TRACE(format, ...) NSLog(@"%@:(%d) %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(format), ##__VA_ARGS__])

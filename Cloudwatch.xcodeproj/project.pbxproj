@@ -50,7 +50,7 @@
 		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
 		C3F1A4B912C78460001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A4B812C78460001AB554 /* Icon.icns */; };
 		C3F1A56012C79022001AB554 /* CloudwatchPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */; };
-		C3F1A65E12C7A7EF001AB554 /* PreferenceKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */; };
+		C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* Preferences.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,8 +166,8 @@
 		C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCryptor.m"; sourceTree = "<group>"; };
 		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
 		C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CloudwatchPreferences.xcodeproj; path = CloudwatchPreferences/CloudwatchPreferences.xcodeproj; sourceTree = "<group>"; };
-		C3F1A65C12C7A7EF001AB554 /* PreferenceKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferenceKeys.h; path = CloudwatchPreferences/Classes/PreferenceKeys.h; sourceTree = SOURCE_ROOT; };
-		C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferenceKeys.m; path = CloudwatchPreferences/Classes/PreferenceKeys.m; sourceTree = SOURCE_ROOT; };
+		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = CloudwatchPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
+		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = CloudwatchPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +193,8 @@
 				C32C2A0112C0CF2000F2C136 /* DataSource.m */,
 				C3DAED6C12C34DE200A0106D /* ChartView.h */,
 				C3DAED6D12C34DE200A0106D /* ChartView.m */,
-				C3F1A65C12C7A7EF001AB554 /* PreferenceKeys.h */,
-				C3F1A65D12C7A7EF001AB554 /* PreferenceKeys.m */,
+				C3F1A65C12C7A7EF001AB554 /* Preferences.h */,
+				C3F1A65D12C7A7EF001AB554 /* Preferences.m */,
 				C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */,
 				C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */,
 			);
@@ -507,7 +507,7 @@
 				C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */,
 				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
 				C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */,
-				C3F1A65E12C7A7EF001AB554 /* PreferenceKeys.m in Sources */,
+				C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

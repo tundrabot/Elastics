@@ -3,10 +3,13 @@
 //  CloudwatchPreferences
 //
 //  Created by Dmitri Goutnik on 26/12/2010.
-//  Copyright 2010 Invisible Llama. All rights reserved.
+//  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "Preferences.h"
+#import "RefreshIntervalValueTransformer.h"
+#import "RefreshIntervalLabelValueTransformer.h"
 
 #define GENERAL_PANE_INDEX				0
 #define ADVANCED_PANE_INDEX				1
@@ -22,6 +25,8 @@ static const char kAWSCredentialsKey[16] = {
 };
 
 @interface AppDelegate ()
+- (void)userDefaultsDidChange:(NSNotification *)notification;
+- (void)postPreferenceChangeNotification;
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated;
 - (void)addContentSubview:(NSView *)view;
 @end
@@ -31,10 +36,45 @@ static const char kAWSCredentialsKey[16] = {
 @synthesize window = _window;
 @synthesize generalPane = _generalPane;
 @synthesize advancedPane = _advancedPane;
+@synthesize awsAccessKeyIdField = _awsAccessKeyIdField;
+
++ (void)initialize
+{
+	RefreshIntervalValueTransformer *valueTransformer = [[[RefreshIntervalValueTransformer alloc] init] autorelease];
+	RefreshIntervalLabelValueTransformer *labelValueTransformer = [[[RefreshIntervalLabelValueTransformer alloc] init] autorelease];
+	
+	[NSValueTransformer setValueTransformer:valueTransformer
+									forName:@"RefreshIntervalValueTransformer"];
+	[NSValueTransformer setValueTransformer:labelValueTransformer
+									forName:@"RefreshIntervalLabelValueTransformer"];
+	
+	// register default preference values
+	[[NSUserDefaults standardUserDefaults] registerDefaults:
+	 [NSDictionary dictionaryWithObjectsAndKeys:
+	  // refresh every minute
+	  [NSNumber numberWithInt:60], kPreferencesRefreshIntervalKey,
+	  // refresh on menu open
+	  [NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
+	  nil]];
+	  
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+	// show General pane on launch
 	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
+	
+	// if there's no AWS credentials, set focus to Access ID field
+	if (![[[NSUserDefaults standardUserDefaults] stringForKey:kPreferencesAWSAccessKeyIdKey] length]) {
+		[_window makeFirstResponder:_awsAccessKeyIdField];
+	}
+	
+	// subscribe to preference values change notifications
+	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+	[notificationCenter addObserver:self
+						   selector:@selector(userDefaultsDidChange:)
+							   name:NSUserDefaultsDidChangeNotification
+							 object:nil];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
@@ -57,15 +97,15 @@ static const char kAWSCredentialsKey[16] = {
 		NSView *contentView = [_window contentView];
 		NSView *currentPane = [[contentView subviews] count] ? [[contentView subviews] objectAtIndex:0] : nil;
 		if (pane != currentPane) {
-			// Cancel all pending 'show pane' requests
+			// cancel all pending 'show pane' requests
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
 			
-			// Make toolbar button selected
+			// make toolbar button selected
 			NSToolbar *toolbar = [_window toolbar];
 			NSToolbarItem *toolbarItem = [[toolbar items] objectAtIndex:paneIndex];
 			[toolbar setSelectedItemIdentifier:[toolbarItem itemIdentifier]];
 			
-			// Calculate new window frame
+			// calculate new window frame
 			NSRect contentBounds = [contentView bounds];
 			NSRect paneBounds = [pane bounds];
 			NSRect currentWindowFrame = [_window frame];
@@ -74,7 +114,7 @@ static const char kAWSCredentialsKey[16] = {
 											   currentWindowFrame.size.width + (paneBounds.size.width - contentBounds.size.width),
 											   currentWindowFrame.size.height + (paneBounds.size.height - contentBounds.size.height));
 			
-			// Resize window and replace panes
+			// resize window and replace panes
 			[currentPane removeFromSuperview];
 			if (animated) {
 				[NSAnimationContext beginGrouping]; {
@@ -119,6 +159,28 @@ static const char kAWSCredentialsKey[16] = {
 {
 	[_window makeFirstResponder:[_window contentView]];
 	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+#pragma mark -
+#pragma mark User Defaults notification
+
+const NSTimeInterval kPreferenceChangeNotificationDelay = 1.0;
+
+- (void)userDefaultsDidChange:(NSNotification *)notification
+{
+	[[self class] cancelPreviousPerformRequestsWithTarget:self
+												 selector:@selector(postPreferenceChangeNotification)
+												   object:nil];
+	[self performSelector:@selector(postPreferenceChangeNotification)
+			   withObject:nil
+			   afterDelay:kPreferenceChangeNotificationDelay];
+}
+
+- (void)postPreferenceChangeNotification
+{
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesDidChangeNotification
+																   object:nil];
 }
 
 #pragma mark -

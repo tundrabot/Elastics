@@ -9,7 +9,7 @@
 #import "CloudwatchAppDelegate.h"
 #import "DataSource.h"
 #import "ChartView.h"
-#import "PreferenceKeys.h"
+#import "Preferences.h"
 
 @interface CloudwatchAppDelegate ()
 - (void)resetMenu;
@@ -23,6 +23,7 @@
 - (void)refreshSubmenu:(NSMenu *)menu forInstance:(EC2Instance *)instance;
 - (void)refresh:(NSString *)instanceId;
 - (void)refreshCompleted:(NSNotification *)notification;
+- (void)preferencesDidChange:(NSNotification *)notification;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
@@ -109,13 +110,41 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+	// register preferences set through Preferences helper app
 	[[NSUserDefaults standardUserDefaults] addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
-	[[NSUserDefaults standardUserDefaults] addObserver:self
-											forKeyPath:kPreferencesAWSAccessKeyIdKey
-											   options:NSKeyValueObservingOptionNew
-											   context:NULL];
 	
-	TB_TRACE(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
+	// observe notifications from Preferences app
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
+														selector:@selector(preferencesDidChange:)
+															name:kPreferencesDidChangeNotification
+														  object:nil];
+	
+	// set AWS credentials and region
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
+	NSString *awsSecretAccessKey = [userDefaults stringForKey:kPreferencesAWSSecretAccessKeyKey];
+	
+	NSString *awsRegion = kAWSUSEastRegion;
+	switch ([userDefaults integerForKey:kPreferencesAWSRegionKey]) {
+		case kPreferencesAWSUSEastRegion:
+			awsRegion = kAWSUSEastRegion;
+			break;
+		case kPreferencesAWSUSWestRegion:
+			awsRegion = kAWSUSWestRegion;
+			break;
+		case kPreferencesAWSEURegion:
+			awsRegion = kAWSEURegion;
+			break;
+		case kPreferencesAWSAsiaPacificRegion:
+			awsRegion = kAWSAsiaPacificRegion;
+			break;
+	}
+	
+	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
+										  awsAccessKeyId, kAWSAccessKeyIdOption,
+										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
+										  awsRegion, kAWSRegionOption,
+										  nil]];
 	
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
@@ -132,12 +161,6 @@ static NSDictionary *_infoColumnAttributes;
 	NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
 	[pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
 	
-	// XXX
-	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
-										  @"AKIAJV4IYQPC6OFAH4PA", kAWSAccessKeyIdOption,
-										  @"lN3doqRL9mRk4Y3oTcbXzHuJaMfteK7HZwIWc5+i", kAWSSecretAccessKeyOption,
-										  nil]];
-
 	// subscribe to data source notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(refreshCompleted:)
@@ -463,6 +486,14 @@ static NSDictionary *_infoColumnAttributes;
 
 #pragma mark -
 #pragma mark User Defaults
+
+- (void)preferencesDidChange:(NSNotification *)notification
+{
+	TB_TRACE(@"preferencesDidChange: %@", notification);
+
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	TB_TRACE(@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:kPreferencesAWSAccessKeyIdKey]);
+}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
