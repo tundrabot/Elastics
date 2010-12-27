@@ -10,10 +10,10 @@
 #import "MonitoringGetMetricStatisticsResponse.h"
 
 @interface MonitoringGetMetricStatisticsRequest : MonitoringRequest {
-	NSString								*_metric;
-	NSString								*_instanceId;
-	NSUInteger								_range;
-	MonitoringGetMetricStatisticsResponse	*_response;
+@private
+	NSString		*_metric;
+	NSString		*_instanceId;
+	NSUInteger		_range;
 }
 
 - (BOOL)start;
@@ -22,6 +22,6 @@
 @property (nonatomic, retain) NSString *instanceId;
 @property (nonatomic, assign) NSUInteger range;
 
-@property (nonatomic, retain, readonly) MonitoringGetMetricStatisticsResponse *response;
+- (MonitoringGetMetricStatisticsResponse *)response;
 
 @end

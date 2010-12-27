@@ -8,29 +8,22 @@
 
 #import "EC2DescribeInstancesRequest.h"
 
-@interface EC2DescribeInstancesRequest ()
-@property (nonatomic, retain) EC2DescribeInstancesResponse *response;
-@end
-
 @implementation EC2DescribeInstancesRequest
-
-@synthesize response = _response;
-
-- (void)dealloc
-{
-	[_response release];
-	[super dealloc];
-}
 
 - (BOOL)start
 {
 	return [self _startRequestWithAction:@"DescribeInstances" parameters:nil];
 }
 
+- (EC2DescribeInstancesResponse *)response
+{
+	return (EC2DescribeInstancesResponse *)[super response];
+}
+
 - (void)_parseResponseData
 {
-	TBXML *tbxml = [TBXML tbxmlWithXMLData:self.responseData];
-	self.response = [EC2DescribeInstancesResponse responseWithRootXMLElement:tbxml.rootXMLElement];
+	TBXMLElement *root = self.responseXML.rootXMLElement;
+	_response = [[EC2DescribeInstancesResponse responseWithRootXMLElement:root] retain];
 }
 
 @end

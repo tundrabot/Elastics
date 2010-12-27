@@ -16,30 +16,20 @@
 
 @synthesize requestId = _requestId;
 
-- (id)initWithRootXMLElement:(TBXMLElement *)rootElement
-{
-	self = [super initWithRootXMLElement:rootElement];
-	if (self) {
-		TBXMLElement *element = rootElement->firstChild;
-
-		while (element) {
-			NSString *elementName = [TBXML elementName:element];
-			
-			if ([elementName isEqualToString:@"requestId"])
-				self.requestId = [TBXML textForElement:element];
-			else
-				[self _parseXMLElement:element];
-			
-			element = element->nextSibling;
-		}
-	}
-	return self;
-}
-
 - (void)dealloc
 {
 	TB_RELEASE(_requestId);
 	[super dealloc];
+}
+
+- (void)parseElement:(TBXMLElement *)element;
+{
+	NSString *elementName = [TBXML elementName:element];
+
+	if ([elementName isEqualToString:@"requestId"])
+		self.requestId = [TBXML textForElement:element];
+	else
+		[super parseElement:element];
 }
 
 @end

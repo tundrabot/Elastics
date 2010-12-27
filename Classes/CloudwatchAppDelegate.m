@@ -153,7 +153,7 @@ static NSDictionary *_infoColumnAttributes;
 	[self resetMenu];
 	
 	// set up status item
-	_statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:30.0] retain];
+	_statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:30.f] retain];
 	[_statusItem setImage:[NSImage imageNamed:@"StatusItem.png"]];
 	[_statusItem setMenu:_statusMenu];
 	

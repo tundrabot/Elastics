@@ -8,18 +8,12 @@
 
 #import "MonitoringGetMetricStatisticsRequest.h"
 
-@interface MonitoringGetMetricStatisticsRequest ()
-@property (nonatomic, retain) MonitoringGetMetricStatisticsResponse *response;
-@end
-
 @implementation MonitoringGetMetricStatisticsRequest
 @synthesize metric = _metric;
 @synthesize instanceId = _instanceId;
 @synthesize range = _range;
-@synthesize response = _response;
 
-- (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate
-{
+- (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate {
 	self = [super initWithOptions:options delegate:delegate];
 	if (self) {
 		_range = kAWSLastHourRange;
@@ -27,16 +21,13 @@
 	return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
 	[_metric release];
 	[_instanceId release];
-	[_response release];
 	[super dealloc];
 }
 
-- (BOOL)startWithParameters:(NSDictionary *)parameters
-{
+- (BOOL)startWithParameters:(NSDictionary *)parameters {
 	NSDate *now = [NSDate date];
 	
 //	TB_TRACE(@"%@", parameters);
@@ -59,8 +50,7 @@
 	return [self _startRequestWithAction:@"GetMetricStatistics" parameters:requestParameters];
 }
 
-- (BOOL)start
-{
+- (BOOL)start {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	
 	if (_metric) {
@@ -99,10 +89,13 @@
 	return [self startWithParameters:parameters];
 }
 
-- (void)_parseResponseData
-{
-	TBXML *tbxml = [TBXML tbxmlWithXMLData:self.responseData];
-	self.response = [MonitoringGetMetricStatisticsResponse responseWithRootXMLElement:tbxml.rootXMLElement];
+- (MonitoringGetMetricStatisticsResponse *)response {
+	return (MonitoringGetMetricStatisticsResponse *)[super response];
+}
+
+- (void)_parseResponseData {
+	TBXMLElement *root = self.responseXML.rootXMLElement;
+	_response = [[MonitoringGetMetricStatisticsResponse responseWithRootXMLElement:root] retain];
 }
 
 @end

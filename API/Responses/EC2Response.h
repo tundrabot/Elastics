@@ -9,6 +9,7 @@
 #import "AWSResponse.h"
 
 @interface EC2Response : AWSResponse {
+@private
 	NSString	*_requestId;
 }
 

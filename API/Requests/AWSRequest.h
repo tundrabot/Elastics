@@ -8,7 +8,8 @@
 
 #import "AWSConstants.h"
 #import "NSDate+StringConversions.h"
-#import "EC2Response.h"
+#import "AWSResponse.h"
+#import "TBXML.h"
 
 @protocol AWSRequestDelegate;
 
@@ -25,12 +26,13 @@ extern NSString *const kAWSUseSSLOption;
 	id<AWSRequestDelegate>	_delegate;
 	NSConditionLock			*_connectionLock;
 	NSMutableData			*_responseData;
+	TBXML					*_responseXML;
 	BOOL					_isRunning;
 	NSDate					*_startedAt;
 	NSDate					*_completedAt;
+@protected
+	AWSResponse				*_response;
 }
-
-@property (nonatomic, retain, readonly) NSData *responseData;
 
 + (NSDictionary *)defaultOptions;
 + (void)setDefaultOptions:(NSDictionary *)options;
@@ -47,8 +49,12 @@ extern NSString *const kAWSUseSSLOption;
 - (BOOL)start;
 - (BOOL)startWithParameters:(NSDictionary *)parameters;
 
-@property (nonatomic, retain, readonly) NSDate *startedAt;
-@property (nonatomic, retain, readonly) NSDate *completedAt;
+- (NSDate *)startedAt;
+- (NSDate *)completedAt;
+
+- (NSData *)responseData;
+- (TBXML *)responseXML;
+- (AWSResponse *)response;
 
 // protected
 

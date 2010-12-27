@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
-@interface EC2Monitoring : EC2Type {
+@interface EC2Monitoring : AWSType {
 @private
 	NSString	*_state;
 }

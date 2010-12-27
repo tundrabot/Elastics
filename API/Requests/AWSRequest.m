@@ -31,6 +31,9 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @interface AWSRequest ()
 @property (nonatomic, retain, readonly) NSString *host;
 @property (nonatomic, retain, readonly) NSString *apiVersion;
+@property (nonatomic, retain) NSData *responseData;
+@property (nonatomic, retain) TBXML *responseXML;
+@property (nonatomic, retain) AWSResponse *response;
 @property (nonatomic, retain) NSDate *startedAt;
 @property (nonatomic, retain) NSDate *completedAt;
 - (NSString *)_queryFromParameters:(NSDictionary *)parameters;
@@ -44,6 +47,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @implementation AWSRequest
 
 @synthesize responseData = _responseData;
+@synthesize responseXML = _responseXML;
+@synthesize response = _response;
 @synthesize startedAt = _startedAt;
 @synthesize completedAt = _completedAt;
 
@@ -88,6 +93,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	TB_RELEASE(_connectionLock);
 	TB_RELEASE(_options);
 	TB_RELEASE(_responseData);
+	TB_RELEASE(_responseXML);
 	TB_RELEASE(_startedAt);
 	TB_RELEASE(_completedAt);
 	[super dealloc];
@@ -391,7 +397,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)_parseResponseData
 {
-	NSAssert(FALSE, @"Abstract method call.");
+	TBXMLElement *root = self.responseXML.rootXMLElement;
+	self.response = [AWSResponse responseWithRootXMLElement:root];
 }
 
 #pragma mark -
@@ -427,11 +434,13 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	[pool release];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
 	[_responseData appendData:data];
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
 	@try {
 		[self performSelectorOnMainThread:@selector(currentConnectionDidFinishLoading) withObject:nil waitUntilDone:NO];
 	}
@@ -441,7 +450,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	}
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
 	@try {
 		[self performSelectorOnMainThread:@selector(currentConnectionDidFailWithError:) withObject:error waitUntilDone:NO];
 	}
@@ -451,13 +461,18 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	}
 }
 
-- (void)currentConnectionDidFinishLoading {
+- (void)currentConnectionDidFinishLoading
+{
 #ifdef TB_DEBUG
-//	NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
-	//TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
-	//	TB_TRACE(@"%@", responseString);
-	//[responseString release];
+	{
+		NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
+		//TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
+		TB_TRACE(@"%@", responseString);
+		[responseString release];
+	}
 #endif
+	
+	self.responseXML = [TBXML tbxmlWithXMLData:self.responseData];
 	
 	[self _parseResponseData];
 
@@ -469,7 +484,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	}
 }
 
-- (void)currentConnectionDidFailWithError:(NSError *)error {
+- (void)currentConnectionDidFailWithError:(NSError *)error
+{
 	TB_LOG(@"connection:didFailWithError: %@", error);
 	
 	self.completedAt = [NSDate date];

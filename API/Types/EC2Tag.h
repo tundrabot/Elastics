@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
-@interface EC2Tag : EC2Type {
+@interface EC2Tag : AWSType {
 @private
 	NSString	*_key;
 	NSString	*_value;

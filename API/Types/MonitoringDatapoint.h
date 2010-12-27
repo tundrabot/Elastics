@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
-@interface MonitoringDatapoint : EC2Type {
+@interface MonitoringDatapoint : AWSType {
 @private
 	NSTimeInterval		_timestamp;
 	NSString			*_unit;

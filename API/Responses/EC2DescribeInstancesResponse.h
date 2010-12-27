@@ -6,10 +6,10 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "EC2Response.h"
 
 @interface EC2DescribeInstancesResponse : EC2Response {
+@private
 	NSArray		*_reservationSet;
 	NSArray		*_instancesSet;			// collection of all instances in all reservations for convenience
 }

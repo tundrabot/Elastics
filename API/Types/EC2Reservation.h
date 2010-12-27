@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
-@interface EC2Reservation : EC2Type {
+@interface EC2Reservation : AWSType {
 @private
 	NSString	*_reservationId;
 	NSArray		*_instancesSet;		// EC2Instance

@@ -35,7 +35,7 @@
 @synthesize ipAddress = _ipAddress;
 @synthesize tagSet = _tagSet;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 
@@ -62,7 +62,7 @@
 			else if ([elementName isEqualToString:@"ipAddress"])
 				self.ipAddress = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"tagSet"])
-				self.tagSet = [self _parseXMLElement:element asArrayOf:[EC2Tag class]];
+				self.tagSet = [self parseElement:element asArrayOf:[EC2Tag class]];
 			
 			element = element->nextSibling;
 		}

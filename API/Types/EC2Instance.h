@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 #import "EC2InstanceState.h"
 #import "EC2Monitoring.h"
 
-@interface EC2Instance : EC2Type {
+@interface EC2Instance : AWSType {
 @private
 	NSString			*_instanceId;
 	NSString			*_imageId;

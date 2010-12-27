@@ -8,7 +8,19 @@
 
 #import "AWSResponse.h"
 
+
+@interface AWSResponse ()
+
+@property (nonatomic, retain) NSArray *errors;
+
+- (BOOL)isErrorElement:(TBXMLElement *)element;
+- (void)parseErrorElement:(TBXMLElement *)element;
+@end
+
+
 @implementation AWSResponse
+
+@synthesize errors = _errors;
 
 + (id)responseWithRootXMLElement:(TBXMLElement *)rootElement
 {
@@ -19,25 +31,52 @@
 {
 	self = [super init];
 	if (self) {
-		NSString *elementName = [TBXML elementName:rootElement];
-		
-		if ([[self _rootElementName] isEqualToString:elementName] == NO) {
-			[NSException raise:@"Invalid root element" format:@"got %@, expected %@", elementName, [self _rootElementName]];
-			return nil;
-		}
+		if ([self isErrorElement:rootElement])
+			[self parseErrorElement:rootElement];
+		else
+			[self parseElement:rootElement];
 	}
 	return self;
 }
 
-- (NSString *)_rootElementName
+- (void)dealloc
 {
-	NSAssert(FALSE, @"Abstract method call.");
-	return nil;
+	TB_RELEASE(_errors);
+	[super dealloc];
 }
 
-- (void)_parseXMLElement:(TBXMLElement *)element
+- (BOOL)isError
 {
-	NSAssert(FALSE, @"Abstract method call.");
+	return [_errors count] > 0;
+}
+
+- (BOOL)isErrorElement:(TBXMLElement *)element
+{
+	NSString *elementName = [TBXML elementName:element];
+	return [elementName isEqualToString:@"Response"] || [elementName isEqualToString:@"ErrorResponse"];
+}
+
+- (void)parseErrorElement:(TBXMLElement *)element
+{
+	element = element->firstChild;
+	
+	while (element) {
+		NSString *elementName = [TBXML elementName:element];
+		
+		if ([elementName isEqualToString:@"Error"])
+			self.errors = [NSArray arrayWithObject:[AWSError typeFromXMLElement:element parent:self]];
+		else if ([elementName isEqualToString:@"Errors"])
+			self.errors = [self parseElement:element asArrayOf:[AWSError class]];
+		else
+			TB_TRACE(@"%@: parseErrorElement: skipping element %@", NSStringFromClass([self class]), elementName);
+		
+		element = element->nextSibling;
+	}
+}
+
+- (void)parseElement:(TBXMLElement *)element
+{
+	TB_TRACE(@"%@: parseElement: skipping element %@", NSStringFromClass([self class]), [TBXML elementName:element]);
 }
 
 @end

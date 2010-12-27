@@ -21,7 +21,7 @@
 @synthesize maximum = _maximum;
 @synthesize average = _average;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 	

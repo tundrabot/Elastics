@@ -16,7 +16,7 @@
 
 @synthesize state = _state;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 	
@@ -29,7 +29,7 @@
 			if ([elementName isEqualToString:@"state"])
 				self.state = [TBXML textForElement:element];
 			else
-				NSAssert(FALSE, @"Unable to parse element %@", elementName);
+				TB_TRACE(@"Ignoring element %@", elementName);
 
 			element = element->nextSibling;
 		}

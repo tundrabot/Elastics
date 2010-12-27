@@ -142,24 +142,24 @@ static DataSource * _sharedInstance = nil;
 			self.instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
 		[_runningRequests addObject:_instancesRequest];
 		
-		// Schedule composite monitoring stats refresh
-		for (NSString *metric in _compositeMonitoringMetrics) {
-			MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
-			
-			if (!monitoringRequest) {
-				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
-				[_compositeMonitoringRequests setObject:monitoringRequest forKey:metric];
-			}
-			
-			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
-			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
-				[_runningRequests addObject:monitoringRequest];
-			}
-			else {
-				TB_TRACE(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
-			}
-
-		}
+//		// Schedule composite monitoring stats refresh
+//		for (NSString *metric in _compositeMonitoringMetrics) {
+//			MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
+//			
+//			if (!monitoringRequest) {
+//				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
+//				[_compositeMonitoringRequests setObject:monitoringRequest forKey:metric];
+//			}
+//			
+//			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
+//			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
+//				[_runningRequests addObject:monitoringRequest];
+//			}
+//			else {
+//				TB_TRACE(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+//			}
+//
+//		}
 	}
 	
 	// Start scheduled requests
@@ -238,7 +238,7 @@ static DataSource * _sharedInstance = nil;
 	
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat result = 0.;
+		__block CGFloat result = 0;
 		
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
@@ -250,7 +250,7 @@ static DataSource * _sharedInstance = nil;
 		return result;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 - (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
@@ -271,7 +271,7 @@ static DataSource * _sharedInstance = nil;
 		return result;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 - (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range
@@ -280,7 +280,7 @@ static DataSource * _sharedInstance = nil;
 
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat sum = 0.;
+		__block CGFloat sum = 0;
 		__block NSUInteger count = 0;
 		
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -294,7 +294,7 @@ static DataSource * _sharedInstance = nil;
 		return sum/count;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 - (CGFloat)maximumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
@@ -303,7 +303,7 @@ static DataSource * _sharedInstance = nil;
 	
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat result = 0.;
+		__block CGFloat result = 0;
 		
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
@@ -315,7 +315,7 @@ static DataSource * _sharedInstance = nil;
 		return result;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 - (CGFloat)minimumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
@@ -336,7 +336,7 @@ static DataSource * _sharedInstance = nil;
 		return result;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 - (CGFloat)averageValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
@@ -345,7 +345,7 @@ static DataSource * _sharedInstance = nil;
 
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat sum = 0.;
+		__block CGFloat sum = 0;
 		__block NSUInteger count = 0;
 		
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -359,7 +359,7 @@ static DataSource * _sharedInstance = nil;
 		return sum/count;
 	}
 	else
-		return 0.;
+		return 0;
 }
 
 #pragma mark -

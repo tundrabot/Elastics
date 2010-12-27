@@ -18,7 +18,7 @@
 @synthesize key = _key;
 @synthesize value = _value;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 	

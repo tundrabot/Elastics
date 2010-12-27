@@ -106,35 +106,35 @@
 			NSTimeInterval timestampMax = floor([[NSDate date] timeIntervalSinceReferenceDate]) - 60.0;
 			NSTimeInterval timestampMin = timestampMax - _chartRange;
 			CGFloat xScale = chartRect.size.width / (CGFloat)_chartRange;
-			CGFloat yScale = chartRect.size.height / 100.0;
+			CGFloat yScale = chartRect.size.height / 100;
 			
 			NSBezierPath *path = [NSBezierPath bezierPath];
-			[path setFlatness:0.1];
+			[path setFlatness:0.1f];
 			[path setLineJoinStyle:NSRoundLineJoinStyle];
 			MonitoringDatapoint *datapoint = [_datapoints lastObject];
 			
 			if ([datapoint timestamp] > timestampMin) {
 				CGFloat x, y;
 			
-				x = NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale;
+				x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
 				y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
 				[path moveToPoint:NSMakePoint(x, y)];
 			
 				for (NSUInteger i = [_datapoints count] - 2; i != 0; i--) {
 					datapoint = [_datapoints objectAtIndex:i];
-					x = NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale;
+					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
 					y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
 					[path lineToPoint:NSMakePoint(x, y)];
 				}
 			
 				datapoint = [_datapoints objectAtIndex:0];
-				x = NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale;
+				x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
 				y = ROUND_5(NSMinY(chartRect) + datapoint.minimum * yScale) + .5f;
 				[path lineToPoint:NSMakePoint(x, y)];
 			
 				for (NSUInteger i = 1; i < [_datapoints count]; i++) {
 					datapoint = [_datapoints objectAtIndex:i];
-					x = NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale;
+					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
 					y = ROUND_5(NSMinY(chartRect) + datapoint.minimum * yScale) + .5f;
 					[path lineToPoint:NSMakePoint(x, y)];
 				}

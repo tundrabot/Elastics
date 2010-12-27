@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
-@interface MonitoringStatisticsResult : EC2Type {
+@interface MonitoringStatisticsResult : AWSType {
 @private
 	NSString	*_label;
 	NSArray		*_datapoints;		// MonitoringDatapoint

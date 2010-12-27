@@ -22,7 +22,7 @@
 			if ([elementName isEqualToString:@"ResponseMetadata"])
 				;	//self.requestId = [TBXML textForElement:element];
 			else
-				[self _parseXMLElement:element];
+				[self parseElement:element];
 			
 			element = element->nextSibling;
 		}

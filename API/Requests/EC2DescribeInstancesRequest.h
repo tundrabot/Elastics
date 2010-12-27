@@ -9,12 +9,9 @@
 #import "EC2Request.h"
 #import "EC2DescribeInstancesResponse.h"	
 
-@interface EC2DescribeInstancesRequest : EC2Request {
-	EC2DescribeInstancesResponse	*_response;
-}
+@interface EC2DescribeInstancesRequest : EC2Request
 
 - (BOOL)start;
-
-@property (nonatomic, retain, readonly) EC2DescribeInstancesResponse *response;
+- (EC2DescribeInstancesResponse *)response;
 
 @end

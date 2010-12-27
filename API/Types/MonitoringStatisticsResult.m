@@ -19,7 +19,7 @@
 @synthesize label = _label;
 @synthesize datapoints = _datapoints;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 	
@@ -33,7 +33,7 @@
 				self.label = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"Datapoints"]) {
 				// Amazon returns datapoints in the random order. Sort them by timestamp.
-				NSArray *unsortedDatapoints = [self _parseXMLElement:element asArrayOf:[MonitoringDatapoint class]];
+				NSArray *unsortedDatapoints = [self parseElement:element asArrayOf:[MonitoringDatapoint class]];
 				self.datapoints = [unsortedDatapoints sortedArrayUsingSelector:@selector(compare:)];
 			}
 			

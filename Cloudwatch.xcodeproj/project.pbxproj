@@ -12,6 +12,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		C32823E312C90E1900020D48 /* AWSError.m in Sources */ = {isa = PBXBuildFile; fileRef = C32823E212C90E1900020D48 /* AWSError.m */; };
 		C32C295D12C0C60900F2C136 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C290B12C0C60900F2C136 /* AWSConstants.m */; };
 		C32C295E12C0C60900F2C136 /* AWSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C290D12C0C60900F2C136 /* AWSRequest.m */; };
 		C32C295F12C0C60900F2C136 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C290F12C0C60900F2C136 /* NSData+Base64.m */; };
@@ -25,7 +26,7 @@
 		C32C298112C0C60900F2C136 /* EC2Tag.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C295612C0C60900F2C136 /* EC2Tag.m */; };
 		C32C298C12C0C63900F2C136 /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C298912C0C63900F2C136 /* NSDataAdditions.m */; };
 		C32C298D12C0C63900F2C136 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C298B12C0C63900F2C136 /* TBXML.m */; };
-		C32C299E12C0C7FF00F2C136 /* EC2Type.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C299D12C0C7FF00F2C136 /* EC2Type.m */; };
+		C32C299E12C0C7FF00F2C136 /* AWSType.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C299D12C0C7FF00F2C136 /* AWSType.m */; };
 		C32C29BE12C0C93500F2C136 /* EC2Reservation.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C29BD12C0C93500F2C136 /* EC2Reservation.m */; };
 		C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C32C29C912C0C9BB00F2C136 /* libz.dylib */; };
 		C32C2A0212C0CF2000F2C136 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C2A0112C0CF2000F2C136 /* DataSource.m */; };
@@ -58,14 +59,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8D1107320486CEB800E47090 /* CloudwatchPreferences.app */;
+			remoteGlobalIDString = 8D1107320486CEB800E47090;
 			remoteInfo = CloudwatchPreferences;
 		};
 		C3F1A55412C78FB3001AB554 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D1107260486CEB800E47090 /* CloudwatchPreferences */;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
 			remoteInfo = CloudwatchPreferences;
 		};
 /* End PBXContainerItemProxy section */
@@ -96,6 +97,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Cloudwatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cloudwatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
+		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
 		C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Cloudwatch.xcconfig; sourceTree = "<group>"; };
 		C32C28E712C0C2F500F2C136 /* TB_DEBUG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TB_DEBUG.h; sourceTree = "<group>"; };
 		C32C28E812C0C2F500F2C136 /* TB_MACROS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TB_MACROS.h; sourceTree = "<group>"; };
@@ -125,8 +128,8 @@
 		C32C298912C0C63900F2C136 /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 		C32C298A12C0C63900F2C136 /* TBXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXML.h; sourceTree = "<group>"; };
 		C32C298B12C0C63900F2C136 /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXML.m; sourceTree = "<group>"; };
-		C32C299C12C0C7FF00F2C136 /* EC2Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Type.h; sourceTree = "<group>"; };
-		C32C299D12C0C7FF00F2C136 /* EC2Type.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Type.m; sourceTree = "<group>"; };
+		C32C299C12C0C7FF00F2C136 /* AWSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSType.h; sourceTree = "<group>"; };
+		C32C299D12C0C7FF00F2C136 /* AWSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSType.m; sourceTree = "<group>"; };
 		C32C29BC12C0C93500F2C136 /* EC2Reservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Reservation.h; sourceTree = "<group>"; };
 		C32C29BD12C0C93500F2C136 /* EC2Reservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Reservation.m; sourceTree = "<group>"; };
 		C32C29C912C0C9BB00F2C136 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -336,8 +339,10 @@
 		C32C292E12C0C60900F2C136 /* Types */ = {
 			isa = PBXGroup;
 			children = (
-				C32C299C12C0C7FF00F2C136 /* EC2Type.h */,
-				C32C299D12C0C7FF00F2C136 /* EC2Type.m */,
+				C32C299C12C0C7FF00F2C136 /* AWSType.h */,
+				C32C299D12C0C7FF00F2C136 /* AWSType.m */,
+				C32823E112C90E1900020D48 /* AWSError.h */,
+				C32823E212C90E1900020D48 /* AWSError.m */,
 				C32C293B12C0C60900F2C136 /* EC2Instance.h */,
 				C32C293C12C0C60900F2C136 /* EC2Instance.m */,
 				C32C294112C0C60900F2C136 /* EC2InstanceState.h */,
@@ -491,7 +496,7 @@
 				C32C298112C0C60900F2C136 /* EC2Tag.m in Sources */,
 				C32C298C12C0C63900F2C136 /* NSDataAdditions.m in Sources */,
 				C32C298D12C0C63900F2C136 /* TBXML.m in Sources */,
-				C32C299E12C0C7FF00F2C136 /* EC2Type.m in Sources */,
+				C32C299E12C0C7FF00F2C136 /* AWSType.m in Sources */,
 				C32C29BE12C0C93500F2C136 /* EC2Reservation.m in Sources */,
 				C32C2A0212C0CF2000F2C136 /* DataSource.m in Sources */,
 				C32C319412C21F1900F2C136 /* EC2Request.m in Sources */,
@@ -508,6 +513,7 @@
 				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
 				C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */,
 				C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */,
+				C32823E312C90E1900020D48 /* AWSError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,19 +19,33 @@
 @synthesize reservationSet = _reservationSet;
 @synthesize instancesSet = _instancesSet;
 
-- (NSString *)_rootElementName
+- (void)dealloc
 {
-	return @"DescribeInstancesResponse";
+	TB_RELEASE(_reservationSet);
+	TB_RELEASE(_instancesSet);
+	[super dealloc];
 }
 
-- (void)_parseXMLElement:(TBXMLElement *)element;
+- (void)parseElement:(TBXMLElement *)element;
 {
 	NSString *elementName = [TBXML elementName:element];
+	
+	if ([elementName isEqualToString:@"DescribeInstancesResponse"]) {
+		element = element->firstChild;
+		
+		while (element) {
+			elementName = [TBXML elementName:element];
 
-	if ([elementName isEqualToString:@"reservationSet"])
-		self.reservationSet = [self _parseXMLElement:element asArrayOf:[EC2Reservation class]];
-	else
-		NSAssert(FALSE, @"Unable to parse element %@", elementName);
+			if ([elementName isEqualToString:@"reservationSet"])
+				self.reservationSet = [self parseElement:element asArrayOf:[EC2Reservation class]];
+			else
+			
+			element = element->nextSibling;
+		}
+	}
+	else {
+		[super parseElement:element];
+	}
 	
 	// collect instances from all reservations for convenient access
 	NSMutableArray *instances = [NSMutableArray array];
@@ -39,13 +53,6 @@
 		[instances addObjectsFromArray:reservation.instancesSet];
 	}
 	self.instancesSet = instances;
-}
-
-- (void)dealloc
-{
-	TB_RELEASE(_reservationSet);
-	TB_RELEASE(_instancesSet);
-	[super dealloc];
 }
 
 @end

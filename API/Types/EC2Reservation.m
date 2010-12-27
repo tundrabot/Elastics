@@ -19,7 +19,7 @@
 @synthesize reservationId = _reservationId;
 @synthesize instancesSet = _instancesSet;
 
-- (id)initFromXMLElement:(TBXMLElement *)element parent:(EC2Type *)parent
+- (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
 	
@@ -32,7 +32,7 @@
 			if ([elementName isEqualToString:@"reservationId"])
 				self.reservationId = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"instancesSet"])
-				self.instancesSet = [self _parseXMLElement:element asArrayOf:[EC2Instance class]];
+				self.instancesSet = [self parseElement:element asArrayOf:[EC2Instance class]];
 
 			element = element->nextSibling;
 		}

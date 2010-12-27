@@ -6,18 +6,22 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "TBXML.h"
-#import "EC2Type.h"
+#import "AWSType.h"
+#import "AWSError.h"
 
-@interface AWSResponse : EC2Type
+@interface AWSResponse : AWSType {
+@private
+	NSArray	*_errors;		// AWSError
+}
 
 + (id)responseWithRootXMLElement:(TBXMLElement *)rootElement;
 - (id)initWithRootXMLElement:(TBXMLElement *)rootElement;
 
+- (BOOL)isError;
+@property (nonatomic, retain, readonly) NSArray *errors;
+
 // protected
 
-- (NSString *)_rootElementName;
-- (void)_parseXMLElement:(TBXMLElement *)element;
+- (void)parseElement:(TBXMLElement *)element;
 
 @end

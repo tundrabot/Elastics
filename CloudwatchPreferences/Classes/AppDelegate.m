@@ -134,7 +134,7 @@ static const char kAWSCredentialsKey[16] = {
 - (void)addContentSubview:(NSView *)view
 {
 	NSView *contentView = [_window contentView];
-	[view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+	[view setFrameOrigin:NSMakePoint(0.f, 0.f)];
 	[contentView addSubview:view];
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EC2Type.h"
+#import "AWSType.h"
 
 enum {
 	EC2_INSTANCE_STATE_PENDING = 0,
@@ -18,7 +18,7 @@ enum {
 	EC2_INSTANCE_STATE_STOPPED = 80
 };
 
-@interface EC2InstanceState : EC2Type {
+@interface EC2InstanceState : AWSType {
 @private
 	NSInteger	_code;
 	NSString	*_name;
