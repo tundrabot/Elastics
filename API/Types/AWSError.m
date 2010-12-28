@@ -8,6 +8,11 @@
 
 #import "AWSError.h"
 
+// dictionaryRepresentation dictionary keys
+NSString *const kAWSErrorTypeKey = @"AWSErrorType";
+NSString *const kAWSErrorCodeKey = @"AWSErrorCode";
+NSString *const kAWSErrorMessageKey = @"AWSErrorMessage";
+
 @interface AWSError ()
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSString *code;
@@ -37,7 +42,7 @@
 			else if ([elementName isEqualToString:@"Message"])
 				self.message = [TBXML textForElement:element];
 			else
-				TB_TRACE(@"Ignoring element %@", elementName);
+				TBTrace(@"Ignoring element %@", elementName);
 			
 			element = element->nextSibling;
 		}
@@ -48,10 +53,24 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_type);
-	TB_RELEASE(_code);
-	TB_RELEASE(_message);
+	TBRelease(_type);
+	TBRelease(_code);
+	TBRelease(_message);
 	[super dealloc];
+}
+
+- (NSDictionary *)dictionaryRepresentation
+{
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+
+	if (_type)
+		[result setObject:_type forKey:kAWSErrorTypeKey];
+	if (_code)
+		[result setObject:_code forKey:kAWSErrorCodeKey];
+	if (_message)
+		[result setObject:_message forKey:kAWSErrorMessageKey];
+
+	return result;
 }
 
 @end

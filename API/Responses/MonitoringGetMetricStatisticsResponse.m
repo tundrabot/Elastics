@@ -32,7 +32,7 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_result);
+	TBRelease(_result);
 	[super dealloc];
 }
 

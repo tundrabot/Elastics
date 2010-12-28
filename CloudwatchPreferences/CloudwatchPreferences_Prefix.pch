@@ -6,5 +6,5 @@
     #import <Cocoa/Cocoa.h>
 #endif
 
-#include "TB_DEBUG.h"
-#include "TB_MACROS.h"
+#include "TBDebug.h"
+#include "TBMacros.h"

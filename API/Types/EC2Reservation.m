@@ -42,8 +42,8 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_reservationId);
-	TB_RELEASE(_instancesSet);
+	TBRelease(_reservationId);
+	TBRelease(_instancesSet);
 	[super dealloc];
 }
 

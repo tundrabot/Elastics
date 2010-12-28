@@ -73,14 +73,14 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_instanceId);
-	TB_RELEASE(_imageId);
-	TB_RELEASE(_instanceState);
-	TB_RELEASE(_dnsName);
-	TB_RELEASE(_launchTime);
-	TB_RELEASE(_privateIpAddress);
-	TB_RELEASE(_ipAddress);
-	TB_RELEASE(_tagSet);
+	TBRelease(_instanceId);
+	TBRelease(_imageId);
+	TBRelease(_instanceState);
+	TBRelease(_dnsName);
+	TBRelease(_launchTime);
+	TBRelease(_privateIpAddress);
+	TBRelease(_ipAddress);
+	TBRelease(_tagSet);
 	[super dealloc];
 }
 

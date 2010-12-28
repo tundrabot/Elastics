@@ -42,8 +42,8 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_key);
-	TB_RELEASE(_value);
+	TBRelease(_key);
+	TBRelease(_value);
 	[super dealloc];
 }
 

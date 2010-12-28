@@ -29,7 +29,7 @@
 			if ([elementName isEqualToString:@"state"])
 				self.state = [TBXML textForElement:element];
 			else
-				TB_TRACE(@"Ignoring element %@", elementName);
+				TBTrace(@"Ignoring element %@", elementName);
 
 			element = element->nextSibling;
 		}

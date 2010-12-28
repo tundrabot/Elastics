@@ -18,7 +18,7 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_requestId);
+	TBRelease(_requestId);
 	[super dealloc];
 }
 

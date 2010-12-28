@@ -22,7 +22,7 @@
 
 - (id)transformedValue:(id)value
 {
-	TB_TRACE(@"transformedValue: %@", value);
+	TBTrace(@"transformedValue: %@", value);
 	
 	if (!value)
 		return nil;

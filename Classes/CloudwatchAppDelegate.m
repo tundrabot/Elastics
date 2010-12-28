@@ -12,6 +12,7 @@
 #import "Preferences.h"
 
 @interface CloudwatchAppDelegate ()
+- (void)loadPreferences;
 - (void)resetMenu;
 - (void)refreshMenu:(NSNotification *)notification;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
@@ -119,32 +120,8 @@ static NSDictionary *_infoColumnAttributes;
 															name:kPreferencesDidChangeNotification
 														  object:nil];
 	
-	// set AWS credentials and region
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
-	NSString *awsSecretAccessKey = [userDefaults stringForKey:kPreferencesAWSSecretAccessKeyKey];
-	
-	NSString *awsRegion = kAWSUSEastRegion;
-	switch ([userDefaults integerForKey:kPreferencesAWSRegionKey]) {
-		case kPreferencesAWSUSEastRegion:
-			awsRegion = kAWSUSEastRegion;
-			break;
-		case kPreferencesAWSUSWestRegion:
-			awsRegion = kAWSUSWestRegion;
-			break;
-		case kPreferencesAWSEURegion:
-			awsRegion = kAWSEURegion;
-			break;
-		case kPreferencesAWSAsiaPacificRegion:
-			awsRegion = kAWSAsiaPacificRegion;
-			break;
-	}
-	
-	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
-										  awsAccessKeyId, kAWSAccessKeyIdOption,
-										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
-										  awsRegion, kAWSRegionOption,
-										  nil]];
+	// load current preferences
+	[self loadPreferences];
 	
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
@@ -179,9 +156,9 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)dealloc
 {
-	TB_RELEASE(_statusItem);
-	TB_RELEASE(_statusMenu);
-	TB_RELEASE(_preferencesController);
+	TBRelease(_statusItem);
+	TBRelease(_statusMenu);
+	TBRelease(_preferencesController);
 	[super dealloc];
 }
 
@@ -211,7 +188,7 @@ static NSDictionary *_infoColumnAttributes;
 		}
 		else {
 			if ([instanceId length] > 0) {
-				TB_TRACE(@"refreshCompleted: %@", instanceId);
+				TBTrace(@"refreshCompleted: %@", instanceId);
 				
 				NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
 					*stop = [[obj instanceId] isEqualToString:instanceId];
@@ -231,7 +208,7 @@ static NSDictionary *_infoColumnAttributes;
 				}
 			}
 			else {
-				TB_TRACE(@"refreshCompleted:");
+				TBTrace(@"refreshCompleted:");
 				
 				[_statusMenu removeAllItems];
 				
@@ -487,17 +464,48 @@ static NSDictionary *_infoColumnAttributes;
 #pragma mark -
 #pragma mark User Defaults
 
+- (void)loadPreferences
+{
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+	// set AWS credentials and region
+	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
+	NSString *awsSecretAccessKey = [userDefaults stringForKey:kPreferencesAWSSecretAccessKeyKey];
+	
+	NSString *awsRegion = kAWSUSEastRegion;
+	switch ([userDefaults integerForKey:kPreferencesAWSRegionKey]) {
+		case kPreferencesAWSUSEastRegion:
+			awsRegion = kAWSUSEastRegion;
+			break;
+		case kPreferencesAWSUSWestRegion:
+			awsRegion = kAWSUSWestRegion;
+			break;
+		case kPreferencesAWSEURegion:
+			awsRegion = kAWSEURegion;
+			break;
+		case kPreferencesAWSAsiaPacificRegion:
+			awsRegion = kAWSAsiaPacificRegion;
+			break;
+	}
+	
+	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
+										  awsAccessKeyId, kAWSAccessKeyIdOption,
+										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
+										  awsRegion, kAWSRegionOption,
+										  nil]];
+}
+
 - (void)preferencesDidChange:(NSNotification *)notification
 {
-	TB_TRACE(@"preferencesDidChange: %@", notification);
+	TBTrace(@"preferencesDidChange: %@", notification);
 
 	[[NSUserDefaults standardUserDefaults] synchronize];
-	TB_TRACE(@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:kPreferencesAWSAccessKeyIdKey]);
+	[self loadPreferences];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	TB_TRACE(@"%@", keyPath);
+	TBTrace(@"observeValueForKeyPath: %@", keyPath);
 }
 
 

@@ -66,7 +66,7 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_unit);
+	TBRelease(_unit);
 	[super dealloc];
 }
 

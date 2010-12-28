@@ -35,3 +35,6 @@ NSString *const kAWSDiskWriteBytesMetric	= @"DiskWriteBytes";
 NSString *const kAWSDiskWriteOpsMetric		= @"DiskWriteOps";
 NSString *const kAWSNetworkInMetric			= @"NetworkIn";
 NSString *const kAWSNetworkOutMetric		= @"NetworkOut";
+
+// Errors
+NSString *const kAWSErrorDomain				= @"AWSError";

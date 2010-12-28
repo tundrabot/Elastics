@@ -12,8 +12,8 @@
 
 NSString *const kDataSourceRefreshCompletedNotification = @"DataSourceRefreshCompletedNotification";
 
-NSString *const kDataSourceInstanceIdInfoKey = @"InstanceId";
-NSString *const kDataSourceErrorInfoKey = @"Error";
+NSString *const kDataSourceInstanceIdInfoKey = @"DataSourceInstanceIdInfo";
+NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 
 @interface DataSource ()
 @property (nonatomic, retain) NSDate *startedAt;
@@ -49,14 +49,14 @@ NSString *const kDataSourceErrorInfoKey = @"Error";
 
 - (void)dealloc
 {
-	TB_RELEASE(_compositeMonitoringMetrics);
-	TB_RELEASE(_instanceMonitoringMetrics);
-	TB_RELEASE(_startedAt);
-	TB_RELEASE(_completedAt);
-	TB_RELEASE(_runningRequests);
-	TB_RELEASE(_completionNotificationUserInfo);
-	TB_RELEASE(_compositeMonitoringRequests);
-	TB_RELEASE(_instanceMonitoringRequests);
+	TBRelease(_compositeMonitoringMetrics);
+	TBRelease(_instanceMonitoringMetrics);
+	TBRelease(_startedAt);
+	TBRelease(_completedAt);
+	TBRelease(_runningRequests);
+	TBRelease(_completionNotificationUserInfo);
+	TBRelease(_compositeMonitoringRequests);
+	TBRelease(_instanceMonitoringRequests);
 	[super dealloc];
 }
 
@@ -129,7 +129,7 @@ static DataSource * _sharedInstance = nil;
 {
 	@synchronized(self) {
 		if ([_runningRequests count] > 0) {
-			TB_TRACE(@"refresh is already in progress.");
+			TBTrace(@"refresh is already in progress.");
 			return;
 		}
 		
@@ -156,7 +156,7 @@ static DataSource * _sharedInstance = nil;
 //				[_runningRequests addObject:monitoringRequest];
 //			}
 //			else {
-//				TB_TRACE(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+//				TBTrace(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
 //			}
 //
 //		}
@@ -172,7 +172,7 @@ static DataSource * _sharedInstance = nil;
 {
 	@synchronized(self) {
 		if ([_runningRequests count] > 0) {
-			TB_TRACE(@"refreshInstance: %@ is already in progress.", instanceId);
+			TBTrace(@"refreshInstance: %@ is already in progress.", instanceId);
 			return;
 		}
 
@@ -204,7 +204,7 @@ static DataSource * _sharedInstance = nil;
 				[_runningRequests addObject:monitoringRequest];
 			}
 			else {
-				TB_TRACE(@"Skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+				TBTrace(@"Skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
 			}
 		}
 	}
@@ -367,12 +367,12 @@ static DataSource * _sharedInstance = nil;
 
 - (void)requestDidStartLoading:(EC2Request *)request
 {
-	TB_TRACE(@"requestDidStartLoading: %@", NSStringFromClass([request class]));
+	TBTrace(@"%@", NSStringFromClass([request class]));
 }
 
 - (void)requestDidFinishLoading:(EC2Request *)request
 {
-	TB_TRACE(@"requestDidFinishLoading: %@", NSStringFromClass([request class]));
+	TBTrace(@"%@", NSStringFromClass([request class]));
 	
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
@@ -384,8 +384,8 @@ static DataSource * _sharedInstance = nil;
 	}
 	
 	if (refreshCompleted) {
-		// Notify observers that refresh has completed
-		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec): %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], _completionNotificationUserInfo);
+		// notify observers that refresh has been completed
+		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec): %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], _completionNotificationUserInfo);
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
 															object:self
@@ -396,7 +396,7 @@ static DataSource * _sharedInstance = nil;
 
 - (void)request:(EC2Request *)request didFailWithError:(NSError *)error
 {
-	TB_TRACE(@"request:didFailWithError: %@", error);
+	TBTrace(@"%@ %@", NSStringFromClass([request class]), error);
 	
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
@@ -408,8 +408,8 @@ static DataSource * _sharedInstance = nil;
 	}
 
 	if (refreshCompleted) {
-		// Notify observers that refresh has completed
-		TB_TRACE(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec) error: %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], error);
+		// notify observers that refresh has been completed
+		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec) error: %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], error);
 		
 		[_completionNotificationUserInfo setObject:error forKey:kDataSourceErrorInfoKey];
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification

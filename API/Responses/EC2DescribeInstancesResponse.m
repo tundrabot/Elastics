@@ -21,8 +21,8 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_reservationSet);
-	TB_RELEASE(_instancesSet);
+	TBRelease(_reservationSet);
+	TBRelease(_instancesSet);
 	[super dealloc];
 }
 
@@ -39,6 +39,7 @@
 			if ([elementName isEqualToString:@"reservationSet"])
 				self.reservationSet = [self parseElement:element asArrayOf:[EC2Reservation class]];
 			else
+				[super parseElement:element];
 			
 			element = element->nextSibling;
 		}

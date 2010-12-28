@@ -13,7 +13,8 @@
 @synthesize instanceId = _instanceId;
 @synthesize range = _range;
 
-- (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate {
+- (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate
+{
 	self = [super initWithOptions:options delegate:delegate];
 	if (self) {
 		_range = kAWSLastHourRange;
@@ -21,16 +22,18 @@
 	return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
 	[_metric release];
 	[_instanceId release];
 	[super dealloc];
 }
 
-- (BOOL)startWithParameters:(NSDictionary *)parameters {
+- (BOOL)startWithParameters:(NSDictionary *)parameters
+{
 	NSDate *now = [NSDate date];
 	
-//	TB_TRACE(@"%@", parameters);
+//	TBTrace(@"%@", parameters);
 
 	// Default parameter values
 	NSMutableDictionary *requestParameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -45,12 +48,13 @@
 											  nil];
 	[requestParameters addEntriesFromDictionary:parameters];
 	
-//	TB_TRACE(@"%@", requestParameters);
+//	TBTrace(@"%@", requestParameters);
 	
 	return [self _startRequestWithAction:@"GetMetricStatistics" parameters:requestParameters];
 }
 
-- (BOOL)start {
+- (BOOL)start
+{
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	
 	if (_metric) {
@@ -89,13 +93,14 @@
 	return [self startWithParameters:parameters];
 }
 
-- (MonitoringGetMetricStatisticsResponse *)response {
+- (MonitoringGetMetricStatisticsResponse *)response
+{
 	return (MonitoringGetMetricStatisticsResponse *)[super response];
 }
 
-- (void)_parseResponseData {
-	TBXMLElement *root = self.responseXML.rootXMLElement;
-	_response = [[MonitoringGetMetricStatisticsResponse responseWithRootXMLElement:root] retain];
+- (AWSResponse *)_parseResponseData
+{
+	return [MonitoringGetMetricStatisticsResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }
 
 @end

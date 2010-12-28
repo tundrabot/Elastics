@@ -45,8 +45,8 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_label);
-	TB_RELEASE(_datapoints);
+	TBRelease(_label);
+	TBRelease(_datapoints);
 	[super dealloc];
 }
 

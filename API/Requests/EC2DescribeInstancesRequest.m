@@ -20,10 +20,9 @@
 	return (EC2DescribeInstancesResponse *)[super response];
 }
 
-- (void)_parseResponseData
+- (AWSResponse *)_parseResponseData
 {
-	TBXMLElement *root = self.responseXML.rootXMLElement;
-	_response = [[EC2DescribeInstancesResponse responseWithRootXMLElement:root] retain];
+	return [EC2DescribeInstancesResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }
 
 @end

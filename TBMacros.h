@@ -5,4 +5,4 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#define TB_RELEASE(x) ([(x) release], x = nil);
+#define TBRelease(x) ([(x) release], x = nil);

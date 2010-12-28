@@ -33,7 +33,7 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_parent);
+	TBRelease(_parent);
 	[super dealloc];
 }
 
@@ -53,7 +53,7 @@
 		if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"member"] || [elementName isEqualToString:@"Error"])
 			[result addObject:[class typeFromXMLElement:element parent:self]];
 		else
-			TB_TRACE(@"%@: parseElement:asArrayOf: skipping element %@", NSStringFromClass([self class]), elementName);
+			TBTrace(@"%@: parseElement:asArrayOf: skipping element %@", NSStringFromClass([self class]), elementName);
 		
 		element = element->nextSibling;
 	}

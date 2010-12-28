@@ -34,8 +34,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* CloudwatchPreferences.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CloudwatchPreferences.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3F1A53E12C78E97001AB554 /* TB_DEBUG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TB_DEBUG.h; path = ../TB_DEBUG.h; sourceTree = "<group>"; };
-		C3F1A53F12C78E97001AB554 /* TB_MACROS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TB_MACROS.h; path = ../TB_MACROS.h; sourceTree = "<group>"; };
+		C3D71EA312CA572D00C4FFFE /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
+		C3D71EA412CA572D00C4FFFE /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C3F1A54012C78EA5001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = ../Icon.icns; sourceTree = "<group>"; };
 		C3F1A54412C78F1E001AB554 /* CloudwatchPreferences.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = CloudwatchPreferences.xcconfig; sourceTree = "<group>"; };
 		C3F1A5FC12C79B72001AB554 /* eu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eu.png; sourceTree = "<group>"; };
@@ -64,8 +64,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C3F1A53E12C78E97001AB554 /* TB_DEBUG.h */,
-				C3F1A53F12C78E97001AB554 /* TB_MACROS.h */,
+				C3D71EA312CA572D00C4FFFE /* TBDebug.h */,
+				C3D71EA412CA572D00C4FFFE /* TBMacros.h */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.m */,
 				C3F1A65312C7A77D001AB554 /* Preferences.h */,

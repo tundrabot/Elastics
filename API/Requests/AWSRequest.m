@@ -31,8 +31,9 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @interface AWSRequest ()
 @property (nonatomic, retain, readonly) NSString *host;
 @property (nonatomic, retain, readonly) NSString *apiVersion;
+@property (nonatomic, retain) NSHTTPURLResponse *responseInfo;
 @property (nonatomic, retain) NSData *responseData;
-@property (nonatomic, retain) TBXML *responseXML;
+@property (nonatomic, retain) TBXML *responseParser;
 @property (nonatomic, retain) AWSResponse *response;
 @property (nonatomic, retain) NSDate *startedAt;
 @property (nonatomic, retain) NSDate *completedAt;
@@ -46,8 +47,9 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 @implementation AWSRequest
 
+@synthesize responseInfo = _responseInfo;
 @synthesize responseData = _responseData;
-@synthesize responseXML = _responseXML;
+@synthesize responseParser = _responseParser;
 @synthesize response = _response;
 @synthesize startedAt = _startedAt;
 @synthesize completedAt = _completedAt;
@@ -90,12 +92,14 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)dealloc
 {
-	TB_RELEASE(_connectionLock);
-	TB_RELEASE(_options);
-	TB_RELEASE(_responseData);
-	TB_RELEASE(_responseXML);
-	TB_RELEASE(_startedAt);
-	TB_RELEASE(_completedAt);
+	TBRelease(_connectionLock);
+	TBRelease(_options);
+	TBRelease(_responseInfo);
+	TBRelease(_responseData);
+	TBRelease(_responseParser);
+	TBRelease(_response);
+	TBRelease(_startedAt);
+	TBRelease(_completedAt);
 	[super dealloc];
 }
 
@@ -395,10 +399,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return TRUE;
 }
 
-- (void)_parseResponseData
+- (AWSResponse *)_parseResponseData
 {
-	TBXMLElement *root = self.responseXML.rootXMLElement;
-	self.response = [AWSResponse responseWithRootXMLElement:root];
+	NSAssert(FALSE, @"Abstract method call.");
+	return nil;
+//	self.response = [AWSResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }
 
 #pragma mark -
@@ -421,17 +426,23 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		while ([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]) {
 			if ([_connectionLock tryLockWhenCondition:DONE_WAITING_FOR_CONNECTION]) {
 				[_connectionLock unlock];
-				TB_RELEASE(_connectionLock);
+				TBRelease(_connectionLock);
 				break;
 			}
 		}
 	}
 	@finally {
 		[_connectionLock unlock];
-		TB_RELEASE(_connectionLock);
+		TBRelease(_connectionLock);
 	}
 
 	[pool release];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+	self.responseInfo = (NSHTTPURLResponse *)response;
+	TBTrace(@"%d - %@", [_responseInfo statusCode], [NSHTTPURLResponse localizedStringForStatusCode:[_responseInfo statusCode]]);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -466,18 +477,29 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 #ifdef TB_DEBUG
 	{
 		NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
-		//TB_TRACE(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
-		TB_TRACE(@"%@", responseString);
+		//TBTrace(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
+		TBTrace(@"%@", responseString);
 		[responseString release];
 	}
 #endif
 	
-	self.responseXML = [TBXML tbxmlWithXMLData:self.responseData];
-	
-	[self _parseResponseData];
-
 	self.completedAt = [NSDate date];
-	[_delegate requestDidFinishLoading:self];
+
+	// TODO: check HTTP code
+	
+	self.responseParser = [TBXML tbxmlWithXMLData:self.responseData];
+	self.response = [self _parseResponseData];
+	
+	if ([_response isError]) {
+		NSDictionary *errorDictionary = [[[_response errors] objectAtIndex:0] dictionaryRepresentation];
+		[_delegate request:self
+		  didFailWithError:[NSError errorWithDomain:kAWSErrorDomain
+											   code:0
+										   userInfo:errorDictionary]];
+	}
+	else {
+		[_delegate requestDidFinishLoading:self];
+	}
 	
 	@synchronized(self) {
 		_isRunning = NO;
@@ -486,9 +508,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFailWithError:(NSError *)error
 {
-	TB_LOG(@"connection:didFailWithError: %@", error);
+	TBLog(@"connection:didFailWithError: %@", error);
 	
 	self.completedAt = [NSDate date];
+
+	self.response = nil;
 	[_delegate request:self didFailWithError:error];
 	
 	@synchronized(self) {

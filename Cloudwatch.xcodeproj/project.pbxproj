@@ -100,8 +100,8 @@
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
 		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
 		C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Cloudwatch.xcconfig; sourceTree = "<group>"; };
-		C32C28E712C0C2F500F2C136 /* TB_DEBUG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TB_DEBUG.h; sourceTree = "<group>"; };
-		C32C28E812C0C2F500F2C136 /* TB_MACROS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TB_MACROS.h; sourceTree = "<group>"; };
+		C32C28E712C0C2F500F2C136 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
+		C32C28E812C0C2F500F2C136 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C32C290A12C0C60900F2C136 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSConstants.h; sourceTree = "<group>"; };
 		C32C290B12C0C60900F2C136 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSConstants.m; sourceTree = "<group>"; };
 		C32C290C12C0C60900F2C136 /* AWSRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSRequest.h; sourceTree = "<group>"; };
@@ -243,8 +243,8 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				C32C28E712C0C2F500F2C136 /* TB_DEBUG.h */,
-				C32C28E812C0C2F500F2C136 /* TB_MACROS.h */,
+				C32C28E712C0C2F500F2C136 /* TBDebug.h */,
+				C32C28E812C0C2F500F2C136 /* TBMacros.h */,
 				C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */,
 			);
 			name = Cloudwatch;

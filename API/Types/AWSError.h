@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "AWSType.h"
 
+// dictionaryRepresentation dictionary keys
+extern NSString *const kAWSErrorTypeKey;
+extern NSString *const kAWSErrorCodeKey;
+extern NSString *const kAWSErrorMessageKey;
+
 @interface AWSError : AWSType {
 @private
 	NSString		*_type;
@@ -19,5 +24,7 @@
 @property (nonatomic, retain, readonly) NSString *type;
 @property (nonatomic, retain, readonly) NSString *code;
 @property (nonatomic, retain, readonly) NSString *message;
+
+- (NSDictionary *)dictionaryRepresentation;
 
 @end

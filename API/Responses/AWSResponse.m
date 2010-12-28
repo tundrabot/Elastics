@@ -41,7 +41,7 @@
 
 - (void)dealloc
 {
-	TB_RELEASE(_errors);
+	TBRelease(_errors);
 	[super dealloc];
 }
 
@@ -68,7 +68,7 @@
 		else if ([elementName isEqualToString:@"Errors"])
 			self.errors = [self parseElement:element asArrayOf:[AWSError class]];
 		else
-			TB_TRACE(@"%@: parseErrorElement: skipping element %@", NSStringFromClass([self class]), elementName);
+			TBTrace(@"%@: parseErrorElement: skipping element %@", NSStringFromClass([self class]), elementName);
 		
 		element = element->nextSibling;
 	}
@@ -76,7 +76,7 @@
 
 - (void)parseElement:(TBXMLElement *)element
 {
-	TB_TRACE(@"%@: parseElement: skipping element %@", NSStringFromClass([self class]), [TBXML elementName:element]);
+	TBTrace(@"%@: parseElement: skipping element %@", NSStringFromClass([self class]), [TBXML elementName:element]);
 }
 
 @end

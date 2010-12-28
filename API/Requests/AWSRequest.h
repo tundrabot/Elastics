@@ -25,13 +25,13 @@ extern NSString *const kAWSUseSSLOption;
 	NSMutableDictionary		*_options;
 	id<AWSRequestDelegate>	_delegate;
 	NSConditionLock			*_connectionLock;
+	NSHTTPURLResponse		*_responseInfo;
 	NSMutableData			*_responseData;
-	TBXML					*_responseXML;
+	TBXML					*_responseParser;
+	AWSResponse				*_response;
 	BOOL					_isRunning;
 	NSDate					*_startedAt;
 	NSDate					*_completedAt;
-@protected
-	AWSResponse				*_response;
 }
 
 + (NSDictionary *)defaultOptions;
@@ -39,6 +39,7 @@ extern NSString *const kAWSUseSSLOption;
 
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate;
 
+// Options
 @property (nonatomic, copy) NSString *accessKeyId;
 @property (nonatomic, copy) NSString *secretAccessKey;
 @property (nonatomic, copy) NSString *region;
@@ -46,14 +47,18 @@ extern NSString *const kAWSUseSSLOption;
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic) BOOL useSSL;
 
+// Start async request
 - (BOOL)start;
 - (BOOL)startWithParameters:(NSDictionary *)parameters;
 
+// Request timestamps
 - (NSDate *)startedAt;
 - (NSDate *)completedAt;
 
+// Response
+- (NSHTTPURLResponse *)responseInfo;
 - (NSData *)responseData;
-- (TBXML *)responseXML;
+- (TBXML *)responseParser;
 - (AWSResponse *)response;
 
 // protected
@@ -62,7 +67,7 @@ extern NSString *const kAWSUseSSLOption;
 - (NSDictionary *)_filterListFromDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)_dimensionListFromDictionary:(NSDictionary *)dictionary;
 - (BOOL)_startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters;
-- (void)_parseResponseData;
+- (AWSResponse *)_parseResponseData;
 
 @end
 

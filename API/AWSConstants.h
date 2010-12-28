@@ -40,3 +40,6 @@ extern NSString *const kAWSNetworkOutMetric;
 #define kAWSLast6HoursRange		21600
 #define kAWSLast12HoursRange	43200
 #define kAWSLast24HoursRange	86400
+
+// Errors
+extern NSString *const kAWSErrorDomain;
