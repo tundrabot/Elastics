@@ -9,6 +9,7 @@
 #import "AWSConstants.h"
 #import "NSDate+StringConversions.h"
 #import "AWSResponse.h"
+#import "AWSErrorResponse.h"
 #import "TBXML.h"
 
 @protocol AWSRequestDelegate;
@@ -29,6 +30,7 @@ extern NSString *const kAWSUseSSLOption;
 	NSMutableData			*_responseData;
 	TBXML					*_responseParser;
 	AWSResponse				*_response;
+	AWSErrorResponse		*_errorResponse;
 	BOOL					_isRunning;
 	NSDate					*_startedAt;
 	NSDate					*_completedAt;
@@ -55,19 +57,21 @@ extern NSString *const kAWSUseSSLOption;
 - (NSDate *)startedAt;
 - (NSDate *)completedAt;
 
-// Response
+// Responses
 - (NSHTTPURLResponse *)responseInfo;
 - (NSData *)responseData;
 - (TBXML *)responseParser;
 - (AWSResponse *)response;
+- (AWSErrorResponse *)errorResponse;
 
 // protected
 
-- (NSDictionary *)_parameterListFromArray:(NSArray *)array key:(NSString *)key;
-- (NSDictionary *)_filterListFromDictionary:(NSDictionary *)dictionary;
-- (NSDictionary *)_dimensionListFromDictionary:(NSDictionary *)dictionary;
-- (BOOL)_startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters;
-- (AWSResponse *)_parseResponseData;
+- (NSDictionary *)parameterListFromArray:(NSArray *)array key:(NSString *)key;
+- (NSDictionary *)filterListFromDictionary:(NSDictionary *)dictionary;
+- (NSDictionary *)dimensionListFromDictionary:(NSDictionary *)dictionary;
+- (BOOL)startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters;
+- (AWSResponse *)parseResponse;
+- (AWSErrorResponse *)parseErrorResponse;
 
 @end
 

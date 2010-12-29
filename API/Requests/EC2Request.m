@@ -7,6 +7,7 @@
 //
 
 #import "EC2Request.h"
+#import "EC2ErrorResponse.h"
 
 @implementation EC2Request
 
@@ -17,6 +18,11 @@
 		self.service = kAWSEC2Service;
 	}
 	return self;
+}
+
+- (AWSErrorResponse *)parseErrorResponse
+{
+	return [EC2ErrorResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }
 
 @end

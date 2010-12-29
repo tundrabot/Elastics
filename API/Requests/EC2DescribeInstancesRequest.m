@@ -12,7 +12,7 @@
 
 - (BOOL)start
 {
-	return [self _startRequestWithAction:@"DescribeInstances" parameters:nil];
+	return [self startRequestWithAction:@"DescribeInstances" parameters:nil];
 }
 
 - (EC2DescribeInstancesResponse *)response
@@ -20,7 +20,7 @@
 	return (EC2DescribeInstancesResponse *)[super response];
 }
 
-- (AWSResponse *)_parseResponseData
+- (AWSResponse *)parseResponse
 {
 	return [EC2DescribeInstancesResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }

@@ -466,7 +466,10 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)loadPreferences
 {
+	TBTrace(@" reloading");
+	
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	[userDefaults synchronize];
 
 	// set AWS credentials and region
 	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
@@ -498,8 +501,6 @@ static NSDictionary *_infoColumnAttributes;
 - (void)preferencesDidChange:(NSNotification *)notification
 {
 	TBTrace(@"preferencesDidChange: %@", notification);
-
-	[[NSUserDefaults standardUserDefaults] synchronize];
 	[self loadPreferences];
 }
 
@@ -507,7 +508,6 @@ static NSDictionary *_infoColumnAttributes;
 {
 	TBTrace(@"observeValueForKeyPath: %@", keyPath);
 }
-
 
 #pragma mark -
 #pragma mark Actions

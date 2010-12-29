@@ -114,12 +114,12 @@ static DataSource * _sharedInstance = nil;
 
 + (NSDictionary *)defaultRequestOptions
 {
-	return [EC2Request defaultOptions];
+	return [AWSRequest defaultOptions];
 }
 
 + (void)setDefaultRequestOptions:(NSDictionary *)options
 {
-	[EC2Request setDefaultOptions:options];
+	[AWSRequest setDefaultOptions:options];
 }
 
 #pragma mark -
@@ -365,12 +365,12 @@ static DataSource * _sharedInstance = nil;
 #pragma mark -
 #pragma mark Request delegate
 
-- (void)requestDidStartLoading:(EC2Request *)request
+- (void)requestDidStartLoading:(AWSRequest *)request
 {
 	TBTrace(@"%@", NSStringFromClass([request class]));
 }
 
-- (void)requestDidFinishLoading:(EC2Request *)request
+- (void)requestDidFinishLoading:(AWSRequest *)request
 {
 	TBTrace(@"%@", NSStringFromClass([request class]));
 	
@@ -394,7 +394,7 @@ static DataSource * _sharedInstance = nil;
 	}
 }
 
-- (void)request:(EC2Request *)request didFailWithError:(NSError *)error
+- (void)request:(AWSRequest *)request didFailWithError:(NSError *)error
 {
 	TBTrace(@"%@ %@", NSStringFromClass([request class]), error);
 	

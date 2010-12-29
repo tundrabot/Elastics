@@ -35,12 +35,14 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @property (nonatomic, retain) NSData *responseData;
 @property (nonatomic, retain) TBXML *responseParser;
 @property (nonatomic, retain) AWSResponse *response;
+@property (nonatomic, retain) AWSErrorResponse *errorResponse;
 @property (nonatomic, retain) NSDate *startedAt;
 @property (nonatomic, retain) NSDate *completedAt;
-- (NSString *)_queryFromParameters:(NSDictionary *)parameters;
-- (NSString *)_signatureForParameters:(NSDictionary *)parameters method:(NSString *)method;
-- (NSDictionary *)_parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters;
-- (void)_requestThread:(id)object;
+- (NSString *)queryFromParameters:(NSDictionary *)parameters;
+- (NSString *)signatureForParameters:(NSDictionary *)parameters method:(NSString *)method;
+- (NSDictionary *)parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters;
+- (void)requestThread:(id)object;
+- (AWSResponse *)parseResponse;
 - (void)currentConnectionDidFinishLoading;
 - (void)currentConnectionDidFailWithError:(NSError *)error;
 @end
@@ -51,6 +53,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @synthesize responseData = _responseData;
 @synthesize responseParser = _responseParser;
 @synthesize response = _response;
+@synthesize errorResponse = _errorResponse;
 @synthesize startedAt = _startedAt;
 @synthesize completedAt = _completedAt;
 
@@ -83,7 +86,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 {
 	self = [super init];
 	if (self) {
-		_options = [_awsRequestDefaultOptions mutableCopy];
+		_options = [[NSMutableDictionary alloc] init];
 		[_options addEntriesFromDictionary:options];
 		_delegate = delegate;
 	}
@@ -92,12 +95,13 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)dealloc
 {
-	TBRelease(_connectionLock);
 	TBRelease(_options);
+	TBRelease(_connectionLock);
 	TBRelease(_responseInfo);
 	TBRelease(_responseData);
 	TBRelease(_responseParser);
 	TBRelease(_response);
+	TBRelease(_errorResponse);
 	TBRelease(_startedAt);
 	TBRelease(_completedAt);
 	[super dealloc];
@@ -108,7 +112,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)accessKeyId
 {
-	return [_options objectForKey:kAWSAccessKeyIdOption];
+	return [_options objectForKey:kAWSAccessKeyIdOption] ? [_options objectForKey:kAWSAccessKeyIdOption] : [_awsRequestDefaultOptions objectForKey:kAWSAccessKeyIdOption];
 }
 
 - (void)setAccessKeyId:(NSString *)value
@@ -118,7 +122,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)secretAccessKey
 {
-	return [_options objectForKey:kAWSSecretAccessKeyOption];
+	return [_options objectForKey:kAWSSecretAccessKeyOption] ? [_options objectForKey:kAWSSecretAccessKeyOption] : [_awsRequestDefaultOptions objectForKey:kAWSSecretAccessKeyOption];
 }
 
 - (void)setSecretAccessKey:(NSString *)value
@@ -128,7 +132,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)region
 {
-	return [_options objectForKey:kAWSRegionOption];
+	return [_options objectForKey:kAWSRegionOption] ? [_options objectForKey:kAWSRegionOption] : [_awsRequestDefaultOptions objectForKey:kAWSRegionOption];
 }
 
 - (void)setRegion:(NSString *)value
@@ -138,7 +142,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)service
 {
-	return [_options objectForKey:kAWSServiceOption];
+	return [_options objectForKey:kAWSServiceOption] ? [_options objectForKey:kAWSServiceOption] : [_awsRequestDefaultOptions objectForKey:kAWSServiceOption];
 }
 
 - (void)setService:(NSString *)value
@@ -148,7 +152,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)path
 {
-	return [_options objectForKey:kAWSPathOption];
+	return [_options objectForKey:kAWSPathOption] ? [_options objectForKey:kAWSPathOption] : [_awsRequestDefaultOptions objectForKey:kAWSPathOption];
 }
 
 - (void)setPath:(NSString *)value
@@ -158,7 +162,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (BOOL)useSSL
 {
-	return [[_options objectForKey:kAWSUseSSLOption] boolValue];
+	return [_options objectForKey:kAWSUseSSLOption] ? [[_options objectForKey:kAWSUseSSLOption] boolValue] : [[_awsRequestDefaultOptions objectForKey:kAWSUseSSLOption] boolValue];
 }
 
 - (void)setUseSSL:(BOOL)value
@@ -199,11 +203,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 #pragma mark -
 #pragma mark Parameter handling
 
-////
+//
 // Given an array ["a", "b", "c"] and key "Value", produces
 // {"Value.1 => "a", "Value.2" => "b", "Value.3" => "c"}
 //
-- (NSDictionary *)_parameterListFromArray:(NSArray *)array key:(NSString *)key
+- (NSDictionary *)parameterListFromArray:(NSArray *)array key:(NSString *)key
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
@@ -216,10 +220,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return parameters;
 }
 
-////
+//
 // Given dictionary {"Tag" => ["a", "b"], "Status" => [42]}, produces
 // {"Filter.1.Name" => "Tag", "Filter.1.Value.1" => "a", "Filter.1.Value.2" => "b", "Filter.2.Name" => "Status", "Filter.2.Value.1" => 42}
-- (NSDictionary *)_filterListFromDictionary:(NSDictionary *)dictionary
+//
+- (NSDictionary *)filterListFromDictionary:(NSDictionary *)dictionary
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
@@ -250,7 +255,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return parameters;
 }
 
-- (NSDictionary *)_dimensionListFromDictionary:(NSDictionary *)dictionary
+- (NSDictionary *)dimensionListFromDictionary:(NSDictionary *)dictionary
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
@@ -278,10 +283,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return parameters;
 }
 
-////
+//
 // Generate query string from parameters dictionary, URL-escape names and values as needed
 //
-- (NSString *)_queryFromParameters:(NSDictionary *)parameters
+- (NSString *)queryFromParameters:(NSDictionary *)parameters
 {
 	NSArray *queryKeys = [[parameters allKeys] sortedArrayUsingSelector:@selector(compare:)];
 	NSMutableArray *queryArray = [NSMutableArray array];
@@ -295,16 +300,16 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return [queryArray componentsJoinedByString:@"&"];
 }
 
-////
+//
 // Generate AWS canonicalized query and calculate its signature
 //
-- (NSString *)_signatureForParameters:(NSDictionary *)parameters method:(NSString *)method
+- (NSString *)signatureForParameters:(NSDictionary *)parameters method:(NSString *)method
 {
 	NSArray *signatureObjects = [NSArray arrayWithObjects:
 								 method,
 								 self.host,
 								 self.path,
-								 [self _queryFromParameters:parameters],
+								 [self queryFromParameters:parameters],
 								 nil];
 	NSString *signatureString = [signatureObjects componentsJoinedByString:@"\n"];
 	NSString *signature = [signatureString stringBySigningWithSecret:self.secretAccessKey];
@@ -312,10 +317,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return signature;
 }
 
-////
+//
 // Append common parameters to action-sepcific parameters, calculate and append signature parameter
 //
-- (NSDictionary *)_parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters
+- (NSDictionary *)parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters
 {
 	NSMutableDictionary *requestParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
 	
@@ -328,23 +333,11 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	[requestParameters setObject:[_startedAt iso8601String] forKey:@"Timestamp"];
 	
 	// sign query and add signature parameter
-	NSString *signature = [self _signatureForParameters:requestParameters method:method];
+	NSString *signature = [self signatureForParameters:requestParameters method:method];
 	[requestParameters setObject:signature forKey:@"Signature"];
 	
 	return requestParameters;
 }
-
-////
-// Format NSDate as ISO 8601 string
-//
-//- (NSString *)_stringFromDate:(NSDate *)date
-//{
-//	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-//	[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-//	[dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-//	
-//	return [dateFormatter stringFromDate:[NSDate date]];
-//}
 
 #pragma mark -
 #pragma mark Request handling
@@ -360,7 +353,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return FALSE;
 }
 
-- (BOOL)_startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters
+- (BOOL)startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters
 {
 	@synchronized(self) {
 		if (_isRunning == NO)
@@ -374,7 +367,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	self.completedAt = nil;
 
 	// Prepare parameters
-	NSDictionary *requestParameters = [self _parametersForAction:action method:AWSApiDefaultMethod parameters:parameters];
+	NSDictionary *requestParameters = [self parametersForAction:action method:AWSApiDefaultMethod parameters:parameters];
 	
 	// Prepare request URL
 	NSURL *url = [NSURL URLWithString:
@@ -382,7 +375,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 				   self.useSSL ? @"https" : @"http",
 				   self.host,
 				   self.path,
-				   [self _queryFromParameters:requestParameters],
+				   [self queryFromParameters:requestParameters],
 				   nil]];
 	
 	// Prepare request
@@ -391,7 +384,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	[request setCachePolicy:NSURLRequestReloadIgnoringCacheData];
 	
 	// Start connection thread
-	[NSThread detachNewThreadSelector:@selector(_requestThread:) toTarget:self withObject:request];
+	[NSThread detachNewThreadSelector:@selector(requestThread:) toTarget:self withObject:request];
 	
 	// Notify delegate that request started
 	[_delegate requestDidStartLoading:self];
@@ -399,11 +392,16 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return TRUE;
 }
 
-- (AWSResponse *)_parseResponseData
+- (AWSResponse *)parseResponse
 {
 	NSAssert(FALSE, @"Abstract method call.");
 	return nil;
-//	self.response = [AWSResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
+}
+
+- (AWSResponse *)parseErrorResponse
+{
+	NSAssert(FALSE, @"Abstract method call.");
+	return nil;
 }
 
 #pragma mark -
@@ -412,7 +410,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 #define WAITING_FOR_CONNECTION			0                                                                                                            
 #define DONE_WAITING_FOR_CONNECTION		1                                                                                                            
 
-- (void)_requestThread:(id)object
+- (void)requestThread:(id)object
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -484,18 +482,20 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 #endif
 	
 	self.completedAt = [NSDate date];
-
-	// TODO: check HTTP code
-	
 	self.responseParser = [TBXML tbxmlWithXMLData:self.responseData];
-	self.response = [self _parseResponseData];
 	
-	if ([_response isError]) {
-		NSDictionary *errorDictionary = [[[_response errors] objectAtIndex:0] dictionaryRepresentation];
-		[_delegate request:self
-		  didFailWithError:[NSError errorWithDomain:kAWSErrorDomain
-											   code:0
-										   userInfo:errorDictionary]];
+	if ([_responseInfo statusCode] >= 400) {
+		self.response = nil;
+		self.errorResponse = [self parseErrorResponse];
+	}
+	else {
+		self.response = [self parseResponse];
+		self.errorResponse = nil;
+	}
+	
+	if (_errorResponse) {
+		NSDictionary *errorInfo = [[[_errorResponse errors] objectAtIndex:0] dictionaryRepresentation];
+		[_delegate request:self didFailWithError:[NSError errorWithDomain:kAWSErrorDomain code:0 userInfo:errorInfo]];
 	}
 	else {
 		[_delegate requestDidFinishLoading:self];

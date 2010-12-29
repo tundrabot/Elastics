@@ -50,7 +50,7 @@
 	
 //	TBTrace(@"%@", requestParameters);
 	
-	return [self _startRequestWithAction:@"GetMetricStatistics" parameters:requestParameters];
+	return [self startRequestWithAction:@"GetMetricStatistics" parameters:requestParameters];
 }
 
 - (BOOL)start
@@ -65,7 +65,7 @@
 		NSDictionary *filter = [NSDictionary dictionaryWithObjectsAndKeys:
 								[NSArray arrayWithObject:_instanceId], kAWSInstanceIdParameter,
 								nil];
-		[parameters addEntriesFromDictionary:[self _dimensionListFromDictionary:filter]];
+		[parameters addEntriesFromDictionary:[self dimensionListFromDictionary:filter]];
 	}
 	
 	NSString *period = nil;
@@ -98,7 +98,7 @@
 	return (MonitoringGetMetricStatisticsResponse *)[super response];
 }
 
-- (AWSResponse *)_parseResponseData
+- (AWSResponse *)parseResponse
 {
 	return [MonitoringGetMetricStatisticsResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }

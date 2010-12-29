@@ -7,18 +7,11 @@
 //
 
 #import "AWSType.h"
-#import "AWSError.h"
 
-@interface AWSResponse : AWSType {
-@private
-	NSArray	*_errors;		// AWSError
-}
+@interface AWSResponse : AWSType
 
 + (id)responseWithRootXMLElement:(TBXMLElement *)rootElement;
 - (id)initWithRootXMLElement:(TBXMLElement *)rootElement;
-
-- (BOOL)isError;
-@property (nonatomic, retain, readonly) NSArray *errors;
 
 // protected
 

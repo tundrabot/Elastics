@@ -7,6 +7,7 @@
 //
 
 #import "MonitoringRequest.h"
+#import "MonitoringErrorResponse.h"
 
 @implementation MonitoringRequest
 
@@ -17,6 +18,11 @@
 		self.service = kAWSMonitoringService;
 	}
 	return self;
+}
+
+- (AWSErrorResponse *)parseErrorResponse
+{
+	return [MonitoringErrorResponse responseWithRootXMLElement:self.responseParser.rootXMLElement];
 }
 
 @end

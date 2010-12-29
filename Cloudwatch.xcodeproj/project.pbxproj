@@ -46,6 +46,9 @@
 		C32C32B112C23CDA00F2C136 /* NSString+DateConversions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32B012C23CDA00F2C136 /* NSString+DateConversions.m */; };
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
+		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
+		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
+		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
 		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
@@ -161,6 +164,12 @@
 		C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringDatapoint.m; sourceTree = "<group>"; };
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
+		C391BB0A12CB9F3E00BD929A /* AWSErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSErrorResponse.h; sourceTree = "<group>"; };
+		C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSErrorResponse.m; sourceTree = "<group>"; };
+		C391BB0D12CBA0C600BD929A /* EC2ErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2ErrorResponse.h; sourceTree = "<group>"; };
+		C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2ErrorResponse.m; sourceTree = "<group>"; };
+		C391BB1012CBA10A00BD929A /* MonitoringErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringErrorResponse.h; sourceTree = "<group>"; };
+		C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringErrorResponse.m; sourceTree = "<group>"; };
 		C3DAED6C12C34DE200A0106D /* ChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChartView.h; sourceTree = "<group>"; };
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
@@ -324,6 +333,12 @@
 			children = (
 				C32C292C12C0C60900F2C136 /* AWSResponse.h */,
 				C32C292D12C0C60900F2C136 /* AWSResponse.m */,
+				C391BB0A12CB9F3E00BD929A /* AWSErrorResponse.h */,
+				C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */,
+				C391BB0D12CBA0C600BD929A /* EC2ErrorResponse.h */,
+				C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */,
+				C391BB1012CBA10A00BD929A /* MonitoringErrorResponse.h */,
+				C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */,
 				C32C31DF12C22DBA00F2C136 /* EC2Response.h */,
 				C32C31E012C22DBA00F2C136 /* EC2Response.m */,
 				C32C292612C0C60900F2C136 /* EC2DescribeInstancesResponse.h */,
@@ -514,6 +529,9 @@
 				C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */,
 				C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */,
 				C32823E312C90E1900020D48 /* AWSError.m in Sources */,
+				C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */,
+				C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */,
+				C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
