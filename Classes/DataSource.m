@@ -137,12 +137,12 @@ static DataSource * _sharedInstance = nil;
 		self.completionNotificationUserInfo = [NSMutableDictionary dictionary];
 		[_runningRequests removeAllObjects];
 
-		// Schedule instances refresh
+		// schedule instances refresh
 		if (!_instancesRequest)
 			self.instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
 		[_runningRequests addObject:_instancesRequest];
 		
-//		// Schedule composite monitoring stats refresh
+//		// schedule composite monitoring stats refresh
 //		for (NSString *metric in _compositeMonitoringMetrics) {
 //			MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
 //			
@@ -162,7 +162,7 @@ static DataSource * _sharedInstance = nil;
 //		}
 	}
 	
-	// Start scheduled requests
+	// start scheduled requests
 	for (AWSRequest *request in _runningRequests) {
 		[request start];
 	}
@@ -180,8 +180,7 @@ static DataSource * _sharedInstance = nil;
 		self.completionNotificationUserInfo = [NSMutableDictionary dictionaryWithObject:instanceId forKey:kDataSourceInstanceIdInfoKey];
 		[_runningRequests removeAllObjects];
 		
-		// Schedule instance monitoring stats refresh
-
+		// schedule instance monitoring stats refresh
 		NSMutableDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
 		
 		if (!instanceMonitoringRequests) {
@@ -199,7 +198,7 @@ static DataSource * _sharedInstance = nil;
 				[instanceMonitoringRequests setObject:monitoringRequest forKey:metric];
 			}
 			
-			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
+			// only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
 			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
 				[_runningRequests addObject:monitoringRequest];
 			}

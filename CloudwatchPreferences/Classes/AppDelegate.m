@@ -164,7 +164,7 @@ static const char kAWSCredentialsKey[16] = {
 #pragma mark -
 #pragma mark User Defaults notification
 
-const NSTimeInterval kPreferenceChangeNotificationDelay = 1.0;
+const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
 - (void)userDefaultsDidChange:(NSNotification *)notification
 {

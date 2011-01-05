@@ -17,23 +17,26 @@
 
 @synthesize result = _result;
 
-- (NSString *)_rootElementName
-{
-	return @"GetMetricStatisticsResponse";
-}
-
-- (void)_parseXMLElement:(TBXMLElement *)element;
-{
-	NSString *elementName = [TBXML elementName:element];
-	
-	if ([elementName isEqualToString:@"GetMetricStatisticsResult"])
-		self.result = [MonitoringStatisticsResult typeFromXMLElement:element parent:self];
-}
-
 - (void)dealloc
 {
 	TBRelease(_result);
 	[super dealloc];
+}
+
+- (void)parseElement:(TBXMLElement *)element;
+{
+	element = element->firstChild;
+	
+	while (element) {
+		NSString *elementName = [TBXML elementName:element];
+	
+		if ([elementName isEqualToString:@"GetMetricStatisticsResult"])
+			self.result = [MonitoringStatisticsResult typeFromXMLElement:element parent:self];
+		else
+			[super parseElement:element];
+		
+		element = element->nextSibling;
+	}
 }
 
 @end

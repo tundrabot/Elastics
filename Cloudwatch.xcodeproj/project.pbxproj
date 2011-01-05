@@ -49,6 +49,8 @@
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
 		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
 		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
+		C3B3741C12D4B36200A1E47E /* Notification.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741A12D4B36200A1E47E /* Notification.png */; };
+		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
 		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
@@ -170,6 +172,8 @@
 		C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2ErrorResponse.m; sourceTree = "<group>"; };
 		C391BB1012CBA10A00BD929A /* MonitoringErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringErrorResponse.h; sourceTree = "<group>"; };
 		C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringErrorResponse.m; sourceTree = "<group>"; };
+		C3B3741A12D4B36200A1E47E /* Notification.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification.png; sourceTree = "<group>"; };
+		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
 		C3DAED6C12C34DE200A0106D /* ChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChartView.h; sourceTree = "<group>"; };
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
@@ -390,6 +394,8 @@
 		C32C29EA12C0CB7200F2C136 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C3B3741A12D4B36200A1E47E /* Notification.png */,
+				C3B3741B12D4B36200A1E47E /* Error.png */,
 				C32C2B5212C0E2B600F2C136 /* StatusItem.png */,
 				C32C2B4E12C0E2B600F2C136 /* InstanceStateOther.png */,
 				C32C2B4F12C0E2B600F2C136 /* InstanceStateRunning.png */,
@@ -486,6 +492,8 @@
 				C32C2B5612C0E2B600F2C136 /* InstanceStateTerminated.png in Resources */,
 				C32C2B5712C0E2B600F2C136 /* StatusItem.png in Resources */,
 				C3F1A4B912C78460001AB554 /* Icon.icns in Resources */,
+				C3B3741C12D4B36200A1E47E /* Notification.png in Resources */,
+				C3B3741D12D4B36200A1E47E /* Error.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

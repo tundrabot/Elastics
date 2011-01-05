@@ -14,6 +14,11 @@ NSString *const kAWSUSWestRegion			= @"us-west-1.amazonaws.com";
 NSString *const kAWSEURegion				= @"eu-west-1.amazonaws.com";
 NSString *const kAWSAsiaPacificRegion		= @"ap-southeast-1.amazonaws.com";
 
+NSString *const kAWSUSEastRegionName		= @"US East (Virginia)";
+NSString *const kAWSUSWestRegionName		= @"US West (North California)";
+NSString *const kAWSEURegionName			= @"EU West (Ireland)";
+NSString *const kAWSAsiaPacificRegionName	= @"Asia Pacific (Singapore)";
+
 // Services
 NSString *const kAWSEC2Service				= @"ec2";
 NSString *const kAWSMonitoringService		= @"monitoring";

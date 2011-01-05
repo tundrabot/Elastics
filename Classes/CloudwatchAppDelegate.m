@@ -11,11 +11,19 @@
 #import "ChartView.h"
 #import "Preferences.h"
 
+#define INSTANCE_INFO_TABLE_WIDTH				220.f
+#define INSTANCE_INFO_LABEL_COLUMN_WIDTH		90.f
+
+#define MESSAGE_TABLE_WIDTH						180.f
+
 @interface CloudwatchAppDelegate ()
 - (void)loadPreferences;
 - (void)resetMenu;
 - (void)refreshMenu:(NSNotification *)notification;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
+- (NSMenuItem *)messageItemWithTitle:(NSString *)title image:(NSImage *)image;
+- (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title;
+- (NSMenuItem *)notificationMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance;
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints;
 - (NSMenuItem *)infoItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action tooltip:(NSString *)tooltip;
@@ -25,6 +33,7 @@
 - (void)refresh:(NSString *)instanceId;
 - (void)refreshCompleted:(NSNotification *)notification;
 - (void)preferencesDidChange:(NSNotification *)notification;
+- (void)nopAction:(id)sender;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
@@ -37,6 +46,7 @@ static NSColor *_titleColor;
 static NSColor *_taggedInstanceColor;
 static NSColor *_untaggedInstanceColor;
 static NSColor *_actionItemColor;
+static NSColor *_messageItemColor;
 static NSColor *_labelColumnColor;
 static NSColor *_infoColumnColor;
 
@@ -44,6 +54,7 @@ static NSFont *_titleFont;
 static NSFont *_taggedInstanceFont;
 static NSFont *_untaggedInstanceFont;
 static NSFont *_actionItemFont;
+static NSFont *_messageItemFont;
 static NSFont *_labelColumnFont;
 static NSFont *_infoColumnFont;
 
@@ -51,15 +62,17 @@ static NSDictionary *_titleAttributes;
 static NSDictionary *_taggedInstanceAttributes;
 static NSDictionary *_untaggedInstanceAttributes;
 static NSDictionary *_actionItemAttributes;
+static NSDictionary *_messageItemAttributes;
 static NSDictionary *_labelColumnAttributes;
 static NSDictionary *_infoColumnAttributes;
 
 + (void)initialize
 {
-	if (!_titleColor)				_titleColor = [[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] retain];
-	if (!_taggedInstanceColor)		_taggedInstanceColor = [[NSColor blackColor] retain];
+	if (!_titleColor)               _titleColor = [[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] retain];
+	if (!_taggedInstanceColor)      _taggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_untaggedInstanceColor)	_untaggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_actionItemColor)			_actionItemColor = [[NSColor blackColor] retain];
+	if (!_messageItemColor)			_messageItemColor = [[NSColor blackColor] retain];
 	if (!_labelColumnColor)			_labelColumnColor = [[NSColor blackColor] retain];
 	if (!_infoColumnColor)			_infoColumnColor = [[NSColor blackColor] retain];
 		
@@ -67,6 +80,7 @@ static NSDictionary *_infoColumnAttributes;
 	if (!_taggedInstanceFont)		_taggedInstanceFont = [[NSFont boldSystemFontOfSize:13.0f] retain];
 	if (!_untaggedInstanceFont)		_untaggedInstanceFont = [[NSFont systemFontOfSize:13.0f] retain];
 	if (!_actionItemFont)			_actionItemFont = [[NSFont boldSystemFontOfSize:11.0f] retain];
+	if (!_messageItemFont)			_messageItemFont = [[NSFont boldSystemFontOfSize:11.0f] retain];
 	if (!_labelColumnFont)			_labelColumnFont = [[NSFont systemFontOfSize:11.0f] retain];
 	if (!_infoColumnFont)			_infoColumnFont = [[NSFont boldSystemFontOfSize:11.0f] retain];
 
@@ -94,7 +108,13 @@ static NSDictionary *_infoColumnAttributes;
 								  _actionItemColor, NSForegroundColorAttributeName,
 								  _actionItemFont, NSFontAttributeName,
 								  nil] retain];
-
+	
+	if (!_messageItemAttributes)
+		_messageItemAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
+								   _messageItemColor, NSForegroundColorAttributeName,
+								   _messageItemFont, NSFontAttributeName,
+								   nil] retain];
+	
 	if (!_labelColumnAttributes)
 		_labelColumnAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
 								   _labelColumnColor, NSForegroundColorAttributeName,
@@ -177,18 +197,36 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)refreshMenu:(NSNotification *)notification
 {
-	DataSource *dataSource = [DataSource sharedInstance];
+	NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
 	
-	if ([dataSource.instances count] > 0) {
-		NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
-		NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
+	if (error) {
+		[_statusMenu removeAllItems];
 		
-		if (error) {
-			// TODO: handle error notification
-		}
-		else {
+		NSString *errorMessage = nil;
+		
+		if ([error domain] == kAWSErrorDomain)
+			errorMessage = [[error userInfo] objectForKey:kAWSErrorMessageKey];
+		else
+			errorMessage = [error description];
+
+		[_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
+
+		//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+		[_statusMenu addItem:[NSMenuItem separatorItem]];
+		[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+		[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+		
+	}
+	else {
+		DataSource *dataSource = [DataSource sharedInstance];
+	
+		if ([dataSource.instances count] > 0) {
+			NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
+			
 			if ([instanceId length] > 0) {
-				TBTrace(@"refreshCompleted: %@", instanceId);
+				// was refresh for selected instance
+				
+				TBTrace(@"%@", instanceId);
 				
 				NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
 					*stop = [[obj instanceId] isEqualToString:instanceId];
@@ -208,7 +246,9 @@ static NSDictionary *_infoColumnAttributes;
 				}
 			}
 			else {
-				TBTrace(@"refreshCompleted:");
+				// was refresh for all instances
+				
+				TBTrace(@"");
 				
 				[_statusMenu removeAllItems];
 				
@@ -217,18 +257,18 @@ static NSDictionary *_infoColumnAttributes;
 					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
 				}
 				
-				// Add chart
-				[_statusMenu addItem:[NSMenuItem separatorItem]];
-				[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-				[_statusMenu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric]]];
-				
-				CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-				CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-				CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-				
-				[_statusMenu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
-				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
-				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
+//				// Add chart
+//				[_statusMenu addItem:[NSMenuItem separatorItem]];
+//				[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
+//				[_statusMenu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric]]];
+//				
+//				CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
+//				CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
+//				CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
+//				
+//				[_statusMenu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
+//				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
+//				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 				
 				// Add action menu items
 				//			[_statusMenu addItem:[NSMenuItem separatorItem]];
@@ -238,9 +278,35 @@ static NSDictionary *_infoColumnAttributes;
 				[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
 			}
 		}
-	}
-	else {
-		[self resetMenu];
+		else {
+			// no instances
+			
+			[_statusMenu removeAllItems];
+			
+			NSString *awsRegionName = kAWSUSEastRegion;
+			switch ([[NSUserDefaults standardUserDefaults] integerForKey:kPreferencesAWSRegionKey]) {
+				case kPreferencesAWSUSEastRegion:
+					awsRegionName = kAWSUSEastRegionName;
+					break;
+				case kPreferencesAWSUSWestRegion:
+					awsRegionName = kAWSUSWestRegionName;
+					break;
+				case kPreferencesAWSEURegion:
+					awsRegionName = kAWSEURegionName;
+					break;
+				case kPreferencesAWSAsiaPacificRegion:
+					awsRegionName = kAWSAsiaPacificRegionName;
+					break;
+			}
+			[_statusMenu addItem:[self notificationMessageItemWithTitle:
+								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
+			
+			//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+			[_statusMenu addItem:[NSMenuItem separatorItem]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+			
+		}
 	}
 }
 
@@ -261,6 +327,61 @@ static NSDictionary *_infoColumnAttributes;
 	return menuItem;
 }
 
+- (NSMenuItem *)messageItemWithTitle:(NSString *)title image:(NSImage *)image
+{
+	NSTextTable *table = [[[NSTextTable alloc] init] autorelease];
+	[table setNumberOfColumns:1];
+	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
+	[table setHidesEmptyCells:NO];
+	
+	NSTextTableBlock *titleBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
+	[titleBlock setContentWidth:MESSAGE_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
+	[titleBlock setWidth:10.0 type:NSTextBlockAbsoluteValueType forLayer:NSTextBlockPadding edge:NSMinXEdge];
+	
+	NSMutableParagraphStyle *titleParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+	[titleParagraphStyle setAlignment:NSLeftTextAlignment];
+	[titleParagraphStyle setTextBlocks:[NSArray arrayWithObject:titleBlock]];
+	
+	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc] initWithString:@""] autorelease];
+	NSUInteger attributedTitleLength = [attributedTitle length];
+	
+	NSString *titleText = nil;
+	if (title) {
+		if (NO == [title hasSuffix:@"."])
+			titleText = [NSString stringWithFormat:@"%@.", title];
+		else
+			titleText = title;
+	}
+	else {
+		titleText = @" ";
+	}
+
+	[attributedTitle replaceCharactersInRange:NSMakeRange(attributedTitleLength, 0) withString:titleText];
+	[attributedTitle setAttributes:_messageItemAttributes range:NSMakeRange(attributedTitleLength, [attributedTitle length] - attributedTitleLength)];
+	[attributedTitle addAttribute:NSParagraphStyleAttributeName value:titleParagraphStyle range:NSMakeRange(attributedTitleLength, [attributedTitle length] - attributedTitleLength)];
+	
+	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
+	
+	[menuItem setIndentationLevel:1];
+	[menuItem setAttributedTitle:attributedTitle];
+//	[menuItem setTarget:self];
+//	[menuItem setAction:@selector(nopAction:)];
+	[menuItem setEnabled:NO];
+	[menuItem setImage:image];
+	
+	return menuItem;
+}
+
+- (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title
+{
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Error.png"]];
+}
+
+- (NSMenuItem *)notificationMessageItemWithTitle:(NSString *)title
+{
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Notification.png"]];
+}
+
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance
 {
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
@@ -269,7 +390,7 @@ static NSDictionary *_infoColumnAttributes;
 	NSString *nameTag = instance.nameTag;
 	NSAttributedString *attributedTitle = nil;
 
-	// Set item title to Name tag if present, otherwise to Instance ID
+	// set item title to Name tag if present, otherwise to Instance ID
 	if (nameTag)
 		attributedTitle = [[[NSAttributedString alloc] initWithString:nameTag attributes:_taggedInstanceAttributes] autorelease];
 	else
@@ -277,7 +398,7 @@ static NSDictionary *_infoColumnAttributes;
 	
 	menuItem.attributedTitle = attributedTitle;
 	
-	// Set item image according to instance state
+	// set item image according to instance state
 	switch (instance.instanceState.code) {
 		case EC2_INSTANCE_STATE_RUNNING:
 			menuItem.image = [NSImage imageNamed:@"InstanceStateRunning.png"];
@@ -293,7 +414,7 @@ static NSDictionary *_infoColumnAttributes;
 			break;
 	}
 	
-	// Set item submenu
+	// set item submenu
 	menuItem.submenu = [self submenuForInstance:instance];
 	
 	return menuItem;
@@ -311,19 +432,16 @@ static NSDictionary *_infoColumnAttributes;
 	return menuItem;
 }
 
-#define TABLE_WIDTH				220.f
-#define LABEL_COLUMN_WIDTH		90.f
-
 - (NSMenuItem *)infoItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action tooltip:(NSString *)tooltip
 {
 	NSTextTable *table = [[[NSTextTable alloc] init] autorelease];
 	[table setNumberOfColumns:2];
 	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
-	[table setContentWidth:TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
+	[table setContentWidth:INSTANCE_INFO_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
 	[table setHidesEmptyCells:NO];
 	
 	NSTextTableBlock *labelBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
-	[labelBlock setContentWidth:LABEL_COLUMN_WIDTH type:NSTextBlockAbsoluteValueType];
+	[labelBlock setContentWidth:INSTANCE_INFO_LABEL_COLUMN_WIDTH type:NSTextBlockAbsoluteValueType];
 	
 	NSTextTableBlock *infoBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1];
 	
@@ -433,11 +551,11 @@ static NSDictionary *_infoColumnAttributes;
 - (void)refresh:(NSString *)instanceId
 {
 	if ([instanceId length] > 0) {
-		// Refresh monitoring data for a single instance
+		// refresh monitoring data for a single instance
 		[[DataSource sharedInstance] refreshInstance:instanceId];
 	}
 	else {
-		// Refresh instances and composite monitoring data for all instances
+		// refresh instances and composite monitoring data for all instances
 		[[DataSource sharedInstance] refresh];
 	}
 }
@@ -466,7 +584,7 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)loadPreferences
 {
-	TBTrace(@" reloading");
+	TBTrace(@"reloading preferences");
 	
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	[userDefaults synchronize];
@@ -501,16 +619,17 @@ static NSDictionary *_infoColumnAttributes;
 - (void)preferencesDidChange:(NSNotification *)notification
 {
 	TBTrace(@"preferencesDidChange: %@", notification);
+	
 	[self loadPreferences];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-	TBTrace(@"observeValueForKeyPath: %@", keyPath);
+	[self refresh:nil];
 }
 
 #pragma mark -
 #pragma mark Actions
+
+- (void)nopAction:(id)sender
+{
+}
 
 - (void)quitAction:(id)sender
 {
