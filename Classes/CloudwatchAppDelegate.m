@@ -470,6 +470,7 @@ static NSDictionary *_infoColumnAttributes;
 	
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
+	[menuItem setRepresentedObject:info];
 	[menuItem setTarget:self];
 	[menuItem setToolTip:tooltip];
 	[menuItem setEnabled:action != NULL];
@@ -645,11 +646,15 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)copyToPasteboardAction:(id)sender
 {
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
+	NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
+	[pasteBoard setString:[menuItem representedObject] forType:NSStringPboardType];
 }
 
 - (void)connectToInstanceAction:(id)sender
 {
-	NSString *instanceId = [[(NSMenuItem *)sender menu] title];
+	NSMenuItem *menuItem = (NSMenuItem *)sender;                                                                                        
+	NSString *instanceId = [[menuItem menu] title];
 	DataSource *dataSource = [DataSource sharedInstance];
 
 	// TODO: move to DataSource
