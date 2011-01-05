@@ -228,6 +228,7 @@ static NSDictionary *_infoColumnAttributes;
 				
 				TBTrace(@"%@", instanceId);
 				
+				// TODO: move to DataSource
 				NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
 					*stop = [[obj instanceId] isEqualToString:instanceId];
 					return *stop;
@@ -540,9 +541,9 @@ static NSDictionary *_infoColumnAttributes;
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
-	[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItem:[self actionItemWithLabel:@"Restart..." action:@selector(connectToInstanceAction:)]];
-	[menu addItem:[self actionItemWithLabel:@"Terminate..." action:@selector(connectToInstanceAction:)]];
+//	[menu addItem:[NSMenuItem separatorItem]];
+//	[menu addItem:[self actionItemWithLabel:@"Restart..." action:@selector(connectToInstanceAction:)]];
+//	[menu addItem:[self actionItemWithLabel:@"Terminate..." action:@selector(connectToInstanceAction:)]];
 }
 
 #pragma mark -
@@ -648,6 +649,28 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)connectToInstanceAction:(id)sender
 {
+	NSString *instanceId = [[(NSMenuItem *)sender menu] title];
+	DataSource *dataSource = [DataSource sharedInstance];
+
+	// TODO: move to DataSource
+	NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+		*stop = [[obj instanceId] isEqualToString:instanceId];
+		return *stop;
+	}];
+	
+	if (instanceIdx != NSNotFound) {
+		EC2Instance *instance = [dataSource.instances objectAtIndex:instanceIdx];
+
+		NSString *cmd = [NSString stringWithFormat:
+						 @"tell application \"Terminal\" to do script \"ssh %@\"",
+						 instance.ipAddress];
+		
+		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
+		NSDictionary *errorInfo = nil;
+		[appleScript executeAndReturnError:&errorInfo];
+		
+		// TODO: handle errors
+	}
 }
 
 @end
