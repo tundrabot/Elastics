@@ -16,14 +16,6 @@
 
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
-// AES128 key (16 bytes)                                                                                                                 
-static const char kAWSCredentialsKey[16] = {
-	0xfb, 0xb2, 0xd1, 0x9c,
-	0xfa, 0x41, 0xf7, 0x9e,
-	0xbb, 0xd8, 0x08, 0xc3,
-	0xb5, 0xb3, 0xe3, 0xbe
-};
-
 @interface AppDelegate ()
 - (void)userDefaultsDidChange:(NSNotification *)notification;
 - (void)postPreferenceChangeNotification;
@@ -49,14 +41,8 @@ static const char kAWSCredentialsKey[16] = {
 									forName:@"RefreshIntervalLabelValueTransformer"];
 	
 	// register default preference values
-	[[NSUserDefaults standardUserDefaults] registerDefaults:
-	 [NSDictionary dictionaryWithObjectsAndKeys:
-	  // refresh every minute
-	  [NSNumber numberWithInt:60], kPreferencesRefreshIntervalKey,
-	  // refresh on menu open
-	  [NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
-	  nil]];
-	  
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	[ud registerDefaults:[ud defaultCloudwatchPreferences]];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -65,7 +51,7 @@ static const char kAWSCredentialsKey[16] = {
 	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
 	
 	// if there's no AWS credentials, set focus to Access ID field
-	if (![[[NSUserDefaults standardUserDefaults] stringForKey:kPreferencesAWSAccessKeyIdKey] length]) {
+	if (![[[NSUserDefaults standardUserDefaults] awsAccessKeyId] length]) {
 		[_window makeFirstResponder:_awsAccessKeyIdField];
 	}
 	

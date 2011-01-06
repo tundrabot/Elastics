@@ -218,6 +218,16 @@ static DataSource * _sharedInstance = nil;
 	return _instancesRequest.response.instancesSet;
 }
 
+- (EC2Instance *)instance:(NSString *)instanceId
+{
+	NSUInteger instanceIdx = [self.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+		*stop = [[obj instanceId] isEqualToString:instanceId];
+		return *stop;
+	}];
+	
+	return instanceIdx != NSNotFound ? [self.instances objectAtIndex:instanceIdx] : nil;
+}
+
 - (NSArray *)statisticsForMetric:(NSString *)metric
 {
 	MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];

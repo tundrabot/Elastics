@@ -25,6 +25,12 @@ NSString *const kAWSServiceOption				= @"AWSService";
 NSString *const kAWSPathOption					= @"AWSPath";
 NSString *const kAWSUseSSLOption				= @"AWSUseSSL";
 
+// Human region titles
+static NSString *const kAWSUSEastRegionTitle		= @"US East (Virginia)";
+static NSString *const kAWSUSWestRegionTitle		= @"US West (North California)";
+static NSString *const kAWSEURegionTitle			= @"EU West (Ireland)";
+static NSString *const kAWSAsiaPacificRegionTitle	= @"Asia Pacific (Singapore)";
+
 // Static variables
 static NSMutableDictionary *_awsRequestDefaultOptions;
 
@@ -80,6 +86,20 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 + (void)setDefaultOptions:(NSDictionary *)options
 {
 	[_awsRequestDefaultOptions addEntriesFromDictionary:options];
+}
+
++ (NSString *)regionTitleForRegion:(NSString *)region
+{
+	if ([region isEqualToString:kAWSUSEastRegion])
+		return kAWSUSEastRegionTitle;
+	else if ([region isEqualToString:kAWSUSWestRegion])
+		return kAWSUSWestRegionTitle;
+	else if ([region isEqualToString:kAWSEURegion])
+		return kAWSEURegionTitle;
+	else if ([region isEqualToString:kAWSAsiaPacificRegion])
+		return kAWSAsiaPacificRegionTitle;
+	else
+		return nil;
 }
 
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate
@@ -440,7 +460,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	self.responseInfo = (NSHTTPURLResponse *)response;
-	TBTrace(@"%d - %@", [_responseInfo statusCode], [NSHTTPURLResponse localizedStringForStatusCode:[_responseInfo statusCode]]);
+//	TBTrace(@"%d - %@", [_responseInfo statusCode], [NSHTTPURLResponse localizedStringForStatusCode:[_responseInfo statusCode]]);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -474,10 +494,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 {
 #ifdef TB_DEBUG
 	{
-		NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
+//		NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
 		//TBTrace(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
-		TBTrace(@"%@", responseString);
-		[responseString release];
+//		TBTrace(@"%@", responseString);
+//		[responseString release];
 	}
 #endif
 	

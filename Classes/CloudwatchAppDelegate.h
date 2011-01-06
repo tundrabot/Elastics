@@ -8,13 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class PreferencesController;
-
 @interface CloudwatchAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 @private
-	NSStatusItem			*_statusItem;
-	NSMenu					*_statusMenu;
-	PreferencesController	*_preferencesController;
+	NSStatusItem	*_statusItem;
+	NSMenu			*_statusMenu;
+	NSTimer			*_refreshTimer;
 }
 
 @end

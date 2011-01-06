@@ -41,19 +41,21 @@ extern NSString *const kDataSourceErrorInfoKey;
 // Set of metric names to monitor for each instance
 @property (nonatomic, retain) NSSet *instanceMonitoringMetrics;
 
-// Refresh instances and global monitoring stats
+// Refresh instance info and monitoring stats
 - (void)refresh;
-
-// Refresh instance monitoring stats
 - (void)refreshInstance:(NSString *)instanceId;
 
-// Array of EC2Instance
+// All instances (array of EC2Instance)
 @property (nonatomic, retain, readonly) NSArray *instances;
+// Returns an instance with given id
+- (EC2Instance *)instance:(NSString *)instanceId;
 
-// Array of MonitoringDatapoint
+// All statistics for metric (array of MonitoringDatapoint)
 - (NSArray *)statisticsForMetric:(NSString *)metric;
+// Returns statistics for metric for given instance id
 - (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId;
 
+// Max/Min/Average metric values
 - (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
 - (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
 - (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range;

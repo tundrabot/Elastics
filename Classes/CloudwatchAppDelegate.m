@@ -17,7 +17,6 @@
 #define MESSAGE_TABLE_WIDTH						180.f
 
 @interface CloudwatchAppDelegate ()
-- (void)loadPreferences;
 - (void)resetMenu;
 - (void)refreshMenu:(NSNotification *)notification;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
@@ -28,11 +27,19 @@
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints;
 - (NSMenuItem *)infoItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action tooltip:(NSString *)tooltip;
 - (NSMenuItem *)actionItemWithLabel:(NSString *)label action:(SEL)action;
+
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance;
 - (void)refreshSubmenu:(NSMenu *)menu forInstance:(EC2Instance *)instance;
+
 - (void)refresh:(NSString *)instanceId;
 - (void)refreshCompleted:(NSNotification *)notification;
+- (void)timerRefresh:(NSTimer *)timer;
+
+- (void)loadPreferences;
+- (void)setupDataSource;
+- (void)setupRefreshTimer;
 - (void)preferencesDidChange:(NSNotification *)notification;
+
 - (void)nopAction:(id)sender;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
@@ -141,8 +148,13 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-	// register preferences set through Preferences helper app
-	[[NSUserDefaults standardUserDefaults] addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
+	// register preferences set through Preferences helper app and defaults
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	[ud addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
+	[ud registerDefaults:[ud defaultCloudwatchPreferences]];
+
+	// load current preferences
+	[self loadPreferences];
 
 	// observe notifications from Preferences app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
@@ -171,9 +183,6 @@ static NSDictionary *_infoColumnAttributes;
 												 name:kDataSourceRefreshCompletedNotification
 											   object:[DataSource sharedInstance]];
 
-	// load current preferences
-	[self loadPreferences];
-	
 	// perform initial refresh
 	[self refresh:nil];
 }
@@ -188,7 +197,8 @@ static NSDictionary *_infoColumnAttributes;
 {
 	TBRelease(_statusItem);
 	TBRelease(_statusMenu);
-	TBRelease(_preferencesController);
+	[_refreshTimer invalidate];
+	TBRelease(_refreshTimer);
 	[super dealloc];
 }
 
@@ -245,29 +255,23 @@ static NSDictionary *_infoColumnAttributes;
 				// was refresh for selected instance
 
 				TBTrace(@"%@", instanceId);
-
-				// TODO: move to DataSource
-				NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
-					*stop = [[obj instanceId] isEqualToString:instanceId];
-					return *stop;
-				}];
+				
+				EC2Instance *instance = [dataSource instance:instanceId];
 
 				NSUInteger menuItemIdx = [[_statusMenu itemArray] indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
-					*stop = [obj hasSubmenu] && [[[obj submenu] title] isEqualToString:instanceId];
+					*stop = [[obj representedObject] isEqualToString:instanceId];
 					return *stop;
 				}];
 
-				if (instanceIdx != NSNotFound && menuItemIdx != NSNotFound) {
-					EC2Instance *instance = [dataSource.instances objectAtIndex:instanceIdx];
+				if (instance && menuItemIdx != NSNotFound) {
 					NSMenu *instanceSubmenu = [[[_statusMenu itemArray] objectAtIndex:menuItemIdx] submenu];
-
 					[self refreshSubmenu:instanceSubmenu forInstance:instance];
 				}
 			}
 			else {
 				// was refresh for all instances
 
-				TBTrace(@"");
+				TBTrace(@"all instances");
 
 				[_statusMenu removeAllItems];
 
@@ -302,21 +306,7 @@ static NSDictionary *_infoColumnAttributes;
 
 			[_statusMenu removeAllItems];
 
-			NSString *awsRegionName = kAWSUSEastRegion;
-			switch ([[NSUserDefaults standardUserDefaults] integerForKey:kPreferencesAWSRegionKey]) {
-				case kPreferencesAWSUSEastRegion:
-					awsRegionName = kAWSUSEastRegionName;
-					break;
-				case kPreferencesAWSUSWestRegion:
-					awsRegionName = kAWSUSWestRegionName;
-					break;
-				case kPreferencesAWSEURegion:
-					awsRegionName = kAWSEURegionName;
-					break;
-				case kPreferencesAWSAsiaPacificRegion:
-					awsRegionName = kAWSAsiaPacificRegionName;
-					break;
-			}
+			NSString *awsRegionName = [AWSRequest regionTitleForRegion:[[NSUserDefaults standardUserDefaults] awsRegion]];
 			[_statusMenu addItem:[self notificationMessageItemWithTitle:
 								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
 
@@ -424,26 +414,30 @@ static NSDictionary *_infoColumnAttributes;
 	menuItem.attributedTitle = attributedTitle;
 
 	// set item image according to instance state
+	NSImage *stateImage = nil;
 	switch (instance.instanceState.code) {
 		case EC2_INSTANCE_STATE_RUNNING:
-			menuItem.image = [NSImage imageNamed:@"InstanceStateRunning.png"];
+			stateImage = [NSImage imageNamed:@"InstanceStateRunning.png"];
 			break;
 		case EC2_INSTANCE_STATE_STOPPED:
-			menuItem.image = [NSImage imageNamed:@"InstanceStateStopped.png"];
+			stateImage = [NSImage imageNamed:@"InstanceStateStopped.png"];
 			break;
 		case EC2_INSTANCE_STATE_TERMINATED:
-			menuItem.image = [NSImage imageNamed:@"InstanceStateTerminated.png"];
+			stateImage = [NSImage imageNamed:@"InstanceStateTerminated.png"];
 			break;
 		default:
-			menuItem.image = [NSImage imageNamed:@"InstanceStateOther.png"];
+			stateImage = [NSImage imageNamed:@"InstanceStateOther.png"];
 			break;
 	}
-
+	[menuItem setImage:stateImage];
+	
 	// set item submenu
-	menuItem.submenu = [self submenuForInstance:instance];
+	[menuItem setSubmenu:[self submenuForInstance:instance]];
+	
+	// set item represented object to instance id
+	[menuItem setRepresentedObject:instance.instanceId];
 
 	return menuItem;
-
 }
 
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints
@@ -494,18 +488,19 @@ static NSDictionary *_infoColumnAttributes;
 
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
-	[menuItem setRepresentedObject:info];
 	[menuItem setTarget:self];
-	[menuItem setToolTip:tooltip];
 	[menuItem setEnabled:action != NULL];
+	[menuItem setToolTip:tooltip];
+	[menuItem setRepresentedObject:info];
 
 	return menuItem;
 }
 
 - (NSMenuItem *)actionItemWithLabel:(NSString *)label action:(SEL)action
 {
-	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc] initWithString:label
-																						 attributes:_actionItemAttributes] autorelease];
+	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc]
+												   initWithString:label
+												   attributes:_actionItemAttributes] autorelease];
 
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:action keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
@@ -576,14 +571,12 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)refresh:(NSString *)instanceId
 {
-	if ([instanceId length] > 0) {
-		// refresh monitoring data for a single instance
-		[[DataSource sharedInstance] refreshInstance:instanceId];
-	}
-	else {
-		// refresh instances and composite monitoring data for all instances
-		[[DataSource sharedInstance] refresh];
-	}
+	DataSource *ds = [DataSource sharedInstance];
+	
+	if ([instanceId length] > 0)
+		[ds refreshInstance:instanceId];
+	else
+		[ds refresh];
 }
 
 - (void)refreshCompleted:(NSNotification *)notification
@@ -597,12 +590,30 @@ static NSDictionary *_infoColumnAttributes;
 //	[self refreshMenu:notification];
 }
 
+- (void)timerRefresh:(NSTimer *)timer
+{
+	[self refresh:nil];
+}
+
 #pragma mark -
 #pragma mark Menu delegate
 
 - (void)menuWillOpen:(NSMenu *)menu
 {
-	[self refresh:[menu title]];
+	NSString *instanceId = [menu title];
+	
+	if ([instanceId length] > 0) {
+		// refresh selected instance
+		[self refresh:instanceId];
+	}
+	else {
+		// refresh all instances only if "Refresh on menu open" is checked
+		if ([[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+			// we're about to do manual refresh, reset background refresh timer
+			[self setupRefreshTimer];
+			[self refresh:nil];
+		}
+	}
 }
 
 #pragma mark -
@@ -612,34 +623,44 @@ static NSDictionary *_infoColumnAttributes;
 {
 	TBTrace(@"reloading preferences");
 
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults synchronize];
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	[ud synchronize];
 
-	// set AWS credentials and region
-	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
-	NSString *awsSecretAccessKey = [userDefaults stringForKey:kPreferencesAWSSecretAccessKeyKey];
+	// set AWS options
+	[self setupDataSource];
+	
+	// setup background refresh timer
+	[self setupRefreshTimer];
+}
 
-	NSString *awsRegion = kAWSUSEastRegion;
-	switch ([userDefaults integerForKey:kPreferencesAWSRegionKey]) {
-		case kPreferencesAWSUSEastRegion:
-			awsRegion = kAWSUSEastRegion;
-			break;
-		case kPreferencesAWSUSWestRegion:
-			awsRegion = kAWSUSWestRegion;
-			break;
-		case kPreferencesAWSEURegion:
-			awsRegion = kAWSEURegion;
-			break;
-		case kPreferencesAWSAsiaPacificRegion:
-			awsRegion = kAWSAsiaPacificRegion;
-			break;
-	}
+- (void)setupDataSource
+{
+	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	
+	NSString *awsAccessKeyId = [ud awsAccessKeyId];
+	NSString *awsSecretAccessKey = [ud awsSecretAccessKey];
+	NSString *awsRegion = [ud awsRegion];
 
 	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
 										  awsAccessKeyId, kAWSAccessKeyIdOption,
 										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
 										  awsRegion, kAWSRegionOption,
 										  nil]];
+}
+
+- (void)setupRefreshTimer
+{
+	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
+
+	[_refreshTimer invalidate];
+	[_refreshTimer release], _refreshTimer = nil;
+	_refreshTimer = [NSTimer scheduledTimerWithTimeInterval:refreshInterval
+													 target:self
+												   selector:@selector(timerRefresh:)
+												   userInfo:nil
+													repeats:YES];
+	
+	[_refreshTimer retain];
 }
 
 - (void)preferencesDidChange:(NSNotification *)notification
@@ -679,17 +700,9 @@ static NSDictionary *_infoColumnAttributes;
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
-	DataSource *dataSource = [DataSource sharedInstance];
+	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
 
-	// TODO: move to DataSource
-	NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
-		*stop = [[obj instanceId] isEqualToString:instanceId];
-		return *stop;
-	}];
-
-	if (instanceIdx != NSNotFound) {
-		EC2Instance *instance = [dataSource.instances objectAtIndex:instanceIdx];
-
+	if (instance) {
 		NSString *cmd = [NSString stringWithFormat:
 						 @"tell application \"Terminal\" to do script \"ssh %@\"",
 						 instance.ipAddress];

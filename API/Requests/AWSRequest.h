@@ -39,6 +39,8 @@ extern NSString *const kAWSUseSSLOption;
 + (NSDictionary *)defaultOptions;
 + (void)setDefaultOptions:(NSDictionary *)options;
 
++ (NSString *)regionTitleForRegion:(NSString *)region;
+
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate;
 
 // Options
