@@ -50,6 +50,8 @@ static NSColor *_messageItemColor;
 static NSColor *_labelColumnColor;
 static NSColor *_infoColumnColor;
 
+static NSFont *_statusItemFont;
+
 static NSFont *_titleFont;
 static NSFont *_taggedInstanceFont;
 static NSFont *_untaggedInstanceFont;
@@ -57,6 +59,8 @@ static NSFont *_actionItemFont;
 static NSFont *_messageItemFont;
 static NSFont *_labelColumnFont;
 static NSFont *_infoColumnFont;
+
+static NSDictionary *_statusItemAttributes;
 
 static NSDictionary *_titleAttributes;
 static NSDictionary *_taggedInstanceAttributes;
@@ -75,7 +79,9 @@ static NSDictionary *_infoColumnAttributes;
 	if (!_messageItemColor)			_messageItemColor = [[NSColor blackColor] retain];
 	if (!_labelColumnColor)			_labelColumnColor = [[NSColor blackColor] retain];
 	if (!_infoColumnColor)			_infoColumnColor = [[NSColor blackColor] retain];
-		
+
+	if (!_statusItemFont)			_statusItemFont = [[NSFont systemFontOfSize:13.0f] retain];
+	
 	if (!_titleFont)				_titleFont = [[NSFont boldSystemFontOfSize:10.0f] retain];
 	if (!_taggedInstanceFont)		_taggedInstanceFont = [[NSFont boldSystemFontOfSize:13.0f] retain];
 	if (!_untaggedInstanceFont)		_untaggedInstanceFont = [[NSFont systemFontOfSize:13.0f] retain];
@@ -84,13 +90,17 @@ static NSDictionary *_infoColumnAttributes;
 	if (!_labelColumnFont)			_labelColumnFont = [[NSFont systemFontOfSize:11.0f] retain];
 	if (!_infoColumnFont)			_infoColumnFont = [[NSFont boldSystemFontOfSize:11.0f] retain];
 
+	if (!_statusItemAttributes)
+		_statusItemAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
+								  _statusItemFont, NSFontAttributeName,
+								  nil] retain];
 	if (!_titleAttributes)
 		_titleAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
 							 _titleColor, NSForegroundColorAttributeName,
 							 _titleFont, NSFontAttributeName,
 							 [NSNumber numberWithFloat:8.f], NSBaselineOffsetAttributeName,
 							 nil] retain];
-	
+
 	if (!_taggedInstanceAttributes)
 		_taggedInstanceAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
 									  _taggedInstanceColor, NSForegroundColorAttributeName,
@@ -108,13 +118,13 @@ static NSDictionary *_infoColumnAttributes;
 								  _actionItemColor, NSForegroundColorAttributeName,
 								  _actionItemFont, NSFontAttributeName,
 								  nil] retain];
-	
+
 	if (!_messageItemAttributes)
 		_messageItemAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
 								   _messageItemColor, NSForegroundColorAttributeName,
 								   _messageItemFont, NSFontAttributeName,
 								   nil] retain];
-	
+
 	if (!_labelColumnAttributes)
 		_labelColumnAttributes = [[NSDictionary dictionaryWithObjectsAndKeys:
 								   _labelColumnColor, NSForegroundColorAttributeName,
@@ -133,37 +143,37 @@ static NSDictionary *_infoColumnAttributes;
 {
 	// register preferences set through Preferences helper app
 	[[NSUserDefaults standardUserDefaults] addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
-	
+
 	// observe notifications from Preferences app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
 														selector:@selector(preferencesDidChange:)
 															name:kPreferencesDidChangeNotification
 														  object:nil];
-	
-	// load current preferences
-	[self loadPreferences];
-	
+
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
 	[_statusMenu setShowsStateColumn:NO];
 	[_statusMenu setDelegate:self];
 	[self resetMenu];
-	
+
 	// set up status item
-	_statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:30.f] retain];
+	_statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
 	[_statusItem setImage:[NSImage imageNamed:@"StatusItem.png"]];
 	[_statusItem setMenu:_statusMenu];
-	
+
 	// set up pasteboard
 	NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
 	[pasteBoard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
-	
+
 	// subscribe to data source notifications
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(refreshCompleted:)
 												 name:kDataSourceRefreshCompletedNotification
 											   object:[DataSource sharedInstance]];
 
+	// load current preferences
+	[self loadPreferences];
+	
 	// perform initial refresh
 	[self refresh:nil];
 }
@@ -188,7 +198,7 @@ static NSDictionary *_infoColumnAttributes;
 - (void)resetMenu
 {
 	[_statusMenu removeAllItems];
-	
+
 //	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
@@ -198,12 +208,14 @@ static NSDictionary *_infoColumnAttributes;
 - (void)refreshMenu:(NSNotification *)notification
 {
 	NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
-	
+
 	if (error) {
+		// refresh finished with error
+		
 		[_statusMenu removeAllItems];
-		
+
 		NSString *errorMessage = nil;
-		
+
 		if ([error domain] == kAWSErrorDomain)
 			errorMessage = [[error userInfo] objectForKey:kAWSErrorMessageKey];
 		else
@@ -215,62 +227,68 @@ static NSDictionary *_infoColumnAttributes;
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
-		
+
+		[_statusItem setTitle:nil];
 	}
 	else {
+		// refresh finished successfully
+		
 		DataSource *dataSource = [DataSource sharedInstance];
-	
-		if ([dataSource.instances count] > 0) {
-			NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
+		NSUInteger instancesCount = [dataSource.instances count];
+
+		if (instancesCount > 0) {
+			// there are some instances
 			
+			NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
+
 			if ([instanceId length] > 0) {
 				// was refresh for selected instance
-				
+
 				TBTrace(@"%@", instanceId);
-				
+
 				// TODO: move to DataSource
 				NSUInteger instanceIdx = [dataSource.instances indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
 					*stop = [[obj instanceId] isEqualToString:instanceId];
 					return *stop;
 				}];
-				
+
 				NSUInteger menuItemIdx = [[_statusMenu itemArray] indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
 					*stop = [obj hasSubmenu] && [[[obj submenu] title] isEqualToString:instanceId];
 					return *stop;
 				}];
-				
+
 				if (instanceIdx != NSNotFound && menuItemIdx != NSNotFound) {
 					EC2Instance *instance = [dataSource.instances objectAtIndex:instanceIdx];
 					NSMenu *instanceSubmenu = [[[_statusMenu itemArray] objectAtIndex:menuItemIdx] submenu];
-					
+
 					[self refreshSubmenu:instanceSubmenu forInstance:instance];
 				}
 			}
 			else {
 				// was refresh for all instances
-				
+
 				TBTrace(@"");
-				
+
 				[_statusMenu removeAllItems];
-				
+
 				[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
 				for (EC2Instance *instance in dataSource.instances) {
 					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
 				}
-				
+
 //				// Add chart
 //				[_statusMenu addItem:[NSMenuItem separatorItem]];
 //				[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
 //				[_statusMenu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric]]];
-//				
+//
 //				CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
 //				CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
 //				CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-//				
+//
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
-				
+
 				// Add action menu items
 				//			[_statusMenu addItem:[NSMenuItem separatorItem]];
 				//			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
@@ -280,10 +298,10 @@ static NSDictionary *_infoColumnAttributes;
 			}
 		}
 		else {
-			// no instances
-			
+			// there are no instances
+
 			[_statusMenu removeAllItems];
-			
+
 			NSString *awsRegionName = kAWSUSEastRegion;
 			switch ([[NSUserDefaults standardUserDefaults] integerForKey:kPreferencesAWSRegionKey]) {
 				case kPreferencesAWSUSEastRegion:
@@ -301,13 +319,19 @@ static NSDictionary *_infoColumnAttributes;
 			}
 			[_statusMenu addItem:[self notificationMessageItemWithTitle:
 								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
-			
+
 			//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
-			
+
 		}
+		
+		NSAttributedString *statusItemTitle = [[NSAttributedString alloc]
+											   initWithString:[NSString stringWithFormat:@"%d", instancesCount]
+											   attributes:_statusItemAttributes];
+		[_statusItem setAttributedTitle:statusItemTitle];
+		[statusItemTitle release];
 	}
 }
 
@@ -317,14 +341,14 @@ static NSDictionary *_infoColumnAttributes;
 																						 attributes:_titleAttributes] autorelease];
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[paragraphStyle setMinimumLineHeight:20.f];
-	
+
 	[attributedTitle addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [attributedTitle length])];
-	
+
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
 	[menuItem setEnabled:NO];
-	
+
 	return menuItem;
 }
 
@@ -334,18 +358,18 @@ static NSDictionary *_infoColumnAttributes;
 	[table setNumberOfColumns:1];
 	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
 	[table setHidesEmptyCells:NO];
-	
+
 	NSTextTableBlock *titleBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
 	[titleBlock setContentWidth:MESSAGE_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
 	[titleBlock setWidth:10.0 type:NSTextBlockAbsoluteValueType forLayer:NSTextBlockPadding edge:NSMinXEdge];
-	
+
 	NSMutableParagraphStyle *titleParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[titleParagraphStyle setAlignment:NSLeftTextAlignment];
 	[titleParagraphStyle setTextBlocks:[NSArray arrayWithObject:titleBlock]];
-	
+
 	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc] initWithString:@""] autorelease];
 	NSUInteger attributedTitleLength = [attributedTitle length];
-	
+
 	NSString *titleText = nil;
 	if (title) {
 		if (NO == [title hasSuffix:@"."])
@@ -360,16 +384,16 @@ static NSDictionary *_infoColumnAttributes;
 	[attributedTitle replaceCharactersInRange:NSMakeRange(attributedTitleLength, 0) withString:titleText];
 	[attributedTitle setAttributes:_messageItemAttributes range:NSMakeRange(attributedTitleLength, [attributedTitle length] - attributedTitleLength)];
 	[attributedTitle addAttribute:NSParagraphStyleAttributeName value:titleParagraphStyle range:NSMakeRange(attributedTitleLength, [attributedTitle length] - attributedTitleLength)];
-	
+
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
-	
+
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
 //	[menuItem setTarget:self];
 //	[menuItem setAction:@selector(nopAction:)];
 	[menuItem setEnabled:NO];
 	[menuItem setImage:image];
-	
+
 	return menuItem;
 }
 
@@ -387,7 +411,7 @@ static NSDictionary *_infoColumnAttributes;
 {
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
-	
+
 	NSString *nameTag = instance.nameTag;
 	NSAttributedString *attributedTitle = nil;
 
@@ -396,9 +420,9 @@ static NSDictionary *_infoColumnAttributes;
 		attributedTitle = [[[NSAttributedString alloc] initWithString:nameTag attributes:_taggedInstanceAttributes] autorelease];
 	else
 		attributedTitle = [[[NSAttributedString alloc] initWithString:instance.instanceId attributes:_untaggedInstanceAttributes] autorelease];
-	
+
 	menuItem.attributedTitle = attributedTitle;
-	
+
 	// set item image according to instance state
 	switch (instance.instanceState.code) {
 		case EC2_INSTANCE_STATE_RUNNING:
@@ -414,12 +438,12 @@ static NSDictionary *_infoColumnAttributes;
 			menuItem.image = [NSImage imageNamed:@"InstanceStateOther.png"];
 			break;
 	}
-	
+
 	// set item submenu
 	menuItem.submenu = [self submenuForInstance:instance];
-	
+
 	return menuItem;
-	
+
 }
 
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints
@@ -429,7 +453,7 @@ static NSDictionary *_infoColumnAttributes;
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
 	[menuItem setView:chartView];
-	
+
 	return menuItem;
 }
 
@@ -440,41 +464,41 @@ static NSDictionary *_infoColumnAttributes;
 	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
 	[table setContentWidth:INSTANCE_INFO_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
 	[table setHidesEmptyCells:NO];
-	
+
 	NSTextTableBlock *labelBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
 	[labelBlock setContentWidth:INSTANCE_INFO_LABEL_COLUMN_WIDTH type:NSTextBlockAbsoluteValueType];
-	
+
 	NSTextTableBlock *infoBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1];
-	
+
 	NSMutableParagraphStyle *labelParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[labelParagraphStyle setAlignment:NSLeftTextAlignment];
 	[labelParagraphStyle setTextBlocks:[NSArray arrayWithObject:labelBlock]];
-	
+
 	NSMutableParagraphStyle *infoParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[infoParagraphStyle setAlignment:NSRightTextAlignment];
 	[infoParagraphStyle setTextBlocks:[NSArray arrayWithObject:infoBlock]];
-	
+
 	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc] initWithString:@""] autorelease];
-	
+
 	NSUInteger textLength = [attributedTitle length];
 	[attributedTitle replaceCharactersInRange:NSMakeRange(textLength, 0) withString:[NSString stringWithFormat:@"%@\n", (label ? label : @" ")]];
 	[attributedTitle setAttributes:_labelColumnAttributes range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
 	[attributedTitle addAttribute:NSParagraphStyleAttributeName value:labelParagraphStyle range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
-	
+
 	textLength = [attributedTitle length];
 	[attributedTitle replaceCharactersInRange:NSMakeRange(textLength, 0) withString:[NSString stringWithFormat:@"%@", (info ? info : @" ")]];
 	[attributedTitle setAttributes:_infoColumnAttributes range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
 	[attributedTitle addAttribute:NSParagraphStyleAttributeName value:infoParagraphStyle range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
-	
+
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:action keyEquivalent:@""] autorelease];
-	
+
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
 	[menuItem setRepresentedObject:info];
 	[menuItem setTarget:self];
 	[menuItem setToolTip:tooltip];
 	[menuItem setEnabled:action != NULL];
-	
+
 	return menuItem;
 }
 
@@ -482,12 +506,12 @@ static NSDictionary *_infoColumnAttributes;
 {
 	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc] initWithString:label
 																						 attributes:_actionItemAttributes] autorelease];
-	
+
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:action keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
 	[menuItem setAttributedTitle:attributedTitle];
 	[menuItem setTarget:self];
-	
+
 	return menuItem;
 }
 
@@ -500,7 +524,7 @@ static NSDictionary *_infoColumnAttributes;
 	[menu setDelegate:self];
 	[menu setTitle:instance.instanceId];
 	[menu setShowsStateColumn:NO];
-	
+
 	[self refreshSubmenu:menu forInstance:instance];
 
 	return menu;
@@ -509,23 +533,23 @@ static NSDictionary *_infoColumnAttributes;
 - (void)refreshSubmenu:(NSMenu *)menu forInstance:(EC2Instance *)instance
 {
 	DataSource *dataSource = [DataSource sharedInstance];
-	
+
 	[menu removeAllItems];
-	
+
 	[menu addItem:[self titleItemWithTitle:@"INSTANCE DETAILS"]];
 	[menu addItem:[self infoItemWithLabel:@"Instance ID" info:instance.instanceId action:@selector(copyToPasteboardAction:) tooltip:@"Copy Instance ID"]];
 	[menu addItem:[self infoItemWithLabel:@"Image ID" info:instance.imageId action:@selector(copyToPasteboardAction:) tooltip:@"Copy Image ID"]];
 	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Monitoring" info:instance.monitoring.monitoringType action:NULL tooltip:nil]];
-	
+
 	if ([instance.ipAddress length] > 0) {
 		[menu addItem:[NSMenuItem separatorItem]];
 		[menu addItem:[self titleItemWithTitle:@"NETWORKING"]];
 		[menu addItem:[self infoItemWithLabel:@"Public IP" info:instance.ipAddress action:@selector(copyToPasteboardAction:) tooltip:@"Copy Public IP"]];
 		[menu addItem:[self infoItemWithLabel:@"Private IP" info:instance.privateIpAddress action:@selector(copyToPasteboardAction:) tooltip:@"Copy Private IP"]];
 	}
-	
+
 	[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
 	[menu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId]]];
@@ -534,12 +558,12 @@ static NSDictionary *_infoColumnAttributes;
 		CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
 		CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
 		CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
-		
+
 		[menu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
 		[menu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 		[menu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 	}
-	
+
 	[menu addItem:[NSMenuItem separatorItem]];
 	[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
 //	[menu addItem:[NSMenuItem separatorItem]];
@@ -587,14 +611,14 @@ static NSDictionary *_infoColumnAttributes;
 - (void)loadPreferences
 {
 	TBTrace(@"reloading preferences");
-	
+
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	[userDefaults synchronize];
 
 	// set AWS credentials and region
 	NSString *awsAccessKeyId = [userDefaults stringForKey:kPreferencesAWSAccessKeyIdKey];
 	NSString *awsSecretAccessKey = [userDefaults stringForKey:kPreferencesAWSSecretAccessKeyKey];
-	
+
 	NSString *awsRegion = kAWSUSEastRegion;
 	switch ([userDefaults integerForKey:kPreferencesAWSRegionKey]) {
 		case kPreferencesAWSUSEastRegion:
@@ -610,7 +634,7 @@ static NSDictionary *_infoColumnAttributes;
 			awsRegion = kAWSAsiaPacificRegion;
 			break;
 	}
-	
+
 	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
 										  awsAccessKeyId, kAWSAccessKeyIdOption,
 										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
@@ -621,7 +645,7 @@ static NSDictionary *_infoColumnAttributes;
 - (void)preferencesDidChange:(NSNotification *)notification
 {
 	TBTrace(@"preferencesDidChange: %@", notification);
-	
+
 	[self loadPreferences];
 	[self refresh:nil];
 }
@@ -653,7 +677,7 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)connectToInstanceAction:(id)sender
 {
-	NSMenuItem *menuItem = (NSMenuItem *)sender;                                                                                        
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
 	DataSource *dataSource = [DataSource sharedInstance];
 
@@ -662,18 +686,18 @@ static NSDictionary *_infoColumnAttributes;
 		*stop = [[obj instanceId] isEqualToString:instanceId];
 		return *stop;
 	}];
-	
+
 	if (instanceIdx != NSNotFound) {
 		EC2Instance *instance = [dataSource.instances objectAtIndex:instanceIdx];
 
 		NSString *cmd = [NSString stringWithFormat:
 						 @"tell application \"Terminal\" to do script \"ssh %@\"",
 						 instance.ipAddress];
-		
+
 		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
 		NSDictionary *errorInfo = nil;
 		[appleScript executeAndReturnError:&errorInfo];
-		
+
 		// TODO: handle errors
 	}
 }

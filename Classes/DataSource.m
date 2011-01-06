@@ -132,7 +132,7 @@ static DataSource * _sharedInstance = nil;
 			TBTrace(@"refresh is already in progress.");
 			return;
 		}
-		
+
 		self.startedAt = [NSDate date];
 		self.completionNotificationUserInfo = [NSMutableDictionary dictionary];
 		[_runningRequests removeAllObjects];
@@ -141,16 +141,16 @@ static DataSource * _sharedInstance = nil;
 		if (!_instancesRequest)
 			self.instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
 		[_runningRequests addObject:_instancesRequest];
-		
+
 //		// schedule composite monitoring stats refresh
 //		for (NSString *metric in _compositeMonitoringMetrics) {
 //			MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
-//			
+//
 //			if (!monitoringRequest) {
 //				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
 //				[_compositeMonitoringRequests setObject:monitoringRequest forKey:metric];
 //			}
-//			
+//
 //			// Only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
 //			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
 //				[_runningRequests addObject:monitoringRequest];
@@ -161,7 +161,7 @@ static DataSource * _sharedInstance = nil;
 //
 //		}
 	}
-	
+
 	// start scheduled requests
 	for (AWSRequest *request in _runningRequests) {
 		[request start];
@@ -179,25 +179,25 @@ static DataSource * _sharedInstance = nil;
 		self.startedAt = [NSDate date];
 		self.completionNotificationUserInfo = [NSMutableDictionary dictionaryWithObject:instanceId forKey:kDataSourceInstanceIdInfoKey];
 		[_runningRequests removeAllObjects];
-		
+
 		// schedule instance monitoring stats refresh
 		NSMutableDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
-		
+
 		if (!instanceMonitoringRequests) {
 			instanceMonitoringRequests = [NSMutableDictionary dictionary];
 			[_instanceMonitoringRequests setObject:instanceMonitoringRequests forKey:instanceId];
 		}
-		
+
 		for (NSString *metric in _instanceMonitoringMetrics) {
 			MonitoringGetMetricStatisticsRequest *monitoringRequest = [instanceMonitoringRequests objectForKey:metric];
-		
+
 			if (!monitoringRequest) {
 				monitoringRequest = [[MonitoringGetMetricStatisticsRequest alloc] initWithOptions:nil delegate:self];
 				monitoringRequest.instanceId = instanceId;
 				monitoringRequest.metric = metric;
 				[instanceMonitoringRequests setObject:monitoringRequest forKey:metric];
 			}
-			
+
 			// only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
 			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
 				[_runningRequests addObject:monitoringRequest];
@@ -207,7 +207,7 @@ static DataSource * _sharedInstance = nil;
 			}
 		}
 	}
-	
+
 	for (AWSRequest *request in _runningRequests) {
 		[request start];
 	}
@@ -234,18 +234,18 @@ static DataSource * _sharedInstance = nil;
 - (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
 {
 	NSArray *stats = [self statisticsForMetric:metric];
-	
+
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat result = 0;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
 				result = datapoint.maximum;
 			}
 		}];
-		
+
 		return result;
 	}
 	else
@@ -259,14 +259,14 @@ static DataSource * _sharedInstance = nil;
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat result = MAXFLOAT;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
 				result = datapoint.minimum;
 			}
 		}];
-		
+
 		return result;
 	}
 	else
@@ -281,7 +281,7 @@ static DataSource * _sharedInstance = nil;
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat sum = 0;
 		__block NSUInteger count = 0;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp) {
@@ -289,7 +289,7 @@ static DataSource * _sharedInstance = nil;
 				count++;
 			}
 		}];
-		
+
 		return sum/count;
 	}
 	else
@@ -299,18 +299,18 @@ static DataSource * _sharedInstance = nil;
 - (CGFloat)maximumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
 {
 	NSArray *stats = [self statisticsForMetric:metric forInstance:instanceId];
-	
+
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat result = 0;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
 				result = datapoint.maximum;
 			}
 		}];
-		
+
 		return result;
 	}
 	else
@@ -324,14 +324,14 @@ static DataSource * _sharedInstance = nil;
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat result = MAXFLOAT;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
 				result = datapoint.minimum;
 			}
 		}];
-		
+
 		return result;
 	}
 	else
@@ -346,7 +346,7 @@ static DataSource * _sharedInstance = nil;
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
 		__block CGFloat sum = 0;
 		__block NSUInteger count = 0;
-		
+
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
 			if (datapoint.timestamp > startTimestamp) {
@@ -354,7 +354,7 @@ static DataSource * _sharedInstance = nil;
 				count++;
 			}
 		}];
-		
+
 		return sum/count;
 	}
 	else
@@ -372,7 +372,7 @@ static DataSource * _sharedInstance = nil;
 - (void)requestDidFinishLoading:(AWSRequest *)request
 {
 	TBTrace(@"%@", NSStringFromClass([request class]));
-	
+
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
 		[_runningRequests removeObject:request];
@@ -381,7 +381,7 @@ static DataSource * _sharedInstance = nil;
 			self.completedAt = [NSDate date];
 		}
 	}
-	
+
 	if (refreshCompleted) {
 		// notify observers that refresh has been completed
 		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec): %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], _completionNotificationUserInfo);
@@ -396,7 +396,7 @@ static DataSource * _sharedInstance = nil;
 - (void)request:(AWSRequest *)request didFailWithError:(NSError *)error
 {
 	TBTrace(@"%@ %@", NSStringFromClass([request class]), error);
-	
+
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
 		[_runningRequests removeObject:request];
@@ -409,7 +409,7 @@ static DataSource * _sharedInstance = nil;
 	if (refreshCompleted) {
 		// notify observers that refresh has been completed
 		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec) error: %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], error);
-		
+
 		[_completionNotificationUserInfo setObject:error forKey:kDataSourceErrorInfoKey];
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
 															object:self

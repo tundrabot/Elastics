@@ -398,7 +398,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return nil;
 }
 
-- (AWSResponse *)parseErrorResponse
+- (AWSErrorResponse *)parseErrorResponse
 {
 	NSAssert(FALSE, @"Abstract method call.");
 	return nil;
