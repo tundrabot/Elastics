@@ -21,6 +21,7 @@
 - (void)postPreferenceChangeNotification;
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated;
 - (void)addContentSubview:(NSView *)view;
+- (void)preferencesShouldTerminate:(NSNotification *)notification;
 @end
 
 @implementation AppDelegate
@@ -41,8 +42,8 @@
 									forName:@"RefreshIntervalLabelValueTransformer"];
 	
 	// register default preference values
-	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-	[ud registerDefaults:[ud defaultCloudwatchPreferences]];
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	[userDefaults registerDefaults:[userDefaults defaultCloudwatchPreferences]];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -55,12 +56,27 @@
 		[_window makeFirstResponder:_awsAccessKeyIdField];
 	}
 	
-	// subscribe to preference values change notifications
+	// observe preference values change notifications
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
 						   selector:@selector(userDefaultsDidChange:)
 							   name:NSUserDefaultsDidChangeNotification
 							 object:nil];
+	
+	// observe termination notification from main app
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
+														selector:@selector(preferencesShouldTerminate:)
+															name:kPreferencesShouldTerminateNotification
+														  object:nil];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+	// unsubscribe from notifications
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self
+															   name:kPreferencesShouldTerminateNotification
+															 object:nil];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
@@ -167,6 +183,14 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesDidChangeNotification
 																   object:nil];
+}
+
+#pragma mark -
+#pragma mark Main app notifications
+
+- (void)preferencesShouldTerminate:(NSNotification *)notification
+{
+	[NSApp terminate:nil];
 }
 
 #pragma mark -

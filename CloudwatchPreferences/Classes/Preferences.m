@@ -10,7 +10,10 @@
 #import "AWSConstants.h"
 
 // Distributed notification sent when preferences are changed
-NSString *const kPreferencesDidChangeNotification	= @"com.tundrabot.Cloudwatch.PreferencesDidChangeNotification";
+NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Cloudwatch.PreferencesDidChangeNotification";
+
+// Distributed notification sent when main application terminates
+NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Cloudwatch.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
 NSString *const kPreferencesAWSAccessKeyIdKey		= @"awsAccessKeyId";
@@ -30,6 +33,8 @@ enum {
 static NSDictionary *_defaults;
 
 @implementation NSUserDefaults (CloudwatchPreferences)
+
+//@dynamic awsAccessKeyId;
 
 - (NSDictionary *)defaultCloudwatchPreferences
 {
@@ -73,14 +78,25 @@ static NSDictionary *_defaults;
 	}
 }
 
-- (NSTimeInterval)refreshInterval
+- (NSInteger)refreshInterval
 {
-	return (NSTimeInterval)[self integerForKey:kPreferencesRefreshIntervalKey];
+	return [self integerForKey:kPreferencesRefreshIntervalKey];
 }
 
 - (BOOL)refreshOnMenuOpen
 {
 	return [self boolForKey:kPreferencesRefreshOnMenuOpenKey];
+}
+
+- (NSString *)secureAwsAccessKeyId
+{
+	TBTrace(@"");
+	return @"";
+}
+
+- (void)setSecureAwsAccessKeyId:(NSString *)value
+{
+	TBTrace(@"%@", value);
 }
 
 @end

@@ -156,12 +156,6 @@ static NSDictionary *_infoColumnAttributes;
 	// load current preferences
 	[self loadPreferences];
 
-	// observe notifications from Preferences app
-	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
-														selector:@selector(preferencesDidChange:)
-															name:kPreferencesDidChangeNotification
-														  object:nil];
-
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
 	[_statusMenu setShowsStateColumn:NO];
@@ -183,6 +177,12 @@ static NSDictionary *_infoColumnAttributes;
 												 name:kDataSourceRefreshCompletedNotification
 											   object:[DataSource sharedInstance]];
 
+	// observe notifications from Preferences app
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
+														selector:@selector(preferencesDidChange:)
+															name:kPreferencesDidChangeNotification
+														  object:nil];
+	
 	// perform initial refresh
 	[self refresh:nil];
 }
@@ -191,6 +191,13 @@ static NSDictionary *_infoColumnAttributes;
 {
 	// unsubscribe from notifications
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self
+															   name:kPreferencesDidChangeNotification
+															 object:nil];
+	
+	// post app termination notification so Preferences will terminate too
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesShouldTerminateNotification
+																   object:nil];
 }
 
 - (void)dealloc
@@ -217,6 +224,8 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)refreshMenu:(NSNotification *)notification
 {
+	[_statusMenu setMinimumWidth:0];
+
 	NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
 
 	if (error) {
@@ -323,6 +332,8 @@ static NSDictionary *_infoColumnAttributes;
 		[_statusItem setAttributedTitle:statusItemTitle];
 		[statusItemTitle release];
 	}
+
+	[_statusMenu setMinimumWidth:100];
 }
 
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title

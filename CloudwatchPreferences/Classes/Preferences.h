@@ -9,12 +9,16 @@
 // Distributed notification sent when preferences are changed
 extern NSString *const kPreferencesDidChangeNotification;
 
+// Distributed notification sent when main application terminates
+extern NSString *const kPreferencesShouldTerminateNotification;
+
 @interface NSUserDefaults (CloudwatchPreferences)
 - (NSDictionary *)defaultCloudwatchPreferences;
 
 - (NSString *)awsAccessKeyId;
 - (NSString *)awsSecretAccessKey;
 - (NSString *)awsRegion;
-- (NSTimeInterval)refreshInterval;
+- (NSInteger)refreshInterval;
 - (BOOL)refreshOnMenuOpen;
+
 @end
