@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		256AC3DA0F4B6AC300CF3369 /* CloudwatchAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* CloudwatchAppDelegate.m */; };
+		256AC3DA0F4B6AC300CF3369 /* ElasticAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -46,33 +46,29 @@
 		C32C32B112C23CDA00F2C136 /* NSString+DateConversions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32B012C23CDA00F2C136 /* NSString+DateConversions.m */; };
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
+		C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */; };
+		C379FBD512D89B6B00D055EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FBD412D89B6B00D055EF /* Keychain.m */; };
+		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
 		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
 		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
 		C3B3741C12D4B36200A1E47E /* Notification.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741A12D4B36200A1E47E /* Notification.png */; };
 		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
+		C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CE021812D76678006E87EF /* StatusItemAlert.png */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
 		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
 		C3F1A4B912C78460001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A4B812C78460001AB554 /* Icon.icns */; };
-		C3F1A56012C79022001AB554 /* CloudwatchPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */; };
 		C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* Preferences.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C3F1A55212C78F98001AB554 /* PBXContainerItemProxy */ = {
+		C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
+			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8D1107320486CEB800E47090;
-			remoteInfo = CloudwatchPreferences;
-		};
-		C3F1A55412C78FB3001AB554 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D1107260486CEB800E47090;
-			remoteInfo = CloudwatchPreferences;
+			remoteInfo = ElasticPreferences;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -83,7 +79,7 @@
 			dstPath = Contents/Helpers;
 			dstSubfolderSpec = 1;
 			files = (
-				C3F1A56012C79022001AB554 /* CloudwatchPreferences.app in CopyFiles */,
+				C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,19 +88,18 @@
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		256AC3D80F4B6AC300CF3369 /* CloudwatchAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudwatchAppDelegate.h; sourceTree = "<group>"; };
-		256AC3D90F4B6AC300CF3369 /* CloudwatchAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudwatchAppDelegate.m; sourceTree = "<group>"; };
-		256AC3F00F4B6AF500CF3369 /* Cloudwatch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cloudwatch_Prefix.pch; sourceTree = "<group>"; };
+		256AC3D80F4B6AC300CF3369 /* ElasticAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElasticAppDelegate.h; sourceTree = "<group>"; };
+		256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ElasticAppDelegate.m; sourceTree = "<group>"; };
+		256AC3F00F4B6AF500CF3369 /* Elastic_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Elastic_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Cloudwatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cloudwatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Elastic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elastic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
 		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
-		C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Cloudwatch.xcconfig; sourceTree = "<group>"; };
+		C32C28C912C0C09200F2C136 /* Elastic.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Elastic.xcconfig; sourceTree = "<group>"; };
 		C32C28E712C0C2F500F2C136 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
 		C32C28E812C0C2F500F2C136 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C32C290A12C0C60900F2C136 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSConstants.h; sourceTree = "<group>"; };
@@ -166,6 +161,9 @@
 		C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringDatapoint.m; sourceTree = "<group>"; };
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
+		C379FBD312D89B6B00D055EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keychain.h; path = ElasticPreferences/Classes/Keychain.h; sourceTree = SOURCE_ROOT; };
+		C379FBD412D89B6B00D055EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keychain.m; path = ElasticPreferences/Classes/Keychain.m; sourceTree = SOURCE_ROOT; };
+		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C391BB0A12CB9F3E00BD929A /* AWSErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSErrorResponse.h; sourceTree = "<group>"; };
 		C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSErrorResponse.m; sourceTree = "<group>"; };
 		C391BB0D12CBA0C600BD929A /* EC2ErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2ErrorResponse.h; sourceTree = "<group>"; };
@@ -174,6 +172,7 @@
 		C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringErrorResponse.m; sourceTree = "<group>"; };
 		C3B3741A12D4B36200A1E47E /* Notification.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification.png; sourceTree = "<group>"; };
 		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
+		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
 		C3DAED6C12C34DE200A0106D /* ChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChartView.h; sourceTree = "<group>"; };
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
@@ -181,9 +180,9 @@
 		C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCryptor.h"; sourceTree = "<group>"; };
 		C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCryptor.m"; sourceTree = "<group>"; };
 		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
-		C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CloudwatchPreferences.xcodeproj; path = CloudwatchPreferences/CloudwatchPreferences.xcodeproj; sourceTree = "<group>"; };
-		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = CloudwatchPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
-		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = CloudwatchPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
+		C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ElasticPreferences.xcodeproj; path = ElasticPreferences/ElasticPreferences.xcodeproj; sourceTree = "<group>"; };
+		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = ElasticPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
+		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = ElasticPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +193,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */,
 				C32C30FA12C20F2F00F2C136 /* QuartzCore.framework in Frameworks */,
+				C379FD6612D89BB800D055EF /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,14 +203,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3D80F4B6AC300CF3369 /* CloudwatchAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* CloudwatchAppDelegate.m */,
+				256AC3D80F4B6AC300CF3369 /* ElasticAppDelegate.h */,
+				256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */,
 				C32C2A0012C0CF2000F2C136 /* DataSource.h */,
 				C32C2A0112C0CF2000F2C136 /* DataSource.m */,
 				C3DAED6C12C34DE200A0106D /* ChartView.h */,
 				C3DAED6D12C34DE200A0106D /* ChartView.m */,
 				C3F1A65C12C7A7EF001AB554 /* Preferences.h */,
 				C3F1A65D12C7A7EF001AB554 /* Preferences.m */,
+				C379FBD312D89B6B00D055EF /* Keychain.h */,
+				C379FBD412D89B6B00D055EF /* Keychain.m */,
 				C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */,
 				C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */,
 			);
@@ -220,35 +222,28 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-			);
-			name = "Linked Frameworks";
-			sourceTree = "<group>";
-		};
-		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
-				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				C32C30F912C20F2F00F2C136 /* QuartzCore.framework */,
+				C379FD6512D89BB800D055EF /* Security.framework */,
 				C32C29C912C0C9BB00F2C136 /* libz.dylib */,
 			);
-			name = "Other Frameworks";
+			name = "Linked Frameworks";
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Cloudwatch.app */,
+				8D1107320486CEB800E47090 /* Elastic.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Cloudwatch */ = {
+		29B97314FDCFA39411CA2CEA /* Elastic */ = {
 			isa = PBXGroup;
 			children = (
-				C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */,
+				C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C32C298712C0C63900F2C136 /* TBXML */,
@@ -258,15 +253,15 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				C32C28E712C0C2F500F2C136 /* TBDebug.h */,
 				C32C28E812C0C2F500F2C136 /* TBMacros.h */,
-				C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */,
+				C32C28C912C0C09200F2C136 /* Elastic.xcconfig */,
 			);
-			name = Cloudwatch;
+			name = Elastic;
 			sourceTree = "<group>";
 		};
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3F00F4B6AF500CF3369 /* Cloudwatch_Prefix.pch */,
+				256AC3F00F4B6AF500CF3369 /* Elastic_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -288,7 +283,6 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
-				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -397,6 +391,7 @@
 				C3B3741A12D4B36200A1E47E /* Notification.png */,
 				C3B3741B12D4B36200A1E47E /* Error.png */,
 				C32C2B5212C0E2B600F2C136 /* StatusItem.png */,
+				C3CE021812D76678006E87EF /* StatusItemAlert.png */,
 				C32C2B4E12C0E2B600F2C136 /* InstanceStateOther.png */,
 				C32C2B4F12C0E2B600F2C136 /* InstanceStateRunning.png */,
 				C32C2B5012C0E2B600F2C136 /* InstanceStateStopped.png */,
@@ -405,10 +400,10 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
-		C3F1A54C12C78F98001AB554 /* Products */ = {
+		C3BFED5712D76B1A007A4EDF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */,
+				C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -416,9 +411,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* Cloudwatch */ = {
+		8D1107260486CEB800E47090 /* Elastic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Cloudwatch" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -428,12 +423,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				C3F1A55512C78FB3001AB554 /* PBXTargetDependency */,
 			);
-			name = Cloudwatch;
+			name = Elastic;
 			productInstallPath = "$(HOME)/Applications";
-			productName = Cloudwatch;
-			productReference = 8D1107320486CEB800E47090 /* Cloudwatch.app */;
+			productName = Elastic;
+			productReference = 8D1107320486CEB800E47090 /* Elastic.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -444,7 +438,7 @@
 			attributes = {
 				ORGANIZATIONNAME = "Tundra Bot";
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Cloudwatch" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastic" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -454,27 +448,27 @@
 				French,
 				German,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Cloudwatch */;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Elastic */;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = C3F1A54C12C78F98001AB554 /* Products */;
-					ProjectRef = C3F1A54B12C78F98001AB554 /* CloudwatchPreferences.xcodeproj */;
+					ProductGroup = C3BFED5712D76B1A007A4EDF /* Products */;
+					ProjectRef = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* Cloudwatch */,
+				8D1107260486CEB800E47090 /* Elastic */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		C3F1A55312C78F98001AB554 /* CloudwatchPreferences.app */ = {
+		C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = CloudwatchPreferences.app;
-			remoteRef = C3F1A55212C78F98001AB554 /* PBXContainerItemProxy */;
+			path = ElasticPreferences.app;
+			remoteRef = C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -494,6 +488,7 @@
 				C3F1A4B912C78460001AB554 /* Icon.icns in Resources */,
 				C3B3741C12D4B36200A1E47E /* Notification.png in Resources */,
 				C3B3741D12D4B36200A1E47E /* Error.png in Resources */,
+				C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,7 +500,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				256AC3DA0F4B6AC300CF3369 /* CloudwatchAppDelegate.m in Sources */,
+				256AC3DA0F4B6AC300CF3369 /* ElasticAppDelegate.m in Sources */,
 				C32C295D12C0C60900F2C136 /* AWSConstants.m in Sources */,
 				C32C295E12C0C60900F2C136 /* AWSRequest.m in Sources */,
 				C32C295F12C0C60900F2C136 /* NSData+Base64.m in Sources */,
@@ -540,18 +535,11 @@
 				C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */,
 				C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */,
 				C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */,
+				C379FBD512D89B6B00D055EF /* Keychain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		C3F1A55512C78FB3001AB554 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CloudwatchPreferences;
-			targetProxy = C3F1A55412C78FB3001AB554 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -577,16 +565,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Dmitri Goutnik";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Cloudwatch_Prefix.pch;
+				GCC_PREFIX_HEADER = Elastic_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Cloudwatch;
+				PRODUCT_NAME = Elastic;
 			};
 			name = Debug;
 		};
@@ -594,19 +583,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Dmitri Goutnik";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Cloudwatch_Prefix.pch;
+				GCC_PREFIX_HEADER = Elastic_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Cloudwatch;
+				PRODUCT_NAME = Elastic;
 			};
 			name = Release;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -624,7 +614,7 @@
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Cloudwatch.xcconfig */;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -640,7 +630,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Cloudwatch" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -649,7 +639,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Cloudwatch" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

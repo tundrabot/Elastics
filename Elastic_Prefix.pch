@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'Cloudwatch' target in the 'Cloudwatch' project
+// Prefix header for all source files of the 'Elastic' target in the 'Elastic' project
 //
 
 #ifdef __OBJC__

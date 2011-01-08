@@ -1,6 +1,6 @@
 //
 //  MonitoringStatisticsResult.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 22/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -32,7 +32,7 @@
 			if ([elementName isEqualToString:@"Label"])
 				self.label = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"Datapoints"]) {
-				// Amazon returns datapoints in the random order. Sort them by timestamp.
+				// AWS returns datapoints in the random order. Sort them by timestamp.
 				NSArray *unsortedDatapoints = [self parseElement:element asArrayOf:[MonitoringDatapoint class]];
 				self.datapoints = [unsortedDatapoints sortedArrayUsingSelector:@selector(compare:)];
 			}

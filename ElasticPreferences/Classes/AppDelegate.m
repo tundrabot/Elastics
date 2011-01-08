@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  CloudwatchPreferences
+//  ElasticPreferences
 //
 //  Created by Dmitri Goutnik on 26/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -10,6 +10,7 @@
 #import "Preferences.h"
 #import "RefreshIntervalValueTransformer.h"
 #import "RefreshIntervalLabelValueTransformer.h"
+#import "KeychainController.h"
 
 #define GENERAL_PANE_INDEX				0
 #define ADVANCED_PANE_INDEX				1
@@ -17,8 +18,9 @@
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
 @interface AppDelegate ()
-- (void)userDefaultsDidChange:(NSNotification *)notification;
+- (void)schedulePreferenceChangeNotification;
 - (void)postPreferenceChangeNotification;
+- (void)userDefaultsDidChange:(NSNotification *)notification;
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated;
 - (void)addContentSubview:(NSView *)view;
 - (void)preferencesShouldTerminate:(NSNotification *)notification;
@@ -29,6 +31,7 @@
 @synthesize window = _window;
 @synthesize generalPane = _generalPane;
 @synthesize advancedPane = _advancedPane;
+@synthesize keychainController = _keychainController;
 @synthesize awsAccessKeyIdField = _awsAccessKeyIdField;
 
 + (void)initialize
@@ -43,31 +46,52 @@
 	
 	// register default preference values
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults registerDefaults:[userDefaults defaultCloudwatchPreferences]];
+	[userDefaults registerDefaults:[userDefaults defaultElasticPreferences]];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+	// center window on the first launch
+	if (userDefaults.isFirstLaunch)
+		[_window center];
+	
 	// show General pane on launch
 	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
 	
 	// if there's no AWS credentials, set focus to Access ID field
-	if (![[[NSUserDefaults standardUserDefaults] awsAccessKeyId] length]) {
+	if (![_keychainController.awsAccessKeyId length]) {
 		[_window makeFirstResponder:_awsAccessKeyIdField];
 	}
 	
-	// observe preference values change notifications
+	// observe user defaults change notifications
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self
 						   selector:@selector(userDefaultsDidChange:)
 							   name:NSUserDefaultsDidChangeNotification
 							 object:nil];
 	
+	// observe KeychainController value changes
+	[_keychainController addObserver:self
+						  forKeyPath:@"awsAccessKeyId"
+							 options:NSKeyValueObservingOptionNew
+							 context:NULL];
+	[_keychainController addObserver:self
+						  forKeyPath:@"awsSecretAccessKey"
+							 options:NSKeyValueObservingOptionNew
+							 context:NULL];
+	
 	// observe termination notification from main app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
 														selector:@selector(preferencesShouldTerminate:)
 															name:kPreferencesShouldTerminateNotification
 														  object:nil];
+
+	userDefaults.firstLaunch = NO;
+
+	// show main window
+	[_window makeKeyAndOrderFront:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
@@ -164,11 +188,11 @@
 }
 
 #pragma mark -
-#pragma mark User Defaults notification
+#pragma mark Preference data changes notifications
 
 const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
-- (void)userDefaultsDidChange:(NSNotification *)notification
+- (void)schedulePreferenceChangeNotification
 {
 	[[self class] cancelPreviousPerformRequestsWithTarget:self
 												 selector:@selector(postPreferenceChangeNotification)
@@ -181,8 +205,24 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 - (void)postPreferenceChangeNotification
 {
 	[[NSUserDefaults standardUserDefaults] synchronize];
+	[_keychainController synchronize];
+	
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesDidChangeNotification
 																   object:nil];
+}
+
+- (void)userDefaultsDidChange:(NSNotification *)notification
+{
+	[self schedulePreferenceChangeNotification];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+					  ofObject:(id)object
+						change:(NSDictionary *)change
+					   context:(void *)context
+{
+	if (object == _keychainController)
+		[self schedulePreferenceChangeNotification];
 }
 
 #pragma mark -

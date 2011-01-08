@@ -1,6 +1,6 @@
 //
 //  AWSType.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 01/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -53,7 +53,7 @@
 		if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"member"] || [elementName isEqualToString:@"Error"])
 			[result addObject:[class typeFromXMLElement:element parent:self]];
 		else
-			TBTrace(@"%@: parseElement:asArrayOf: skipping element %@", NSStringFromClass([self class]), elementName);
+			TBTrace(@"ignoring element %@", elementName);
 		
 		element = element->nextSibling;
 	}

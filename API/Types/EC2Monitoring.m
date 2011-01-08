@@ -1,6 +1,6 @@
 //
 //  EC2Monitoring.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 01/12/2010.
 //  Copyright 2010 Invisible Llama. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  AWSResponse.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 01/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -26,7 +26,7 @@
 
 - (void)parseElement:(TBXMLElement *)element
 {
-	TBTrace(@"skipping element %@", [TBXML elementName:element]);
+//	TBTrace(@"ignoring element %@", [TBXML elementName:element]);
 }
 
 @end

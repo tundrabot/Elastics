@@ -1,22 +1,23 @@
 //
-//  CloudwatchAppDelegate.m
-//  Cloudwatch
+//  ElasticAppDelegate.m
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 21/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import "CloudwatchAppDelegate.h"
+#import "ElasticAppDelegate.h"
 #import "DataSource.h"
 #import "ChartView.h"
 #import "Preferences.h"
+#import "Keychain.h"
 
 #define INSTANCE_INFO_TABLE_WIDTH				220.f
 #define INSTANCE_INFO_LABEL_COLUMN_WIDTH		90.f
 
 #define MESSAGE_TABLE_WIDTH						180.f
 
-@interface CloudwatchAppDelegate ()
+@interface ElasticAppDelegate ()
 - (void)resetMenu;
 - (void)refreshMenu:(NSNotification *)notification;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
@@ -33,21 +34,28 @@
 
 - (void)refresh:(NSString *)instanceId;
 - (void)refreshCompleted:(NSNotification *)notification;
-- (void)timerRefresh:(NSTimer *)timer;
 
 - (void)loadPreferences;
 - (void)setupDataSource;
-- (void)setupRefreshTimer;
 - (void)preferencesDidChange:(NSNotification *)notification;
 
+- (void)enableRefreshTimer;
+- (void)disableRefreshTimer;
+- (void)timerRefresh:(NSTimer *)timer;
+
+- (void)workspaceSessionDidBecomeActive:(NSNotification *)notification;
+- (void)workspaceSessionDidResignActive:(NSNotification *)notification;
+- (void)workspaceDidWake:(NSNotification *)notification;
+
 - (void)nopAction:(id)sender;
+- (void)refreshAction:(id)sender;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
 - (void)connectToInstanceAction:(id)sender;
 @end
 
-@implementation CloudwatchAppDelegate
+@implementation ElasticAppDelegate
 
 static NSColor *_titleColor;
 static NSColor *_taggedInstanceColor;
@@ -76,6 +84,9 @@ static NSDictionary *_actionItemAttributes;
 static NSDictionary *_messageItemAttributes;
 static NSDictionary *_labelColumnAttributes;
 static NSDictionary *_infoColumnAttributes;
+
+static NSImage *_statusItemImage;
+static NSImage *_statusItemAlertImage;
 
 + (void)initialize
 {
@@ -144,14 +155,17 @@ static NSDictionary *_infoColumnAttributes;
 								  _infoColumnFont, NSFontAttributeName,
 								  //infoParagraphStyle, NSParagraphStyleAttributeName,
 								  nil] retain];
+	
+	if (!_statusItemImage)			_statusItemImage = [NSImage imageNamed:@"StatusItem.png"];
+	if (!_statusItemAlertImage)		_statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert.png"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
 	// register preferences set through Preferences helper app and defaults
-	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-	[ud addSuiteNamed:@"com.tundrabot.CloudwatchPreferences"];
-	[ud registerDefaults:[ud defaultCloudwatchPreferences]];
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	[userDefaults addSuiteNamed:@"com.tundrabot.ElasticPreferences"];
+	[userDefaults registerDefaults:[userDefaults defaultElasticPreferences]];
 
 	// load current preferences
 	[self loadPreferences];
@@ -164,7 +178,7 @@ static NSDictionary *_infoColumnAttributes;
 
 	// set up status item
 	_statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
-	[_statusItem setImage:[NSImage imageNamed:@"StatusItem.png"]];
+	[_statusItem setImage:_statusItemImage];
 	[_statusItem setMenu:_statusMenu];
 
 	// set up pasteboard
@@ -177,11 +191,30 @@ static NSDictionary *_infoColumnAttributes;
 												 name:kDataSourceRefreshCompletedNotification
 											   object:[DataSource sharedInstance]];
 
-	// observe notifications from Preferences app
+	// subscribe to notifications from Preferences app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
 														selector:@selector(preferencesDidChange:)
 															name:kPreferencesDidChangeNotification
 														  object:nil];
+	
+	// subscribe to workspace notifications
+	NSNotificationCenter *workspaceNotificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
+	
+	// fast user switching
+	[workspaceNotificationCenter addObserver:self
+									selector:@selector(workspaceSessionDidBecomeActive:)
+										name:NSWorkspaceSessionDidBecomeActiveNotification
+									  object:nil];
+	[workspaceNotificationCenter addObserver:self
+									selector:@selector(workspaceSessionDidResignActive:)
+										name:NSWorkspaceSessionDidResignActiveNotification
+									  object:nil];
+	
+	// sleep
+	[workspaceNotificationCenter addObserver:self
+									selector:@selector(workspaceDidWake:)
+										name:NSWorkspaceDidWakeNotification
+									  object:nil];
 	
 	// perform initial refresh
 	[self refresh:nil];
@@ -216,10 +249,13 @@ static NSDictionary *_infoColumnAttributes;
 {
 	[_statusMenu removeAllItems];
 
-//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+	if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+		[_statusMenu addItem:[NSMenuItem separatorItem]];
+		[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+	}
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-	[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+	[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 }
 
 - (void)refreshMenu:(NSNotification *)notification
@@ -238,15 +274,19 @@ static NSDictionary *_infoColumnAttributes;
 		if ([error domain] == kAWSErrorDomain)
 			errorMessage = [[error userInfo] objectForKey:kAWSErrorMessageKey];
 		else
-			errorMessage = [error description];
+			errorMessage = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
 
 		[_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
 
-		//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+		if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+			[_statusMenu addItem:[NSMenuItem separatorItem]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+		}
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-		[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+		[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 
+		[_statusItem setImage:_statusItemAlertImage];
 		[_statusItem setTitle:nil];
 	}
 	else {
@@ -302,12 +342,13 @@ static NSDictionary *_infoColumnAttributes;
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 
-				// Add action menu items
-				//			[_statusMenu addItem:[NSMenuItem separatorItem]];
-				//			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+				if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+					[_statusMenu addItem:[NSMenuItem separatorItem]];
+					[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+				}
 				[_statusMenu addItem:[NSMenuItem separatorItem]];
 				[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-				[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+				[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 			}
 		}
 		else {
@@ -319,13 +360,18 @@ static NSDictionary *_infoColumnAttributes;
 			[_statusMenu addItem:[self notificationMessageItemWithTitle:
 								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
 
-			//	[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+			if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+				[_statusMenu addItem:[NSMenuItem separatorItem]];
+				[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+			}
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Quit Cloudwatch" action:@selector(quitAction:)]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 
 		}
 		
+		[_statusItem setImage:_statusItemImage];
+
 		NSAttributedString *statusItemTitle = [[NSAttributedString alloc]
 											   initWithString:[NSString stringWithFormat:@"%d", instancesCount]
 											   attributes:_statusItemAttributes];
@@ -582,12 +628,12 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)refresh:(NSString *)instanceId
 {
-	DataSource *ds = [DataSource sharedInstance];
+	DataSource *dataSource = [DataSource sharedInstance];
 	
 	if ([instanceId length] > 0)
-		[ds refreshInstance:instanceId];
+		[dataSource refreshInstance:instanceId];
 	else
-		[ds refresh];
+		[dataSource refresh];
 }
 
 - (void)refreshCompleted:(NSNotification *)notification
@@ -601,11 +647,6 @@ static NSDictionary *_infoColumnAttributes;
 //	[self refreshMenu:notification];
 }
 
-- (void)timerRefresh:(NSTimer *)timer
-{
-	[self refresh:nil];
-}
-
 #pragma mark -
 #pragma mark Menu delegate
 
@@ -613,17 +654,27 @@ static NSDictionary *_infoColumnAttributes;
 {
 	NSString *instanceId = [menu title];
 	
-	if ([instanceId length] > 0) {
+	if (![instanceId length]) {
+		// refresh all instances only if "Refresh on menu open" is checked
+		if ([[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+			// we're about to do manual refresh, disable background refresh timer
+			[self disableRefreshTimer];
+			[self refresh:nil];
+		}
+	}
+	else {
 		// refresh selected instance
 		[self refresh:instanceId];
 	}
-	else {
-		// refresh all instances only if "Refresh on menu open" is checked
-		if ([[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
-			// we're about to do manual refresh, reset background refresh timer
-			[self setupRefreshTimer];
-			[self refresh:nil];
-		}
+}
+
+- (void)menuDidClose:(NSMenu *)menu
+{
+	NSString *instanceId = [menu title];
+	
+	if (![instanceId length]) {
+		// status menu closed, enable background refresh
+		[self enableRefreshTimer];
 	}
 }
 
@@ -634,52 +685,108 @@ static NSDictionary *_infoColumnAttributes;
 {
 	TBTrace(@"reloading preferences");
 
-	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-	[ud synchronize];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 
 	// set AWS options
 	[self setupDataSource];
 	
 	// setup background refresh timer
-	[self setupRefreshTimer];
+	[self enableRefreshTimer];
 }
 
 - (void)setupDataSource
 {
-	NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+	NSMutableDictionary *options = [NSMutableDictionary dictionary];
 	
-	NSString *awsAccessKeyId = [ud awsAccessKeyId];
-	NSString *awsSecretAccessKey = [ud awsSecretAccessKey];
-	NSString *awsRegion = [ud awsRegion];
-
-	[DataSource setDefaultRequestOptions:[NSDictionary dictionaryWithObjectsAndKeys:
-										  awsAccessKeyId, kAWSAccessKeyIdOption,
-										  awsSecretAccessKey, kAWSSecretAccessKeyOption,
-										  awsRegion, kAWSRegionOption,
-										  nil]];
-}
-
-- (void)setupRefreshTimer
-{
-	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
-
-	[_refreshTimer invalidate];
-	[_refreshTimer release], _refreshTimer = nil;
-	_refreshTimer = [NSTimer scheduledTimerWithTimeInterval:refreshInterval
-													 target:self
-												   selector:@selector(timerRefresh:)
-												   userInfo:nil
-													repeats:YES];
+	// setup AWS credentials, these are stored in from Keychain
+	NSString *awsAccessKeyId = nil;
+	NSString *awsSecretAccessKey = nil;
 	
-	[_refreshTimer retain];
+	GetAWSCredentials(&awsAccessKeyId, &awsSecretAccessKey);
+	
+	if (awsAccessKeyId) {
+		[options setObject:awsAccessKeyId forKey:kAWSAccessKeyIdOption];
+		[awsAccessKeyId release];
+	}
+	if (awsSecretAccessKey) {
+		[options setObject:awsSecretAccessKey forKey:kAWSSecretAccessKeyOption];
+		[awsSecretAccessKey release];
+	}
+	
+	// setup AWS region from user defaults
+	NSString *awsRegion = [[NSUserDefaults standardUserDefaults] awsRegion];
+
+	if (awsRegion) {
+		[options setObject:awsRegion forKey:kAWSRegionOption];
+	}
+	
+	[DataSource setDefaultRequestOptions:options];
 }
 
 - (void)preferencesDidChange:(NSNotification *)notification
 {
-	TBTrace(@"preferencesDidChange: %@", notification);
+	TBTrace(@"%@", notification);
 
 	[self loadPreferences];
 	[self refresh:nil];
+}
+
+#pragma mark -
+#pragma mark Background refresh timer
+
+- (void)enableRefreshTimer
+{
+	TBTrace(@"enabling background refresh");
+
+	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
+	
+	if (refreshInterval > 0) {
+		_refreshTimer = [NSTimer scheduledTimerWithTimeInterval:refreshInterval
+														 target:self
+													   selector:@selector(timerRefresh:)
+													   userInfo:nil
+														repeats:YES];
+		[_refreshTimer retain];
+	}
+}
+
+- (void)disableRefreshTimer
+{
+	TBTrace(@"disabling background refresh");
+
+	[_refreshTimer invalidate];
+	TBRelease(_refreshTimer);
+}
+
+- (void)timerRefresh:(NSTimer *)timer
+{
+	[self refresh:nil];
+}
+
+#pragma mark -
+#pragma mark Workspace notifications
+
+- (void)workspaceSessionDidBecomeActive:(NSNotification *)notification
+{
+	TBTrace(@"performing refresh and enabling background refresh timer");
+	
+	[self refresh:nil];
+	[self enableRefreshTimer];
+}
+
+- (void)workspaceSessionDidResignActive:(NSNotification *)notification
+{
+	TBTrace(@"disabling background refresh timer");
+	
+	[self disableRefreshTimer];
+}
+
+- (void)workspaceDidWake:(NSNotification *)notification
+{
+	TBTrace(@"scheduling refresh and enabling background refresh timer");
+
+	[self enableRefreshTimer];
+	[self performSelector:@selector(refresh:) withObject:nil afterDelay:15.0];
 }
 
 #pragma mark -
@@ -689,6 +796,11 @@ static NSDictionary *_infoColumnAttributes;
 {
 }
 
+- (void)refreshAction:(id)sender
+{
+	[self refresh:nil];
+}
+
 - (void)quitAction:(id)sender
 {
 	[[NSApplication sharedApplication] terminate:self];
@@ -696,7 +808,7 @@ static NSDictionary *_infoColumnAttributes;
 
 - (void)editPreferencesAction:(id)sender
 {
-	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Helpers/CloudwatchPreferences.app"];
+	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Helpers/ElasticPreferences.app"];
 	[[NSWorkspace sharedWorkspace] launchApplication:preferencesBundlePath];
 }
 

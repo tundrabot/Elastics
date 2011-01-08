@@ -1,6 +1,6 @@
 //
 //  AWSRequest.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 27/11/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -132,7 +132,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)accessKeyId
 {
-	return [_options objectForKey:kAWSAccessKeyIdOption] ? [_options objectForKey:kAWSAccessKeyIdOption] : [_awsRequestDefaultOptions objectForKey:kAWSAccessKeyIdOption];
+	NSString *result = [_options objectForKey:kAWSAccessKeyIdOption] ? [_options objectForKey:kAWSAccessKeyIdOption] : [_awsRequestDefaultOptions objectForKey:kAWSAccessKeyIdOption];
+	return result ? result : @"";
 }
 
 - (void)setAccessKeyId:(NSString *)value
@@ -142,7 +143,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)secretAccessKey
 {
-	return [_options objectForKey:kAWSSecretAccessKeyOption] ? [_options objectForKey:kAWSSecretAccessKeyOption] : [_awsRequestDefaultOptions objectForKey:kAWSSecretAccessKeyOption];
+	NSString *result = [_options objectForKey:kAWSSecretAccessKeyOption] ? [_options objectForKey:kAWSSecretAccessKeyOption] : [_awsRequestDefaultOptions objectForKey:kAWSSecretAccessKeyOption];
+	return result ? result : @"";
 }
 
 - (void)setSecretAccessKey:(NSString *)value

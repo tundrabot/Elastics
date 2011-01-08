@@ -1,6 +1,6 @@
 //
 //  DataSource.m
-//  Cloudwatch
+//  Elastic
 //
 //  Created by Dmitri Goutnik on 21/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -129,7 +129,7 @@ static DataSource * _sharedInstance = nil;
 {
 	@synchronized(self) {
 		if ([_runningRequests count] > 0) {
-			TBTrace(@"refresh is already in progress.");
+			TBTrace(@"refresh is already in progress !!!");
 			return;
 		}
 
@@ -156,7 +156,7 @@ static DataSource * _sharedInstance = nil;
 //				[_runningRequests addObject:monitoringRequest];
 //			}
 //			else {
-//				TBTrace(@"Skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+//				TBTrace(@"skipping composite stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
 //			}
 //
 //		}
@@ -172,7 +172,7 @@ static DataSource * _sharedInstance = nil;
 {
 	@synchronized(self) {
 		if ([_runningRequests count] > 0) {
-			TBTrace(@"refreshInstance: %@ is already in progress.", instanceId);
+			TBTrace(@"refresh for %@ is already in progress !!!", instanceId);
 			return;
 		}
 
@@ -203,7 +203,7 @@ static DataSource * _sharedInstance = nil;
 				[_runningRequests addObject:monitoringRequest];
 			}
 			else {
-				TBTrace(@"Skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+				TBTrace(@"skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
 			}
 		}
 	}
@@ -376,12 +376,12 @@ static DataSource * _sharedInstance = nil;
 
 - (void)requestDidStartLoading:(AWSRequest *)request
 {
-	TBTrace(@"%@", NSStringFromClass([request class]));
+//	TBTrace(@"");
 }
 
 - (void)requestDidFinishLoading:(AWSRequest *)request
 {
-	TBTrace(@"%@", NSStringFromClass([request class]));
+//	TBTrace(@"");
 
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
@@ -394,7 +394,7 @@ static DataSource * _sharedInstance = nil;
 
 	if (refreshCompleted) {
 		// notify observers that refresh has been completed
-		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec): %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], _completionNotificationUserInfo);
+		TBTrace(@"%.2fs", [_completedAt timeIntervalSinceDate:_startedAt]);
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
 															object:self
@@ -405,7 +405,7 @@ static DataSource * _sharedInstance = nil;
 
 - (void)request:(AWSRequest *)request didFailWithError:(NSError *)error
 {
-	TBTrace(@"%@ %@", NSStringFromClass([request class]), error);
+	TBTrace(@"%@", error);
 
 	BOOL refreshCompleted = NO;
 	@synchronized(self) {
@@ -418,7 +418,7 @@ static DataSource * _sharedInstance = nil;
 
 	if (refreshCompleted) {
 		// notify observers that refresh has been completed
-		TBTrace(@"kDataSourceRefreshCompletedNotification: %@ (duration %.2f sec) error: %@", _completedAt, [_completedAt timeIntervalSinceDate:_startedAt], error);
+		TBTrace(@"%.2fs, error: %@", [_completedAt timeIntervalSinceDate:_startedAt], error);
 
 		[_completionNotificationUserInfo setObject:error forKey:kDataSourceErrorInfoKey];
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
