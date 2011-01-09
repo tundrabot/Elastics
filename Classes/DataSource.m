@@ -15,21 +15,17 @@ NSString *const kDataSourceRefreshCompletedNotification = @"DataSourceRefreshCom
 NSString *const kDataSourceInstanceIdInfoKey = @"DataSourceInstanceIdInfo";
 NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 
-@interface DataSource ()
-@property (nonatomic, retain) NSDate *startedAt;
-@property (nonatomic, retain) NSDate *completedAt;
-@property (nonatomic, retain) NSMutableDictionary *completionNotificationUserInfo;
-@property (nonatomic, retain) EC2DescribeInstancesRequest *instancesRequest;
-@end
+//@interface DataSource ()
+//@property (nonatomic, retain) NSDate *startedAt;
+//@property (nonatomic, retain) NSDate *completedAt;
+//@property (nonatomic, retain) EC2DescribeInstancesRequest *instancesRequest;
+//@end
 
 @implementation DataSource
 
 @synthesize compositeMonitoringMetrics = _compositeMonitoringMetrics;
 @synthesize instanceMonitoringMetrics = _instanceMonitoringMetrics;
-@synthesize startedAt = _startedAt;
-@synthesize completedAt = _completedAt;
-@synthesize completionNotificationUserInfo = _completionNotificationUserInfo;
-@synthesize instancesRequest = _instancesRequest;
+//@synthesize instancesRequest = _instancesRequest;
 
 #pragma mark -
 #pragma mark Initialization
@@ -38,10 +34,10 @@ NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 {
 	self = [super init];
 	if (self) {
-		_runningRequests = [[NSMutableSet alloc] init];
+		_runningRequests = [[NSMutableDictionary alloc] init];
 		_compositeMonitoringMetrics = [[NSSet alloc] initWithObjects:kAWSCPUUtilizationMetric, nil];
 		_instanceMonitoringMetrics = [[NSSet alloc] initWithObjects:kAWSCPUUtilizationMetric, nil];
-		_compositeMonitoringRequests = [[NSMutableDictionary alloc] init];
+//		_compositeMonitoringRequests = [[NSMutableDictionary alloc] init];
 		_instanceMonitoringRequests = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -51,11 +47,9 @@ NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 {
 	TBRelease(_compositeMonitoringMetrics);
 	TBRelease(_instanceMonitoringMetrics);
-	TBRelease(_startedAt);
-	TBRelease(_completedAt);
 	TBRelease(_runningRequests);
-	TBRelease(_completionNotificationUserInfo);
-	TBRelease(_compositeMonitoringRequests);
+	TBRelease(_instancesRequest);
+//	TBRelease(_compositeMonitoringRequests);
 	TBRelease(_instanceMonitoringRequests);
 	[super dealloc];
 }
@@ -110,7 +104,7 @@ static DataSource * _sharedInstance = nil;
 }
 
 #pragma mark -
-#pragma mark Request options
+#pragma mark Request handling
 
 + (NSDictionary *)defaultRequestOptions
 {
@@ -122,25 +116,27 @@ static DataSource * _sharedInstance = nil;
 	[AWSRequest setDefaultOptions:options];
 }
 
-#pragma mark -
-#pragma mark Requests
-
 - (void)refresh
 {
 	@synchronized(self) {
-		if ([_runningRequests count] > 0) {
+
+		NSMutableDictionary *requestInfo = [_runningRequests objectForKey:@"r"];
+		if (requestInfo) {
 			TBTrace(@"refresh is already in progress !!!");
 			return;
 		}
+		requestInfo = [NSMutableDictionary dictionary];
 
-		self.startedAt = [NSDate date];
-		self.completionNotificationUserInfo = [NSMutableDictionary dictionary];
-		[_runningRequests removeAllObjects];
+		[requestInfo setObject:[NSDate date] forKey:@"kStartedAt"];
 
-		// schedule instances refresh
-		if (!_instancesRequest)
-			self.instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
-		[_runningRequests addObject:_instancesRequest];
+		NSMutableSet *requestSet = [NSMutableSet set];
+		[requestInfo setObject:requestSet forKey:@"kRequestSet"];
+
+		if (!_instancesRequest) {
+			_instancesRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];
+		}
+		[requestSet addObject:_instancesRequest];
+	
 
 //		// schedule composite monitoring stats refresh
 //		for (NSString *metric in _compositeMonitoringMetrics) {
@@ -160,29 +156,36 @@ static DataSource * _sharedInstance = nil;
 //			}
 //
 //		}
-	}
 
-	// start scheduled requests
-	for (AWSRequest *request in _runningRequests) {
-		[request start];
+		// do we have anything scheduled? then add requestInfo to running requests and start requests
+		if ([requestSet count] > 0) {
+			[_runningRequests setObject:requestInfo forKey:@"r"];
+			
+			for (AWSRequest *request in requestSet) {
+				[request start];
+			}
+		}
 	}
 }
 
 - (void)refreshInstance:(NSString *)instanceId
 {
 	@synchronized(self) {
-		if ([_runningRequests count] > 0) {
+		
+		NSMutableDictionary *requestInfo = [_runningRequests objectForKey:instanceId];
+		if (requestInfo) {
 			TBTrace(@"refresh for %@ is already in progress !!!", instanceId);
 			return;
 		}
+		requestInfo = [NSMutableDictionary dictionary];
+		
+		[requestInfo setObject:instanceId forKey:kDataSourceInstanceIdInfoKey];
+		[requestInfo setObject:[NSDate date] forKey:@"kStartedAt"];
+		
+		NSMutableSet *requestSet = [NSMutableSet set];
+		[requestInfo setObject:requestSet forKey:@"kRequestSet"];
 
-		self.startedAt = [NSDate date];
-		self.completionNotificationUserInfo = [NSMutableDictionary dictionaryWithObject:instanceId forKey:kDataSourceInstanceIdInfoKey];
-		[_runningRequests removeAllObjects];
-
-		// schedule instance monitoring stats refresh
 		NSMutableDictionary *instanceMonitoringRequests = [_instanceMonitoringRequests objectForKey:instanceId];
-
 		if (!instanceMonitoringRequests) {
 			instanceMonitoringRequests = [NSMutableDictionary dictionary];
 			[_instanceMonitoringRequests setObject:instanceMonitoringRequests forKey:instanceId];
@@ -196,22 +199,122 @@ static DataSource * _sharedInstance = nil;
 				monitoringRequest.instanceId = instanceId;
 				monitoringRequest.metric = metric;
 				[instanceMonitoringRequests setObject:monitoringRequest forKey:metric];
+				[monitoringRequest release];
 			}
 
-			// only refresh monitoring data if it is first request or it is older than MAX_STATISTICS_AGE
-			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)) {
-				[_runningRequests addObject:monitoringRequest];
-			}
-			else {
-				TBTrace(@"skipping instance stats request with age: %.2f", -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+			// only schedule monitoring data refresh when it is first request or it is older than MAX_STATISTICS_AGE
+			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE))
+				[requestSet addObject:monitoringRequest];
+			else
+				TBTrace(@"skipping instance %@ stats request with age: %.2f", instanceId, -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+		}
+	
+		// do we have anything scheduled? then add requestInfo to running requests and start requests
+		if ([requestSet count] > 0) {
+			[_runningRequests setObject:requestInfo forKey:instanceId];
+			
+			for (AWSRequest *request in requestSet) {
+				[request start];
 			}
 		}
 	}
-
-	for (AWSRequest *request in _runningRequests) {
-		[request start];
-	}
 }
+
+#pragma mark -
+#pragma mark Request delegate
+
+- (void)requestDidStartLoading:(AWSRequest *)request
+{
+	//	TBTrace(@"");
+}
+
+- (void)requestDidFinishLoading:(AWSRequest *)request
+{
+	//	TBTrace(@"");
+	
+	NSMutableDictionary *finishedRequest = nil;
+	
+//	@synchronized(self) {
+		NSArray *keys = [_runningRequests allKeys];
+		
+		for (NSString *key in keys) {
+			NSMutableDictionary *requestInfo = [_runningRequests objectForKey:key];
+			NSMutableSet *requestSet = [requestInfo objectForKey:@"kRequestSet"];
+			
+			[requestSet removeObject:request];
+			
+			if ([requestSet count] == 0) {
+				[requestInfo setObject:[NSDate date] forKey:@"kFinishedAt"];
+				finishedRequest = [requestInfo retain];
+				[_runningRequests removeObjectForKey:key];
+				
+				break;
+			}
+		}
+//	}
+	
+	NSAssert(finishedRequest != nil, @"requestDidFinishLoading: but no finished request was found.");
+	
+#ifdef TB_DEBUG
+	NSDate *startedAt = [finishedRequest objectForKey:@"kStartedAt"];
+	NSDate *finishedAt = [finishedRequest objectForKey:@"kFinishedAt"];
+	NSString *instanceId = [finishedRequest objectForKey:kDataSourceInstanceIdInfoKey];
+	if (instanceId)
+		TBTrace(@"%.2fs, instance %@", [finishedAt timeIntervalSinceDate:startedAt], instanceId);
+	else
+		TBTrace(@"%.2fs, all instances", [finishedAt timeIntervalSinceDate:startedAt]);
+#endif
+		
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
+														object:self
+													  userInfo:finishedRequest];
+	
+	[finishedRequest release];
+}
+
+- (void)request:(AWSRequest *)request didFailWithError:(NSError *)error
+{
+	//	TBTrace(@"");
+	
+	NSMutableDictionary *finishedRequest = nil;
+	
+//	@synchronized(self) {
+		NSArray *keys = [_runningRequests allKeys];
+		
+		for (NSString *key in keys) {
+			NSMutableDictionary *requestInfo = [_runningRequests objectForKey:key];
+			NSMutableSet *requestSet = [requestInfo objectForKey:@"kRequestSet"];
+			
+			[requestSet removeObject:request];
+			
+			if ([requestSet count] == 0) {
+				[requestInfo setObject:[NSDate date] forKey:@"kFinishedAt"];
+				finishedRequest = [requestInfo retain];
+				[_runningRequests removeObjectForKey:key];
+				
+				break;
+			}
+		}
+//	}
+	
+	NSAssert(finishedRequest != nil, @"requestDidFinishLoading: but no finished request was found.");
+	
+#ifdef TB_DEBUG
+	NSDate *startedAt = [finishedRequest objectForKey:@"kStartedAt"];
+	NSDate *finishedAt = [finishedRequest objectForKey:@"kFinishedAt"];
+	TBTrace(@"%.2fs, error: %@", [finishedAt timeIntervalSinceDate:startedAt], error);
+#endif
+	
+	[finishedRequest setObject:error forKey:kDataSourceErrorInfoKey];
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
+														object:self
+													  userInfo:finishedRequest];
+	
+	[finishedRequest release];
+}
+
+#pragma mark -
+#pragma mark Data accessors and helpers
 
 - (NSArray *)instances
 {
@@ -228,11 +331,11 @@ static DataSource * _sharedInstance = nil;
 	return instanceIdx != NSNotFound ? [self.instances objectAtIndex:instanceIdx] : nil;
 }
 
-- (NSArray *)statisticsForMetric:(NSString *)metric
-{
-	MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
-	return monitoringRequest.response.result.datapoints;
-}
+//- (NSArray *)statisticsForMetric:(NSString *)metric
+//{
+//	MonitoringGetMetricStatisticsRequest *monitoringRequest = [_compositeMonitoringRequests objectForKey:metric];
+//	return monitoringRequest.response.result.datapoints;
+//}
 
 - (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId
 {
@@ -241,70 +344,70 @@ static DataSource * _sharedInstance = nil;
 	return monitoringRequest.response.result.datapoints;
 }
 
-- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
-{
-	NSArray *stats = [self statisticsForMetric:metric];
+//- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+//{
+//	NSArray *stats = [self statisticsForMetric:metric];
+//
+//	if ([stats count] > 0) {
+//		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+//		__block CGFloat result = 0;
+//
+//		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+//			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
+//				result = datapoint.maximum;
+//			}
+//		}];
+//
+//		return result;
+//	}
+//	else
+//		return 0;
+//}
 
-	if ([stats count] > 0) {
-		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat result = 0;
+//- (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+//{
+//	NSArray *stats = [self statisticsForMetric:metric];
+//
+//	if ([stats count] > 0) {
+//		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+//		__block CGFloat result = MAXFLOAT;
+//
+//		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+//			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
+//				result = datapoint.minimum;
+//			}
+//		}];
+//
+//		return result;
+//	}
+//	else
+//		return 0;
+//}
 
-		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
-			if (datapoint.timestamp > startTimestamp && datapoint.maximum > result) {
-				result = datapoint.maximum;
-			}
-		}];
-
-		return result;
-	}
-	else
-		return 0;
-}
-
-- (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range
-{
-	NSArray *stats = [self statisticsForMetric:metric];
-
-	if ([stats count] > 0) {
-		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat result = MAXFLOAT;
-
-		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
-			if (datapoint.timestamp > startTimestamp && datapoint.minimum < result) {
-				result = datapoint.minimum;
-			}
-		}];
-
-		return result;
-	}
-	else
-		return 0;
-}
-
-- (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range
-{
-	NSArray *stats = [self statisticsForMetric:metric];
-
-	if ([stats count] > 0) {
-		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat sum = 0;
-		__block NSUInteger count = 0;
-
-		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
-			if (datapoint.timestamp > startTimestamp) {
-				sum += datapoint.average;
-				count++;
-			}
-		}];
-
-		return sum/count;
-	}
-	else
-		return 0;
-}
+//- (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range
+//{
+//	NSArray *stats = [self statisticsForMetric:metric];
+//
+//	if ([stats count] > 0) {
+//		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
+//		__block CGFloat sum = 0;
+//		__block NSUInteger count = 0;
+//
+//		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
+//			if (datapoint.timestamp > startTimestamp) {
+//				sum += datapoint.average;
+//				count++;
+//			}
+//		}];
+//
+//		return sum/count;
+//	}
+//	else
+//		return 0;
+//}
 
 - (CGFloat)maximumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range
 {
@@ -369,63 +472,6 @@ static DataSource * _sharedInstance = nil;
 	}
 	else
 		return 0;
-}
-
-#pragma mark -
-#pragma mark Request delegate
-
-- (void)requestDidStartLoading:(AWSRequest *)request
-{
-//	TBTrace(@"");
-}
-
-- (void)requestDidFinishLoading:(AWSRequest *)request
-{
-//	TBTrace(@"");
-
-	BOOL refreshCompleted = NO;
-	@synchronized(self) {
-		[_runningRequests removeObject:request];
-		if ([_runningRequests count] == 0) {
-			refreshCompleted = YES;
-			self.completedAt = [NSDate date];
-		}
-	}
-
-	if (refreshCompleted) {
-		// notify observers that refresh has been completed
-		TBTrace(@"%.2fs", [_completedAt timeIntervalSinceDate:_startedAt]);
-
-		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
-															object:self
-														  userInfo:_completionNotificationUserInfo];
-		self.completionNotificationUserInfo = nil;
-	}
-}
-
-- (void)request:(AWSRequest *)request didFailWithError:(NSError *)error
-{
-	TBTrace(@"%@", error);
-
-	BOOL refreshCompleted = NO;
-	@synchronized(self) {
-		[_runningRequests removeObject:request];
-		if ([_runningRequests count] == 0) {
-			refreshCompleted = YES;
-			self.completedAt = [NSDate date];
-		}
-	}
-
-	if (refreshCompleted) {
-		// notify observers that refresh has been completed
-		TBTrace(@"%.2fs, error: %@", [_completedAt timeIntervalSinceDate:_startedAt], error);
-
-		[_completionNotificationUserInfo setObject:error forKey:kDataSourceErrorInfoKey];
-		[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
-															object:self
-														  userInfo:_completionNotificationUserInfo];
-		self.completionNotificationUserInfo = nil;
-	}
 }
 
 @end

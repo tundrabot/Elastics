@@ -58,6 +58,11 @@
 	[super dealloc];
 }
 
+- (BOOL)isOpaque
+{
+	return YES;
+}
+
 - (void)setChartRange:(NSUInteger)newChartRange
 {
 	NSParameterAssert(newChartRange >= kAWSLastHourRange && newChartRange <= kAWSLast24HoursRange);

@@ -22,12 +22,9 @@ extern NSString *const kDataSourceErrorInfoKey;
 @private
 	NSSet							*_compositeMonitoringMetrics;
 	NSSet							*_instanceMonitoringMetrics;
-	NSDate							*_startedAt;
-	NSDate							*_completedAt;
-	NSMutableSet					*_runningRequests;
-	NSMutableDictionary				*_completionNotificationUserInfo;
+	NSMutableDictionary				*_runningRequests;
 	EC2DescribeInstancesRequest		*_instancesRequest;
-	NSMutableDictionary				*_compositeMonitoringRequests;
+//	NSMutableDictionary				*_compositeMonitoringRequests;
 	NSMutableDictionary				*_instanceMonitoringRequests;
 }
 
@@ -49,16 +46,16 @@ extern NSString *const kDataSourceErrorInfoKey;
 @property (nonatomic, retain, readonly) NSArray *instances;
 // Returns an instance with given id
 - (EC2Instance *)instance:(NSString *)instanceId;
-
 // All statistics for metric (array of MonitoringDatapoint)
-- (NSArray *)statisticsForMetric:(NSString *)metric;
+//- (NSArray *)statisticsForMetric:(NSString *)metric;
+
 // Returns statistics for metric for given instance id
 - (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId;
 
 // Max/Min/Average metric values
-- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
-- (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
-- (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
+//- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
+//- (CGFloat)minimumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
+//- (CGFloat)averageValueForMetric:(NSString *)metric forRange:(NSUInteger)range;
 - (CGFloat)maximumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range;
 - (CGFloat)minimumValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range;
 - (CGFloat)averageValueForMetric:(NSString *)metric forInstance:(NSString *)instanceId forRange:(NSUInteger)range;

@@ -94,7 +94,7 @@ static NSImage *_statusItemAlertImage;
 	if (!_taggedInstanceColor)      _taggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_untaggedInstanceColor)	_untaggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_actionItemColor)			_actionItemColor = [[NSColor blackColor] retain];
-	if (!_messageItemColor)			_messageItemColor = [[NSColor blackColor] retain];
+	if (!_messageItemColor)			_messageItemColor = [[NSColor colorWithDeviceRed:(0.f/255.f) green:(0.f/255.f) blue:(0.f/255.f) alpha:0.70f] retain];
 	if (!_labelColumnColor)			_labelColumnColor = [[NSColor blackColor] retain];
 	if (!_infoColumnColor)			_infoColumnColor = [[NSColor blackColor] retain];
 
@@ -172,6 +172,7 @@ static NSImage *_statusItemAlertImage;
 
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
+	[_statusMenu setAutoenablesItems:NO];
 	[_statusMenu setShowsStateColumn:NO];
 	[_statusMenu setDelegate:self];
 	[self resetMenu];
@@ -406,7 +407,7 @@ static NSImage *_statusItemAlertImage;
 	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
 	[table setHidesEmptyCells:NO];
 
-	NSTextTableBlock *titleBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
+	NSTextTableBlock *titleBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1] autorelease];
 	[titleBlock setContentWidth:MESSAGE_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
 	[titleBlock setWidth:10.0 type:NSTextBlockAbsoluteValueType forLayer:NSTextBlockPadding edge:NSMinXEdge];
 
@@ -516,10 +517,10 @@ static NSImage *_statusItemAlertImage;
 	[table setContentWidth:INSTANCE_INFO_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
 	[table setHidesEmptyCells:NO];
 
-	NSTextTableBlock *labelBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1];
+	NSTextTableBlock *labelBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1] autorelease];
 	[labelBlock setContentWidth:INSTANCE_INFO_LABEL_COLUMN_WIDTH type:NSTextBlockAbsoluteValueType];
 
-	NSTextTableBlock *infoBlock = [[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1];
+	NSTextTableBlock *infoBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1] autorelease];
 
 	NSMutableParagraphStyle *labelParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[labelParagraphStyle setAlignment:NSLeftTextAlignment];
@@ -657,6 +658,14 @@ static NSImage *_statusItemAlertImage;
 	if (![instanceId length]) {
 		// refresh all instances only if "Refresh on menu open" is checked
 		if ([[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+			
+			for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
+				if ([menuItem representedObject]) {
+					[menuItem setImage:[NSImage imageNamed:@"InstanceStateOther.png"]];
+					[menuItem setSubmenu:nil];
+				}
+			}
+			
 			// we're about to do manual refresh, disable background refresh timer
 			[self disableRefreshTimer];
 			[self refresh:nil];

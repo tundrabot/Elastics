@@ -439,7 +439,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	@try {
 		_connectionLock = [[NSConditionLock alloc] initWithCondition:WAITING_FOR_CONNECTION];	
 		
-		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:(NSURLRequest *)object delegate:self];
+		NSURLConnection *connection = [NSURLConnection connectionWithRequest:(NSURLRequest *)object delegate:self];
 		[connection start];
 		
 		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
@@ -473,7 +473,13 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	@try {
-		[self performSelectorOnMainThread:@selector(currentConnectionDidFinishLoading) withObject:nil waitUntilDone:NO];
+//		[self performSelectorOnMainThread:@selector(currentConnectionDidFinishLoading)
+//							   withObject:nil
+//							waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(currentConnectionDidFinishLoading)
+							   withObject:nil
+							waitUntilDone:NO
+									modes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 	}
 	@finally {
 		[_connectionLock lock];
@@ -484,7 +490,13 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	@try {
-		[self performSelectorOnMainThread:@selector(currentConnectionDidFailWithError:) withObject:error waitUntilDone:NO];
+//		[self performSelectorOnMainThread:@selector(currentConnectionDidFailWithError:)
+//							   withObject:error
+//							waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(currentConnectionDidFailWithError:)
+							   withObject:error
+							waitUntilDone:NO
+									modes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 	}
 	@finally {
 		[_connectionLock lock];
@@ -530,7 +542,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFailWithError:(NSError *)error
 {
-	TBLog(@"connection:didFailWithError: %@", error);
+	TBLog(@"%@", error);
 	
 	self.completedAt = [NSDate date];
 
