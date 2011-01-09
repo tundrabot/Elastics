@@ -18,6 +18,8 @@ extern NSString *const kPreferencesShouldTerminateNotification;
 - (NSString *)awsRegion;
 - (NSInteger)refreshInterval;
 - (BOOL)refreshOnMenuOpen;
+- (NSString *)keypairPrivateKeyFile;
+- (NSString *)sshUserName;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;
 @end

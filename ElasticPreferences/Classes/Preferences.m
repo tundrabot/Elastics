@@ -16,10 +16,12 @@ NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Elastic.Pre
 NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elastic.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
-NSString *const kPreferencesAWSRegionKey			= @"awsRegion";
-NSString *const kPreferencesRefreshIntervalKey		= @"refreshInterval";
-NSString *const kPreferencesRefreshOnMenuOpenKey	= @"refreshOnMenuOpen";
-NSString *const kPreferencesFirstLaunchKey			= @"firstLaunch";
+NSString *const kPreferencesAWSRegionKey				= @"awsRegion";
+NSString *const kPreferencesRefreshIntervalKey			= @"refreshInterval";
+NSString *const kPreferencesRefreshOnMenuOpenKey		= @"refreshOnMenuOpen";
+NSString *const kPreferencesKeypairPrivateKeyFileKey	= @"keypairPrivateKeyFile";
+NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
+NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
 
 // AWS regions as stored in prefs and selected in combo
 enum {
@@ -46,6 +48,8 @@ static NSDictionary *_defaults;
 						[NSNumber numberWithFloat:180], kPreferencesRefreshIntervalKey,
 						// refresh on menu open
 						[NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
+						// SSH user name
+						@"root", kPreferencesSshUserNameKey,
 						// first launch
 						[NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
 						nil];
@@ -77,6 +81,16 @@ static NSDictionary *_defaults;
 - (BOOL)refreshOnMenuOpen
 {
 	return [self boolForKey:kPreferencesRefreshOnMenuOpenKey];
+}
+
+- (NSString *)keypairPrivateKeyFile
+{
+	return [self stringForKey:kPreferencesKeypairPrivateKeyFileKey];
+}
+
+- (NSString *)sshUserName
+{
+	return [self stringForKey:kPreferencesSshUserNameKey];
 }
 
 - (BOOL)isFirstLaunch

@@ -416,11 +416,9 @@
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="439893737">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<string key="NSFrameSize">{518, 250}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1058}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -900,6 +898,11 @@
 				<string key="NSClassName">NSView</string>
 			</object>
 			<object class="NSUserDefaultsController" id="1015869286">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>sshUserName</string>
+					<string>keypairPrivateKeyFile</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomObject" id="689992400">
@@ -1245,6 +1248,70 @@
 					</object>
 					<int key="connectionID">670</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">chooseKeypairAction:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="945272061"/>
+					</object>
+					<int key="connectionID">672</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">awsAccessKeyIdField</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="586583088"/>
+					</object>
+					<int key="connectionID">673</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">keypairFileField</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="89683912"/>
+					</object>
+					<int key="connectionID">674</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.sshUserName</string>
+						<reference key="source" ref="942266625"/>
+						<reference key="destination" ref="1015869286"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="942266625"/>
+							<reference key="NSDestination" ref="1015869286"/>
+							<string key="NSLabel">value: values.sshUserName</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.sshUserName</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">681</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.keypairPrivateKeyFile</string>
+						<reference key="source" ref="89683912"/>
+						<reference key="destination" ref="1015869286"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="89683912"/>
+							<reference key="NSDestination" ref="1015869286"/>
+							<string key="NSLabel">value: values.keypairPrivateKeyFile</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.keypairPrivateKeyFile</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
+								<boolean value="YES" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">683</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1570,11 +1637,11 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="262105115"/>
-							<reference ref="89683912"/>
 							<reference ref="440783441"/>
 							<reference ref="945272061"/>
 							<reference ref="942266625"/>
 							<reference ref="191073650"/>
+							<reference ref="89683912"/>
 						</object>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">SSH Pane</string>
@@ -2138,7 +2205,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBoAAAw4uAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBoAAAwrgAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2251,7 +2318,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">671</int>
+			<int key="maxID">683</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2263,11 +2330,13 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>chooseKeypairAction:</string>
 							<string>showAdvancedPaneAction:</string>
 							<string>showGeneralPaneAction:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -2276,11 +2345,16 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>chooseKeypairAction:</string>
 							<string>showAdvancedPaneAction:</string>
 							<string>showGeneralPaneAction:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">chooseKeypairAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">showAdvancedPaneAction:</string>
 								<string key="candidateClassName">id</string>
@@ -2299,6 +2373,7 @@
 							<string>awsAccessKeyIdField</string>
 							<string>generalPane</string>
 							<string>keychainController</string>
+							<string>keypairFileField</string>
 							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -2307,6 +2382,7 @@
 							<string>NSTextField</string>
 							<string>NSView</string>
 							<string>KeychainController</string>
+							<string>NSTextField</string>
 							<string>NSWindow</string>
 						</object>
 					</object>
@@ -2318,6 +2394,7 @@
 							<string>awsAccessKeyIdField</string>
 							<string>generalPane</string>
 							<string>keychainController</string>
+							<string>keypairFileField</string>
 							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -2337,6 +2414,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">keychainController</string>
 								<string key="candidateClassName">KeychainController</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">keypairFileField</string>
+								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">window</string>

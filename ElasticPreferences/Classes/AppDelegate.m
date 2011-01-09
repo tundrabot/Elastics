@@ -33,6 +33,7 @@
 @synthesize advancedPane = _advancedPane;
 @synthesize keychainController = _keychainController;
 @synthesize awsAccessKeyIdField = _awsAccessKeyIdField;
+@synthesize keypairFileField = _keypairFileField;
 
 + (void)initialize
 {
@@ -244,6 +245,21 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 - (IBAction)showAdvancedPaneAction:(id)sender
 {
 	[self showPreferencePane:ADVANCED_PANE_INDEX animated:YES];
+}
+
+- (IBAction)chooseKeypairAction:(id)sender
+{
+	NSOpenPanel *panel = [NSOpenPanel openPanel];
+	
+	[panel setShowsHiddenFiles:YES];
+
+	[panel beginSheetModalForWindow:_window
+				  completionHandler:^(NSInteger result) {
+					  if (result == NSOKButton) {
+						  [_keypairFileField setStringValue:[[panel filenames] objectAtIndex:0]];
+						  [_keypairFileField validateEditing];
+					  }
+				  }];
 }
 
 @end
