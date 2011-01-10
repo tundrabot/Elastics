@@ -7,12 +7,20 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "ValidateReceipt.h"
 
 @interface ElasticAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 @private
 	NSStatusItem	*_statusItem;
 	NSMenu			*_statusMenu;
 	NSTimer			*_refreshTimer;
+	NSPanel			*_aboutPanel;
+	NSTextField		*_aboutVersionLabel;
+	NSTextField		*_aboutCopyrightLabel;
 }
+
+@property (nonatomic, assign) IBOutlet NSPanel *aboutPanel;
+@property (nonatomic, assign) IBOutlet NSTextField *aboutVersionLabel;
+@property (nonatomic, assign) IBOutlet NSTextField *aboutCopyrightLabel;
 
 @end

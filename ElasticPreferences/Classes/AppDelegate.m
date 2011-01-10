@@ -256,8 +256,7 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[panel beginSheetModalForWindow:_window
 				  completionHandler:^(NSInteger result) {
 					  if (result == NSOKButton) {
-						  [_keypairFileField setStringValue:[[panel filenames] objectAtIndex:0]];
-						  [_keypairFileField validateEditing];
+						  [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:[[panel filenames] objectAtIndex:0]];
 					  }
 				  }];
 }

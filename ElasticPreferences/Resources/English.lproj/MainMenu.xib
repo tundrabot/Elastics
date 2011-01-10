@@ -789,18 +789,18 @@
 				<int key="NSvFlags">268</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="NSTextField" id="440783441">
+					<object class="NSTextField" id="853735207">
 						<reference key="NSNextResponder" ref="675254823"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{17, 50}, {284, 14}}</string>
+						<string key="NSFrame">{{17, 63}, {360, 43}}</string>
 						<reference key="NSSuperview" ref="675254823"/>
 						<bool key="NSEnabled">YES</bool>
-						<object class="NSTextFieldCell" key="NSCell" id="520783314">
-							<int key="NSCellFlags">68288064</int>
-							<int key="NSCellFlags2">272630784</int>
-							<string key="NSContents">Label</string>
+						<object class="NSTextFieldCell" key="NSCell" id="245693584">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">272629760</int>
+							<string key="NSContents">This can be left blank if your SSH public key is already added to authorized_keys on EC2 instance. Otherwise, to get SSH authorization working, put path to your ec2-keypair here.</string>
 							<reference key="NSSupport" ref="284050691"/>
-							<reference key="NSControlView" ref="440783441"/>
+							<reference key="NSControlView" ref="853735207"/>
 							<reference key="NSBackgroundColor" ref="937901614"/>
 							<reference key="NSTextColor" ref="99178266"/>
 						</object>
@@ -808,13 +808,13 @@
 					<object class="NSTextField" id="262105115">
 						<reference key="NSNextResponder" ref="675254823"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{17, 102}, {156, 17}}</string>
+						<string key="NSFrame">{{17, 144}, {156, 17}}</string>
 						<reference key="NSSuperview" ref="675254823"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="936393407">
 							<int key="NSCellFlags">68288064</int>
 							<int key="NSCellFlags2">272630784</int>
-							<string key="NSContents">EC2 keypair private key:</string>
+							<string key="NSContents">SSH private key file:</string>
 							<reference key="NSSupport" ref="752164423"/>
 							<reference key="NSControlView" ref="262105115"/>
 							<reference key="NSBackgroundColor" ref="937901614"/>
@@ -824,7 +824,7 @@
 					<object class="NSButton" id="945272061">
 						<reference key="NSNextResponder" ref="675254823"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{376, 65}, {96, 32}}</string>
+						<string key="NSFrame">{{376, 107}, {96, 32}}</string>
 						<reference key="NSSuperview" ref="675254823"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="696017596">
@@ -844,7 +844,7 @@
 					<object class="NSTextField" id="89683912">
 						<reference key="NSNextResponder" ref="675254823"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{20, 72}, {354, 22}}</string>
+						<string key="NSFrame">{{20, 114}, {354, 22}}</string>
 						<reference key="NSSuperview" ref="675254823"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="77137541">
@@ -893,15 +893,14 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{486, 139}</string>
+				<string key="NSFrameSize">{486, 181}</string>
 				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
 			<object class="NSUserDefaultsController" id="1015869286">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>sshUserName</string>
-					<string>keypairPrivateKeyFile</string>
+					<string>sshPrivateKeyFile</string>
 				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
@@ -1294,15 +1293,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.keypairPrivateKeyFile</string>
+						<string key="label">value: values.sshPrivateKeyFile</string>
 						<reference key="source" ref="89683912"/>
 						<reference key="destination" ref="1015869286"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="89683912"/>
 							<reference key="NSDestination" ref="1015869286"/>
-							<string key="NSLabel">value: values.keypairPrivateKeyFile</string>
+							<string key="NSLabel">value: values.sshPrivateKeyFile</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.keypairPrivateKeyFile</string>
+							<string key="NSKeyPath">values.sshPrivateKeyFile</string>
 							<object class="NSDictionary" key="NSOptions">
 								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
 								<boolean value="YES" key="NS.object.0"/>
@@ -1310,7 +1309,7 @@
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">683</int>
+					<int key="connectionID">684</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1636,12 +1635,12 @@
 						<reference key="object" ref="675254823"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="262105115"/>
-							<reference ref="440783441"/>
 							<reference ref="945272061"/>
+							<reference ref="89683912"/>
+							<reference ref="262105115"/>
+							<reference ref="853735207"/>
 							<reference ref="942266625"/>
 							<reference ref="191073650"/>
-							<reference ref="89683912"/>
 						</object>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">SSH Pane</string>
@@ -1725,20 +1724,6 @@
 						<int key="objectID">629</int>
 						<reference key="object" ref="936393407"/>
 						<reference key="parent" ref="262105115"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">630</int>
-						<reference key="object" ref="440783441"/>
-						<object class="NSMutableArray" key="children">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="520783314"/>
-						</object>
-						<reference key="parent" ref="675254823"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">631</int>
-						<reference key="object" ref="520783314"/>
-						<reference key="parent" ref="440783441"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">632</int>
@@ -1949,6 +1934,20 @@
 						<reference key="object" ref="648109700"/>
 						<reference key="parent" ref="146184991"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">685</int>
+						<reference key="object" ref="853735207"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="245693584"/>
+						</object>
+						<reference key="parent" ref="675254823"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">686</int>
+						<reference key="object" ref="245693584"/>
+						<reference key="parent" ref="853735207"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2052,9 +2051,6 @@
 					<string>628.IBPluginDependency</string>
 					<string>628.IBViewBoundsToFrameTransform</string>
 					<string>629.IBPluginDependency</string>
-					<string>630.IBPluginDependency</string>
-					<string>630.IBViewBoundsToFrameTransform</string>
-					<string>631.IBPluginDependency</string>
 					<string>632.IBPluginDependency</string>
 					<string>632.IBViewBoundsToFrameTransform</string>
 					<string>633.IBPluginDependency</string>
@@ -2098,6 +2094,8 @@
 					<string>665.IBPluginDependency</string>
 					<string>666.IBPluginDependency</string>
 					<string>671.IBPluginDependency</string>
+					<string>685.IBPluginDependency</string>
+					<string>686.IBPluginDependency</string>
 					<string>73.IBPluginDependency</string>
 					<string>73.ImportedFromIB2</string>
 					<string>81.IBEditorWindowLastContentRect</string>
@@ -2183,7 +2181,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{684, 353}, {486, 139}}</string>
+					<string>{{684, 310}, {486, 181}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{644, 596}, {288, 153}}</string>
@@ -2195,12 +2193,12 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwhQAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABC5gAAwmwAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABC+AAAwiAAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABDXgAAwngAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2215,12 +2213,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAw5gAAA</bytes>
-					</object>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAw3kAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABBiAAAwuoAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2291,6 +2284,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>{{949, 720}, {115, 23}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2318,7 +2313,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">683</int>
+			<int key="maxID">686</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3030,7 +3025,7 @@
 				<string>{7, 2}</string>
 				<string>{32, 32}</string>
 				<string>{15, 15}</string>
-				<string>{30, 28}</string>
+				<string>{30, 26}</string>
 				<string>{16, 11}</string>
 				<string>{16, 11}</string>
 			</object>

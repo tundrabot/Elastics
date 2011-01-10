@@ -11,6 +11,7 @@
 #import "ChartView.h"
 #import "Preferences.h"
 #import "Keychain.h"
+#import "ValidateReceipt.h"
 
 #define INSTANCE_INFO_TABLE_WIDTH				220.f
 #define INSTANCE_INFO_LABEL_COLUMN_WIDTH		90.f
@@ -53,9 +54,14 @@
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
 - (void)connectToInstanceAction:(id)sender;
+- (void)aboutAction:(id)sender;
 @end
 
 @implementation ElasticAppDelegate
+
+@synthesize aboutPanel = _aboutPanel;
+@synthesize aboutVersionLabel = _aboutVersionLabel;
+@synthesize aboutCopyrightLabel = _aboutCopyrightLabel;
 
 static NSColor *_titleColor;
 static NSColor *_taggedInstanceColor;
@@ -90,6 +96,17 @@ static NSImage *_statusItemAlertImage;
 
 + (void)initialize
 {
+	NSString *receiptPath = nil;
+	
+#ifdef TB_USE_SAMPLE_RECEIPT
+	receiptPath = kElasticSampleReceiptPath;
+#else
+	receiptPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/_MASReceipt/receipt"];
+#endif
+	
+	validateReceiptAtPath(receiptPath);
+	NSLog(@"receipt validated successfully");
+
 	if (!_titleColor)               _titleColor = [[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] retain];
 	if (!_taggedInstanceColor)      _taggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_untaggedInstanceColor)	_untaggedInstanceColor = [[NSColor blackColor] retain];
@@ -256,6 +273,7 @@ static NSImage *_statusItemAlertImage;
 	}
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+	[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 }
 
@@ -285,6 +303,7 @@ static NSImage *_statusItemAlertImage;
 		}
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+		[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 
 		[_statusItem setImage:_statusItemAlertImage];
@@ -349,6 +368,7 @@ static NSImage *_statusItemAlertImage;
 				}
 				[_statusMenu addItem:[NSMenuItem separatorItem]];
 				[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+				[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
 				[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 			}
 		}
@@ -367,6 +387,7 @@ static NSImage *_statusItemAlertImage;
 			}
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 
 		}
@@ -592,9 +613,9 @@ static NSImage *_statusItemAlertImage;
 	[menu addItem:[self titleItemWithTitle:@"INSTANCE DETAILS"]];
 	[menu addItem:[self infoItemWithLabel:@"Instance ID" info:instance.instanceId action:@selector(copyToPasteboardAction:) tooltip:@"Copy Instance ID"]];
 	[menu addItem:[self infoItemWithLabel:@"Image ID" info:instance.imageId action:@selector(copyToPasteboardAction:) tooltip:@"Copy Image ID"]];
-	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];
-	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Monitoring" info:instance.monitoring.monitoringType action:NULL tooltip:nil]];
+	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
+	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];
 
 	if ([instance.ipAddress length] > 0) {
 		[menu addItem:[NSMenuItem separatorItem]];
@@ -603,22 +624,27 @@ static NSImage *_statusItemAlertImage;
 		[menu addItem:[self infoItemWithLabel:@"Private IP" info:instance.privateIpAddress action:@selector(copyToPasteboardAction:) tooltip:@"Copy Private IP"]];
 	}
 
-	[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-	[menu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId]]];
+	if (instance.instanceState.code != EC2_INSTANCE_STATE_PENDING) {
+		[menu addItem:[NSMenuItem separatorItem]];
+		[menu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
+		[menu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId]]];
 
-	if ([[dataSource statisticsForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId] count] > 0) {
-		CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
-		CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
-		CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
+		if ([[dataSource statisticsForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId] count] > 0) {
+			CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
+			CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
+			CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forInstance:instance.instanceId forRange:kAWSLastHourRange];
 
-		[menu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
-		[menu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
-		[menu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
+			[menu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
+			[menu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
+			[menu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
+		}
 	}
 
-	[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
+	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING) {
+		[menu addItem:[NSMenuItem separatorItem]];
+		[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
+	}
+	
 //	[menu addItem:[NSMenuItem separatorItem]];
 //	[menu addItem:[self actionItemWithLabel:@"Restart..." action:@selector(connectToInstanceAction:)]];
 //	[menu addItem:[self actionItemWithLabel:@"Terminate..." action:@selector(connectToInstanceAction:)]];
@@ -661,7 +687,7 @@ static NSImage *_statusItemAlertImage;
 			
 			for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
 				if ([menuItem representedObject]) {
-					[menuItem setImage:[NSImage imageNamed:@"InstanceStateOther.png"]];
+					[menuItem setImage:[NSImage imageNamed:@"InstanceStateRefreshing.png"]];
 					[menuItem setSubmenu:nil];
 				}
 			}
@@ -833,11 +859,23 @@ static NSImage *_statusItemAlertImage;
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
 	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
-
+	
 	if (instance) {
-		NSString *cmd = [NSString stringWithFormat:
-						 @"tell application \"Terminal\" to do script \"ssh %@\"",
-						 instance.ipAddress];
+		NSString *sshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
+		NSString *sshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+		NSString *cmd = @"ssh";
+		
+		if (sshPrivateKeyFile)
+			cmd = [cmd stringByAppendingFormat:@" -i \'%@\'", sshPrivateKeyFile];
+		
+		if (sshUserName)
+			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instance.ipAddress];
+		else
+			cmd = [cmd stringByAppendingFormat:@"%@", instance.ipAddress];
+		
+		cmd = [NSString stringWithFormat:
+			   @"tell application \"Terminal\" to do script \"%@\"",
+			   cmd];
 
 		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
 		NSDictionary *errorInfo = nil;
@@ -845,6 +883,24 @@ static NSImage *_statusItemAlertImage;
 
 		// TODO: handle errors
 	}
+}
+
+- (void)aboutAction:(id)sender
+{
+	[_aboutPanel center];
+	
+	NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+	NSString *bundleShortVersionString = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+	NSString *version = [NSString stringWithFormat:NSLocalizedString(@"Version %@", nil), bundleShortVersionString];
+	
+	NSData *copyrightData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Credits" ofType:@"html"]];
+	NSAttributedString *copyright = [[NSAttributedString alloc] initWithHTML:copyrightData documentAttributes:nil];
+	
+	[_aboutVersionLabel setStringValue:version];
+	[_aboutCopyrightLabel setAttributedStringValue:copyright];
+	[copyright release];
+	
+	[_aboutPanel makeKeyAndOrderFront:self];
 }
 
 @end

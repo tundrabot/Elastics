@@ -19,7 +19,7 @@ NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elasti
 NSString *const kPreferencesAWSRegionKey				= @"awsRegion";
 NSString *const kPreferencesRefreshIntervalKey			= @"refreshInterval";
 NSString *const kPreferencesRefreshOnMenuOpenKey		= @"refreshOnMenuOpen";
-NSString *const kPreferencesKeypairPrivateKeyFileKey	= @"keypairPrivateKeyFile";
+NSString *const kPreferencesSshPrivateKeyFileKey		= @"sshPrivateKeyFile";
 NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
 NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
 
@@ -38,7 +38,7 @@ static NSDictionary *_defaults;
 @dynamic awsRegion;
 @dynamic refreshInterval;
 @dynamic refreshOnMenuOpen;
-@dynamic keypairPrivateKeyFile;
+@dynamic sshPrivateKeyFile;
 @dynamic sshUserName;
 @dynamic firstLaunch;
 
@@ -114,14 +114,14 @@ static NSDictionary *_defaults;
 	[self setBool:value forKey:kPreferencesRefreshOnMenuOpenKey];
 }
 
-- (NSString *)keypairPrivateKeyFile
+- (NSString *)sshPrivateKeyFile
 {
-	return [self stringForKey:kPreferencesKeypairPrivateKeyFileKey];
+	return [self stringForKey:kPreferencesSshPrivateKeyFileKey];
 }
 
-- (void)setKeypairPrivateKeyFile:(NSString *)value
+- (void)setSshPrivateKeyFile:(NSString *)value
 {
-	[self setObject:value forKey:kPreferencesKeypairPrivateKeyFileKey];
+	[self setObject:value forKey:kPreferencesSshPrivateKeyFileKey];
 }
 
 - (NSString *)sshUserName

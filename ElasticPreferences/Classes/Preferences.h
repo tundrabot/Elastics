@@ -18,7 +18,7 @@ extern NSString *const kPreferencesShouldTerminateNotification;
 @property (nonatomic, assign) NSString *awsRegion;
 @property (nonatomic, assign) NSInteger refreshInterval;
 @property (nonatomic, assign, getter=isRefreshOnMenuOpen) BOOL refreshOnMenuOpen;
-@property (nonatomic, assign) NSString *keypairPrivateKeyFile;
+@property (nonatomic, assign) NSString *sshPrivateKeyFile;
 @property (nonatomic, assign) NSString *sshUserName;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;

@@ -55,9 +55,14 @@
 		C3B3741C12D4B36200A1E47E /* Notification.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741A12D4B36200A1E47E /* Notification.png */; };
 		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
 		C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CE021812D76678006E87EF /* StatusItemAlert.png */; };
+		C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */ = {isa = PBXBuildFile; fileRef = C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */; };
+		C3D1DA6D12DB32C0005E576A /* ValidateReceipt.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */; };
+		C3D1DA8012DB33D8005E576A /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3D1DA7F12DB33D8005E576A /* libcrypto.dylib */; };
+		C3D1DA8412DB33E5005E576A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3D1DA8312DB33E5005E576A /* IOKit.framework */; };
+		C3D1DB4112DB3471005E576A /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D1DB4012DB3471005E576A /* Constants.m */; };
+		C3D1DC6912DB574F005E576A /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3D1DC6812DB574F005E576A /* Credits.html */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
-		C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */; };
 		C3F1A4B912C78460001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A4B812C78460001AB554 /* Icon.icns */; };
 		C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* Preferences.m */; };
 /* End PBXBuildFile section */
@@ -173,12 +178,18 @@
 		C3B3741A12D4B36200A1E47E /* Notification.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification.png; sourceTree = "<group>"; };
 		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
 		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
+		C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRefreshing.png; sourceTree = "<group>"; };
+		C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValidateReceipt.h; sourceTree = "<group>"; };
+		C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ValidateReceipt.m; sourceTree = "<group>"; };
+		C3D1DA7F12DB33D8005E576A /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
+		C3D1DA8312DB33E5005E576A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		C3D1DB3F12DB3471005E576A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		C3D1DB4012DB3471005E576A /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		C3D1DC6812DB574F005E576A /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		C3DAED6C12C34DE200A0106D /* ChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChartView.h; sourceTree = "<group>"; };
 		C3DAED6D12C34DE200A0106D /* ChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChartView.m; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
 		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
-		C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CommonCryptor.h"; sourceTree = "<group>"; };
-		C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCryptor.m"; sourceTree = "<group>"; };
 		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
 		C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ElasticPreferences.xcodeproj; path = ElasticPreferences/ElasticPreferences.xcodeproj; sourceTree = "<group>"; };
 		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = ElasticPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
@@ -194,6 +205,8 @@
 				C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */,
 				C32C30FA12C20F2F00F2C136 /* QuartzCore.framework in Frameworks */,
 				C379FD6612D89BB800D055EF /* Security.framework in Frameworks */,
+				C3D1DA8012DB33D8005E576A /* libcrypto.dylib in Frameworks */,
+				C3D1DA8412DB33E5005E576A /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +216,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C3D1DB3F12DB3471005E576A /* Constants.h */,
+				C3D1DB4012DB3471005E576A /* Constants.m */,
 				256AC3D80F4B6AC300CF3369 /* ElasticAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */,
 				C32C2A0012C0CF2000F2C136 /* DataSource.h */,
@@ -213,8 +228,6 @@
 				C3F1A65D12C7A7EF001AB554 /* Preferences.m */,
 				C379FBD312D89B6B00D055EF /* Keychain.h */,
 				C379FBD412D89B6B00D055EF /* Keychain.m */,
-				C3F1A3D712C7620C001AB554 /* NSData+CommonCryptor.h */,
-				C3F1A3D812C7620C001AB554 /* NSData+CommonCryptor.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -227,7 +240,9 @@
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				C32C30F912C20F2F00F2C136 /* QuartzCore.framework */,
 				C379FD6512D89BB800D055EF /* Security.framework */,
+				C3D1DA8312DB33E5005E576A /* IOKit.framework */,
 				C32C29C912C0C9BB00F2C136 /* libz.dylib */,
+				C3D1DA7F12DB33D8005E576A /* libcrypto.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -247,6 +262,7 @@
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C32C298712C0C63900F2C136 /* TBXML */,
+				C3D1DA6912DB32A2005E576A /* Receipt Validation */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -271,6 +287,7 @@
 			isa = PBXGroup;
 			children = (
 				C32C29EA12C0CB7200F2C136 /* Images */,
+				C3D1DC6812DB574F005E576A /* Credits.html */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				C3F1A4B812C78460001AB554 /* Icon.icns */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -396,6 +413,7 @@
 				C32C2B4F12C0E2B600F2C136 /* InstanceStateRunning.png */,
 				C32C2B5012C0E2B600F2C136 /* InstanceStateStopped.png */,
 				C32C2B5112C0E2B600F2C136 /* InstanceStateTerminated.png */,
+				C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -406,6 +424,15 @@
 				C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C3D1DA6912DB32A2005E576A /* Receipt Validation */ = {
+			isa = PBXGroup;
+			children = (
+				C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */,
+				C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */,
+			);
+			name = "Receipt Validation";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -489,6 +516,8 @@
 				C3B3741C12D4B36200A1E47E /* Notification.png in Resources */,
 				C3B3741D12D4B36200A1E47E /* Error.png in Resources */,
 				C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */,
+				C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */,
+				C3D1DC6912DB574F005E576A /* Credits.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,13 +558,14 @@
 				C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */,
 				C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */,
 				C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */,
-				C3F1A3D912C7620C001AB554 /* NSData+CommonCryptor.m in Sources */,
 				C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */,
 				C32823E312C90E1900020D48 /* AWSError.m in Sources */,
 				C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */,
 				C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */,
 				C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */,
 				C379FBD512D89B6B00D055EF /* Keychain.m in Sources */,
+				C3D1DA6D12DB32C0005E576A /* ValidateReceipt.m in Sources */,
+				C3D1DB4112DB3471005E576A /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,16 +629,21 @@
 			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = TB_DEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					TB_USE_SAMPLE_RECEIPT,
+					TB_DEBUG,
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -617,13 +652,15 @@
 			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PREBINDING = NO;
 				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};

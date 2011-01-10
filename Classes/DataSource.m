@@ -202,8 +202,12 @@ static DataSource * _sharedInstance = nil;
 				[monitoringRequest release];
 			}
 
-			// only schedule monitoring data refresh when it is first request or it is older than MAX_STATISTICS_AGE
-			if (![monitoringRequest completedAt] || (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE))
+			// only schedule monitoring data refresh when it is first request
+			//	or it is older than MAX_STATISTICS_AGE
+			//	or it has no datapoints
+			if (![monitoringRequest completedAt]
+				|| (-[[monitoringRequest completedAt] timeIntervalSinceNow] > MAX_STATISTICS_AGE)
+				|| ![monitoringRequest.response.result.datapoints count])
 				[requestSet addObject:monitoringRequest];
 			else
 				TBTrace(@"skipping instance %@ stats request with age: %.2f", instanceId, -[[monitoringRequest completedAt] timeIntervalSinceNow]);

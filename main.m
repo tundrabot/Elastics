@@ -7,8 +7,20 @@
 //
 
 #import <Cocoa/Cocoa.h>
+//#import "ValidateReceipt.h"
 
 int main(int argc, char *argv[])
 {
+//	NSString *receiptPath = nil;
+//	
+//#ifdef TB_USE_SAMPLE_RECEIPT
+//	receiptPath = kElasticSampleReceiptPath;
+//#else
+//	receiptPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/_MASReceipt/receipt"];
+//#endif
+//	
+//	validateReceiptAtPath(receiptPath);
+//	NSLog(@"receipt validated successfully");
+	
     return NSApplicationMain(argc,  (const char **) argv);
 }
