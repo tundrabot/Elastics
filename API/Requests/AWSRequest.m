@@ -209,7 +209,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		return AWSApiMonitoringVersion;
 	}
 	else {
-		NSAssert(FALSE, @"Unknown service: \"%@\"", self.service);
+		NSLog(@"Unknown service: \"%@\"", self.service);
 		return nil;
 	}
 }

@@ -11,7 +11,9 @@
 #	endif
 #	define TBTrace(format, ...) NSLog(@"%@:%d %s %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(format), ##__VA_ARGS__])
 #else
-#	define NS_BLOCK_ASSERTIONS
+#	ifndef NS_BLOCK_ASSERTIONS
+#		define NS_BLOCK_ASSERTIONS
+#	endif
 #	define TBTrace(format, ...)
 #endif
 

@@ -16,6 +16,7 @@
 	NSString			*_instanceId;
 	NSString			*_imageId;
 	EC2InstanceState	*_instanceState;
+	NSString			*_instanceType;
 	NSString			*_dnsName;
 	NSDate				*_launchTime;
 	EC2Monitoring		*_monitoring;
@@ -27,6 +28,7 @@
 @property (nonatomic, retain, readonly) NSString *instanceId;
 @property (nonatomic, retain, readonly) NSString *imageId;
 @property (nonatomic, retain, readonly) EC2InstanceState *instanceState;
+@property (nonatomic, retain, readonly) NSString *instanceType;
 @property (nonatomic, retain, readonly) NSString *dnsName;
 @property (nonatomic, retain, readonly) NSDate *launchTime;
 @property (nonatomic, retain, readonly) EC2Monitoring *monitoring;

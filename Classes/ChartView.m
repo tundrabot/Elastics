@@ -128,7 +128,7 @@
 				for (NSUInteger i = [_datapoints count] - 2; i != 0; i--) {
 					datapoint = [_datapoints objectAtIndex:i];
 					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
-					y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
+					y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 2.5f;
 					[path lineToPoint:NSMakePoint(x, y)];
 				}
 			

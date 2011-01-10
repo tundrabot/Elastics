@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NSString *instanceId;
 @property (nonatomic, retain) NSString *imageId;
 @property (nonatomic, retain) EC2InstanceState *instanceState;
+@property (nonatomic, retain) NSString *instanceType;
 @property (nonatomic, retain) NSString *dnsName;
 @property (nonatomic, retain) NSDate *launchTime;
 @property (nonatomic, retain) EC2Monitoring *monitoring;
@@ -28,6 +29,7 @@
 @synthesize instanceId = _instanceId;
 @synthesize imageId = _imageId;
 @synthesize instanceState = _instanceState;
+@synthesize instanceType = _instanceType;
 @synthesize dnsName = _dnsName;
 @synthesize launchTime = _launchTime;
 @synthesize monitoring = _monitoring;
@@ -51,6 +53,8 @@
 				self.imageId = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"instanceState"])
 				self.instanceState = [EC2InstanceState typeFromXMLElement:element parent:self];
+			else if ([elementName isEqualToString:@"instanceType"])
+				self.instanceType = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"dnsName"])
 				self.dnsName = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"launchTime"])
@@ -76,6 +80,7 @@
 	TBRelease(_instanceId);
 	TBRelease(_imageId);
 	TBRelease(_instanceState);
+	TBRelease(_instanceType);
 	TBRelease(_dnsName);
 	TBRelease(_launchTime);
 	TBRelease(_privateIpAddress);
