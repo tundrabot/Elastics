@@ -250,7 +250,7 @@ static NSImage *_statusItemAlertImage;
 {
 	[_statusMenu removeAllItems];
 
-	if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+	if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
 		[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 	}
@@ -279,7 +279,7 @@ static NSImage *_statusItemAlertImage;
 
 		[_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
 
-		if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 		}
@@ -343,7 +343,7 @@ static NSImage *_statusItemAlertImage;
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 
-				if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+				if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 					[_statusMenu addItem:[NSMenuItem separatorItem]];
 					[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 				}
@@ -361,7 +361,7 @@ static NSImage *_statusItemAlertImage;
 			[_statusMenu addItem:[self notificationMessageItemWithTitle:
 								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
 
-			if (![[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+			if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 				[_statusMenu addItem:[NSMenuItem separatorItem]];
 				[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
 			}
@@ -657,7 +657,7 @@ static NSImage *_statusItemAlertImage;
 	
 	if (![instanceId length]) {
 		// refresh all instances only if "Refresh on menu open" is checked
-		if ([[NSUserDefaults standardUserDefaults] refreshOnMenuOpen]) {
+		if ([[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 			
 			for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
 				if ([menuItem representedObject]) {

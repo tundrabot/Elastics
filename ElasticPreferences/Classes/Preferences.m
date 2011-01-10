@@ -35,6 +35,11 @@ static NSDictionary *_defaults;
 
 @implementation NSUserDefaults (ElasticPreferences)
 
+@dynamic awsRegion;
+@dynamic refreshInterval;
+@dynamic refreshOnMenuOpen;
+@dynamic keypairPrivateKeyFile;
+@dynamic sshUserName;
 @dynamic firstLaunch;
 
 - (NSDictionary *)defaultElasticPreferences
@@ -73,14 +78,40 @@ static NSDictionary *_defaults;
 	}
 }
 
+- (void)setAwsRegion:(NSString *)value
+{
+	NSInteger region = kPreferencesAWSUSEastRegion;
+	
+	if ([value isEqualToString:kAWSUSEastRegion])
+		region = kPreferencesAWSUSEastRegion;
+	else if ([value isEqualToString:kAWSUSWestRegion])
+		region = kPreferencesAWSUSWestRegion;
+	else if ([value isEqualToString:kAWSEURegion])
+		region = kPreferencesAWSEURegion;
+	else if ([value isEqualToString:kAWSAsiaPacificRegion])
+		region = kPreferencesAWSAsiaPacificRegion;
+	
+	[self setInteger:region forKey:kPreferencesAWSRegionKey];
+}
+
 - (NSInteger)refreshInterval
 {
 	return [self integerForKey:kPreferencesRefreshIntervalKey];
 }
 
-- (BOOL)refreshOnMenuOpen
+- (void)setRefreshInterval:(NSInteger)value
+{
+	[self setInteger:value forKey:kPreferencesRefreshIntervalKey];
+}
+
+- (BOOL)isRefreshOnMenuOpen
 {
 	return [self boolForKey:kPreferencesRefreshOnMenuOpenKey];
+}
+
+- (void)setRefreshOnMenuOpen:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesRefreshOnMenuOpenKey];
 }
 
 - (NSString *)keypairPrivateKeyFile
@@ -88,9 +119,19 @@ static NSDictionary *_defaults;
 	return [self stringForKey:kPreferencesKeypairPrivateKeyFileKey];
 }
 
+- (void)setKeypairPrivateKeyFile:(NSString *)value
+{
+	[self setObject:value forKey:kPreferencesKeypairPrivateKeyFileKey];
+}
+
 - (NSString *)sshUserName
 {
 	return [self stringForKey:kPreferencesSshUserNameKey];
+}
+
+- (void)setSshUserName:(NSString *)value
+{
+	[self setObject:value forKey:kPreferencesSshUserNameKey];
 }
 
 - (BOOL)isFirstLaunch

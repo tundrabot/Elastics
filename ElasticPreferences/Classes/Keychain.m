@@ -22,7 +22,7 @@ GetAWSCredentials(NSString **accessKeyId, NSString **secretAccessKey)
 	
 	status = SecKeychainFindGenericPassword(
 				NULL,
-				strlen(serviceNameUTF8),
+				(UInt32)strlen(serviceNameUTF8),
 				serviceNameUTF8,
 				0,
 				NULL,
@@ -81,9 +81,9 @@ SetAWSCredentials(NSString *accessKeyId, NSString *secretAccessKey)
 	
 	// Set up the attribute vector (each attribute consists of {tag, length, data})
 	SecKeychainAttribute attrs[] = {
-		{ kSecLabelItemAttr, strlen(label), (char *)label },
-		{ kSecServiceItemAttr, strlen(serviceNameUTF8), (char *)serviceNameUTF8 },
-		{ kSecAccountItemAttr, strlen(accountUTF8), (char *)accountUTF8 },
+		{ kSecLabelItemAttr, (UInt32)strlen(label), (char *)label },
+		{ kSecServiceItemAttr, (UInt32)strlen(serviceNameUTF8), (char *)serviceNameUTF8 },
+		{ kSecAccountItemAttr, (UInt32)strlen(accountUTF8), (char *)accountUTF8 },
 	};
 	SecKeychainAttributeList attributes = {
 		sizeof(attrs) / sizeof(attrs[0]), attrs
@@ -95,7 +95,7 @@ SetAWSCredentials(NSString *accessKeyId, NSString *secretAccessKey)
 
 	status = SecKeychainFindGenericPassword(
 				NULL,
-				strlen(serviceNameUTF8),
+				(UInt32)strlen(serviceNameUTF8),
 				serviceNameUTF8,
 				0,
 				NULL,
@@ -110,7 +110,7 @@ SetAWSCredentials(NSString *accessKeyId, NSString *secretAccessKey)
 		status = SecKeychainItemModifyAttributesAndData(
 														itemRef,
 														&attributes,
-														strlen(passwordUTF8),
+														(UInt32)strlen(passwordUTF8),
 														passwordUTF8
 														);
 		CFRelease(itemRef);
@@ -137,7 +137,7 @@ SetAWSCredentials(NSString *accessKeyId, NSString *secretAccessKey)
 			status = SecKeychainItemCreateFromContent(
 						  kSecGenericPasswordItemClass,
 						  &attributes,
-						  strlen(passwordUTF8),
+						  (UInt32)strlen(passwordUTF8),
 						  passwordUTF8,
 						  NULL,
 						  accessRef,
