@@ -18,6 +18,9 @@
 	KeychainController	*_keychainController;
 	NSTextField			*_awsAccessKeyIdField;
 	NSTextField			*_keypairFileField;
+	NSPanel				*_aboutPanel;
+	NSTextField			*_aboutVersionLabel;
+	NSTextField			*_aboutCopyrightLabel;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -26,9 +29,13 @@
 @property (assign) IBOutlet KeychainController *keychainController;
 @property (assign) IBOutlet NSTextField *awsAccessKeyIdField;
 @property (assign) IBOutlet NSTextField *keypairFileField;
+@property (assign) IBOutlet NSPanel *aboutPanel;
+@property (assign) IBOutlet NSTextField *aboutVersionLabel;
+@property (assign) IBOutlet NSTextField *aboutCopyrightLabel;
 
 - (IBAction)showGeneralPaneAction:(id)sender;
 - (IBAction)showAdvancedPaneAction:(id)sender;
 - (IBAction)chooseKeypairAction:(id)sender;
+- (IBAction)aboutAction:(id)sender;
 
 @end

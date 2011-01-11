@@ -34,6 +34,9 @@
 @synthesize keychainController = _keychainController;
 @synthesize awsAccessKeyIdField = _awsAccessKeyIdField;
 @synthesize keypairFileField = _keypairFileField;
+@synthesize aboutPanel = _aboutPanel;
+@synthesize aboutVersionLabel = _aboutVersionLabel;
+@synthesize aboutCopyrightLabel = _aboutCopyrightLabel;
 
 + (void)initialize
 {
@@ -259,6 +262,24 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 						  [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:[[panel filenames] objectAtIndex:0]];
 					  }
 				  }];
+}
+
+- (void)aboutAction:(id)sender
+{
+	[_aboutPanel center];
+	
+	NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+	NSString *bundleShortVersionString = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+	NSString *version = [NSString stringWithFormat:NSLocalizedString(@"Version %@", nil), bundleShortVersionString];
+	
+	NSData *copyrightData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Credits" ofType:@"html"]];
+	NSAttributedString *copyright = [[NSAttributedString alloc] initWithHTML:copyrightData documentAttributes:nil];
+	
+	[_aboutVersionLabel setStringValue:version];
+	[_aboutCopyrightLabel setAttributedStringValue:copyright];
+	[copyright release];
+	
+	[_aboutPanel makeKeyAndOrderFront:self];
 }
 
 @end

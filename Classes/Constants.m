@@ -11,4 +11,4 @@
 NSString *const kElasticBundleShortVersionString	= @"1.0";
 NSString *const kElasticBundleIdentifier			= @"com.tundrabot.Elastic";
 
-NSString *const kElasticSampleReceiptPath			= @"~/Desktop/receipt";
+NSString *const kElasticSampleReceiptPath			= @"~/Sources/receipt";

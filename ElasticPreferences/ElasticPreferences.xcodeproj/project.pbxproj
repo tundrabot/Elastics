@@ -14,6 +14,8 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
+		C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3603DCA12DC6D0B00B13219 /* Credits.html */; };
+		C3603F8E12DC87C200B13219 /* ElasticIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3603F8D12DC87C200B13219 /* ElasticIcon.icns */; };
 		C379FB0012D881B600D055EF /* KeychainController.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FAFF12D881B600D055EF /* KeychainController.m */; };
 		C3CE00A112D739C4006E87EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CE00A012D739C4006E87EF /* Security.framework */; };
 		C3CEFE7212D72E41006E87EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C3CEFE7112D72E41006E87EF /* Keychain.m */; };
@@ -37,12 +39,14 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* ElasticPreferences.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElasticPreferences.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Elastic Preferences.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Elastic Preferences.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AWSConstants.h; path = ../API/AWSConstants.h; sourceTree = SOURCE_ROOT; };
 		C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AWSConstants.m; path = ../API/AWSConstants.m; sourceTree = SOURCE_ROOT; };
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
 		C3603D4612DBD2E900B13219 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../TBDebug.h; sourceTree = SOURCE_ROOT; };
 		C3603D4712DBD2E900B13219 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../TBMacros.h; sourceTree = SOURCE_ROOT; };
+		C3603DCA12DC6D0B00B13219 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
+		C3603F8D12DC87C200B13219 /* ElasticIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ElasticIcon.icns; sourceTree = SOURCE_ROOT; };
 		C379FAFE12D881B600D055EF /* KeychainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainController.h; sourceTree = "<group>"; };
 		C379FAFF12D881B600D055EF /* KeychainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainController.m; sourceTree = "<group>"; };
 		C3CE00A012D739C4006E87EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -108,7 +112,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* ElasticPreferences.app */,
+				8D1107320486CEB800E47090 /* Elastic Preferences.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,9 +144,11 @@
 			children = (
 				C3F1A5FB12C79B5B001AB554 /* Images */,
 				C3F1A54012C78EA5001AB554 /* Icon.icns */,
+				C3603F8D12DC87C200B13219 /* ElasticIcon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				C3603DCA12DC6D0B00B13219 /* Credits.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -180,9 +186,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* ElasticPreferences */ = {
+		8D1107260486CEB800E47090 /* Elastic Preferences */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ElasticPreferences" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic Preferences" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -192,10 +198,10 @@
 			);
 			dependencies = (
 			);
-			name = ElasticPreferences;
+			name = "Elastic Preferences";
 			productInstallPath = "$(HOME)/Applications";
 			productName = ElasticPreferences;
-			productReference = 8D1107320486CEB800E47090 /* ElasticPreferences.app */;
+			productReference = 8D1107320486CEB800E47090 /* Elastic Preferences.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -217,7 +223,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* ElasticPreferences */,
+				8D1107260486CEB800E47090 /* Elastic Preferences */,
 			);
 		};
 /* End PBXProject section */
@@ -234,6 +240,8 @@
 				C3F1A60012C79B72001AB554 /* SG.png in Resources */,
 				C3F1A60112C79B72001AB554 /* US.png in Resources */,
 				C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */,
+				C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */,
+				C3603F8E12DC87C200B13219 /* ElasticIcon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +299,7 @@
 				GCC_PREFIX_HEADER = ElasticPreferences_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = ElasticPreferences;
+				PRODUCT_NAME = "Elastic Preferences";
 			};
 			name = Debug;
 		};
@@ -305,7 +313,7 @@
 				GCC_PREFIX_HEADER = ElasticPreferences_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = ElasticPreferences;
+				PRODUCT_NAME = "Elastic Preferences";
 			};
 			name = Release;
 		};
@@ -374,14 +382,14 @@
 				GCC_PREFIX_HEADER = ElasticPreferences_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = ElasticPreferences;
+				PRODUCT_NAME = "Elastic Preferences";
 			};
 			name = Distribution;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ElasticPreferences" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic Preferences" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,

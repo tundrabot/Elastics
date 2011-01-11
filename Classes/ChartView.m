@@ -11,9 +11,11 @@
 #import "MonitoringDatapoint.h"
 
 #define MIN_WIDTH				180.f
-#define MIN_HEIGHT				50.f
-#define HORIZONTAL_PADDING		18.f
-#define VERTICAL_PADDING		4.f
+#define MIN_HEIGHT				60.f
+#define PADDING_TOP				0.f
+#define PADDING_RIGHT			17.f
+#define PADDING_BOTTOM			3.f
+#define PADDING_LEFT			17.f
 
 @interface ChartView ()
 - (void)setChartRange:(NSUInteger)newChartRange;
@@ -29,14 +31,16 @@
 
 - (id)initWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints
 {
-	NSRect frame = NSMakeRect(0.f, 0.f, MIN_WIDTH + HORIZONTAL_PADDING * 2.f, MIN_HEIGHT + VERTICAL_PADDING * 2.f);
+	NSRect frame = NSMakeRect(0.f, 0.f,
+							  MIN_WIDTH + PADDING_LEFT + PADDING_RIGHT,
+							  MIN_HEIGHT + PADDING_TOP + PADDING_BOTTOM);
 
     self = [super initWithFrame:frame];
     if (self) {
 		[self setAutoresizingMask:NSViewWidthSizable];
 		[self setAutoresizesSubviews:YES];
 		
-		NSRect spinnerFrame = NSMakeRect(NSMidX(frame) - 8.f, NSMidY(frame) - 12.5f, 16.f, 16.f);
+		NSRect spinnerFrame = NSMakeRect(NSMidX(frame) - 8.f, NSMidY(frame) - 6.f, 16.f, 16.f);
 		_spinner = [[NSProgressIndicator alloc] initWithFrame:spinnerFrame];
 		[_spinner setControlSize:NSSmallControlSize];
 		[_spinner setAutoresizingMask:(NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin)];
@@ -94,7 +98,9 @@
 			
 			NSSize menuSize = [[[self enclosingMenuItem] menu] size];
 			NSRect chartRect = NSMakeRect(0, 0, menuSize.width, MIN_HEIGHT);
-			chartRect = NSInsetRect(chartRect, HORIZONTAL_PADDING, 0);
+			chartRect = NSInsetRect(chartRect, PADDING_LEFT, 0);
+			chartRect = NSInsetRect(chartRect, 0, PADDING_BOTTOM);
+			chartRect = NSOffsetRect(chartRect, 0, PADDING_BOTTOM);
 			
 			NSBezierPath *clipPath = [NSBezierPath bezierPathWithRect:NSInsetRect(chartRect, .5f, .5f)];
 			[clipPath addClip];

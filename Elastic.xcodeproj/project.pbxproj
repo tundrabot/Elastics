@@ -46,7 +46,7 @@
 		C32C32B112C23CDA00F2C136 /* NSString+DateConversions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32B012C23CDA00F2C136 /* NSString+DateConversions.m */; };
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
-		C3603D7412DBD72500B13219 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = C3603D7312DBD72500B13219 /* TODO */; };
+		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
 		C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */; };
 		C379FBD512D89B6B00D055EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FBD412D89B6B00D055EF /* Keychain.m */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
@@ -174,7 +174,7 @@
 		C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringDatapoint.m; sourceTree = "<group>"; };
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
-		C3603D7312DBD72500B13219 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		C3603E5912DC7AA100B13219 /* Progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Progress.png; sourceTree = "<group>"; };
 		C379FBD312D89B6B00D055EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keychain.h; path = ElasticPreferences/Classes/Keychain.h; sourceTree = SOURCE_ROOT; };
 		C379FBD412D89B6B00D055EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keychain.m; path = ElasticPreferences/Classes/Keychain.m; sourceTree = SOURCE_ROOT; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -267,7 +267,6 @@
 		29B97314FDCFA39411CA2CEA /* Elastic */ = {
 			isa = PBXGroup;
 			children = (
-				C3603D7312DBD72500B13219 /* TODO */,
 				C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -415,6 +414,7 @@
 		C32C29EA12C0CB7200F2C136 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C3603E5912DC7AA100B13219 /* Progress.png */,
 				C3B3741A12D4B36200A1E47E /* Notification.png */,
 				C3B3741B12D4B36200A1E47E /* Error.png */,
 				C32C2B5212C0E2B600F2C136 /* StatusItem.png */,
@@ -529,7 +529,7 @@
 				C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */,
 				C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */,
 				C3D1DC6912DB574F005E576A /* Credits.html in Resources */,
-				C3603D7412DBD72500B13219 /* TODO in Resources */,
+				C3603E5A12DC7AA100B13219 /* Progress.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

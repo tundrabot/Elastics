@@ -440,7 +440,7 @@ static DataSource * _sharedInstance = nil;
 
 	if ([stats count] > 0) {
 		NSTimeInterval startTimestamp = [[NSDate date] timeIntervalSinceReferenceDate] - (NSTimeInterval)range;
-		__block CGFloat result = MAXFLOAT;
+		__block CGFloat result = 0;
 
 		[stats enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			MonitoringDatapoint *datapoint = (MonitoringDatapoint *)obj;
@@ -472,7 +472,7 @@ static DataSource * _sharedInstance = nil;
 			}
 		}];
 
-		return sum/count;
+		return count != 0 ? sum/count : 0;
 	}
 	else
 		return 0;

@@ -100,8 +100,8 @@
 			*stop = YES;
 		}
 	}];
-	
-	return nameTagValue;
+
+	return [nameTagValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 @end

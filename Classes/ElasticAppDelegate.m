@@ -18,11 +18,16 @@
 
 #define MESSAGE_TABLE_WIDTH						180.f
 
+static NSString *const kElasticPreferencesApplicationPath	= @"Contents/Helpers/Elastic Preferences.app";
+static NSString *const kElasticPreferencesSuite				= @"com.tundrabot.Elastic-Preferences";
+
 @interface ElasticAppDelegate ()
 - (void)resetMenu;
+- (void)addMenuActionItems;
 - (void)refreshMenu:(NSNotification *)notification;
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
 - (NSMenuItem *)messageItemWithTitle:(NSString *)title image:(NSImage *)image;
+- (NSMenuItem *)progressMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)notificationMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance;
@@ -181,7 +186,7 @@ static NSImage *_statusItemAlertImage;
 {
 	// register preferences set through Preferences helper app and defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults addSuiteNamed:@"com.tundrabot.ElasticPreferences"];
+	[userDefaults addSuiteNamed:kElasticPreferencesSuite];
 	[userDefaults registerDefaults:[userDefaults defaultElasticPreferences]];
 
 	// load current preferences
@@ -263,9 +268,14 @@ static NSImage *_statusItemAlertImage;
 #pragma mark -
 #pragma mark Status menu
 
-- (void)resetMenu
-{
+- (void)resetMenu {
+	
 	[_statusMenu removeAllItems];
+	[_statusMenu addItem:[self progressMessageItemWithTitle:@"Querying instance info..."]];
+	[self addMenuActionItems];
+}
+
+- (void)addMenuActionItems {
 
 	if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
@@ -273,7 +283,7 @@ static NSImage *_statusItemAlertImage;
 	}
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-	[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
+//	[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
 }
 
@@ -297,15 +307,8 @@ static NSImage *_statusItemAlertImage;
 
 		[_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
 
-		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
-			[_statusMenu addItem:[NSMenuItem separatorItem]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
-		}
-		[_statusMenu addItem:[NSMenuItem separatorItem]];
-		[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-		[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
-		[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
-
+		[self addMenuActionItems];
+		
 		[_statusItem setImage:_statusItemAlertImage];
 		[_statusItem setTitle:nil];
 	}
@@ -362,14 +365,7 @@ static NSImage *_statusItemAlertImage;
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 //				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 
-				if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
-					[_statusMenu addItem:[NSMenuItem separatorItem]];
-					[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
-				}
-				[_statusMenu addItem:[NSMenuItem separatorItem]];
-				[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-				[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
-				[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
+				[self addMenuActionItems];
 			}
 		}
 		else {
@@ -381,15 +377,7 @@ static NSImage *_statusItemAlertImage;
 			[_statusMenu addItem:[self notificationMessageItemWithTitle:
 								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
 
-			if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
-				[_statusMenu addItem:[NSMenuItem separatorItem]];
-				[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
-			}
-			[_statusMenu addItem:[NSMenuItem separatorItem]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
-
+			[self addMenuActionItems];
 		}
 		
 		[_statusItem setImage:_statusItemImage];
@@ -466,6 +454,11 @@ static NSImage *_statusItemAlertImage;
 	return menuItem;
 }
 
+- (NSMenuItem *)progressMessageItemWithTitle:(NSString *)title
+{
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Progress.png"]];
+}
+	 
 - (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title
 {
 	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Error.png"]];
@@ -485,7 +478,7 @@ static NSImage *_statusItemAlertImage;
 	NSAttributedString *attributedTitle = nil;
 
 	// set item title to Name tag if present, otherwise to Instance ID
-	if (nameTag)
+	if ([nameTag length] > 0)
 		attributedTitle = [[[NSAttributedString alloc] initWithString:nameTag attributes:_taggedInstanceAttributes] autorelease];
 	else
 		attributedTitle = [[[NSAttributedString alloc] initWithString:instance.instanceId attributes:_untaggedInstanceAttributes] autorelease];
@@ -853,7 +846,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)editPreferencesAction:(id)sender
 {
-	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Helpers/ElasticPreferences.app"];
+	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:kElasticPreferencesApplicationPath];
 	[[NSWorkspace sharedWorkspace] launchApplication:preferencesBundlePath];
 }
 
