@@ -86,83 +86,101 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-	[self hideSpinner];
+//	@try {
+
+		[self hideSpinner];
 	
-	[NSGraphicsContext saveGraphicsState]; {
-		
-		NSSize menuSize = [[[self enclosingMenuItem] menu] size];
-		NSRect chartRect = NSMakeRect(0, 0, menuSize.width, MIN_HEIGHT);
-		chartRect = NSInsetRect(chartRect, HORIZONTAL_PADDING, 0);
-		
-		NSBezierPath *clipPath = [NSBezierPath bezierPathWithRect:NSInsetRect(chartRect, .5f, .5f)];
-		[clipPath addClip];
-		
-		NSBezierPath *borderPath = [NSBezierPath bezierPathWithRect:NSInsetRect(chartRect, .5f, .5f)];
-		[[NSColor colorWithDeviceWhite:.75f alpha:1.f] set];
-		[borderPath stroke];
-		
-		NSGradient *backgroundGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:.90f alpha:1.f]
-																	   endingColor:[NSColor colorWithDeviceWhite:.98f alpha:1.f]];
-		[backgroundGradient drawInRect:chartRect angle:-90.f];
-		[backgroundGradient release];
-		
-		if ([_datapoints count] > 0) {
+		[NSGraphicsContext saveGraphicsState]; {
+			
+			NSSize menuSize = [[[self enclosingMenuItem] menu] size];
+			NSRect chartRect = NSMakeRect(0, 0, menuSize.width, MIN_HEIGHT);
+			chartRect = NSInsetRect(chartRect, HORIZONTAL_PADDING, 0);
+			
+			NSBezierPath *clipPath = [NSBezierPath bezierPathWithRect:NSInsetRect(chartRect, .5f, .5f)];
+			[clipPath addClip];
+			
+			NSBezierPath *borderPath = [NSBezierPath bezierPathWithRect:NSInsetRect(chartRect, .5f, .5f)];
+			[[NSColor colorWithDeviceWhite:.75f alpha:1.f] set];
+			[borderPath stroke];
+			
+			NSGradient *backgroundGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:.90f alpha:1.f]
+																		   endingColor:[NSColor colorWithDeviceWhite:.98f alpha:1.f]];
+			[backgroundGradient drawInRect:chartRect angle:-90.f];
+			[backgroundGradient release];
+			
+			if (_datapoints == nil) {
+				// first refresh is in progress
 
-			NSTimeInterval timestampMax = floor([[NSDate date] timeIntervalSinceReferenceDate]) - 60.0;
-			NSTimeInterval timestampMin = timestampMax - _chartRange;
-			CGFloat xScale = chartRect.size.width / (CGFloat)_chartRange;
-			CGFloat yScale = chartRect.size.height / 100;
-			
-			NSBezierPath *path = [NSBezierPath bezierPath];
-			[path setFlatness:0.1f];
-			[path setLineJoinStyle:NSRoundLineJoinStyle];
-			MonitoringDatapoint *datapoint = [_datapoints lastObject];
-			
-			if ([datapoint timestamp] > timestampMin) {
-				CGFloat x, y;
-			
-				x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
-				y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
-				[path moveToPoint:NSMakePoint(x, y)];
-			
-				for (NSUInteger i = [_datapoints count] - 2; i != 0; i--) {
-					datapoint = [_datapoints objectAtIndex:i];
-					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
-					y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 2.5f;
-					[path lineToPoint:NSMakePoint(x, y)];
-				}
-			
-				datapoint = [_datapoints objectAtIndex:0];
-				x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
-				y = ROUND_5(NSMinY(chartRect) + datapoint.minimum * yScale) + .5f;
-				[path lineToPoint:NSMakePoint(x, y)];
-			
-				for (NSUInteger i = 1; i < [_datapoints count]; i++) {
-					datapoint = [_datapoints objectAtIndex:i];
-					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
-					y = ROUND_5(NSMinY(chartRect) + datapoint.minimum * yScale) + .5f;
-					[path lineToPoint:NSMakePoint(x, y)];
-				}
-				
-				[path closePath];
-				
-//				[[NSGraphicsContext currentContext] setShouldAntialias:NO];
+				[self showSpinner];
+			}
+			else if ([_datapoints count] > 0) {
+				// data is ready
 
-				[path setClip];
-				NSGradient *chartGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceRed:(118.f/255.f) green:(186.f/255.f) blue:(250.f/255.f) alpha:1.f]
-																		  endingColor:[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f]];
-				[chartGradient drawInBezierPath:clipPath angle:-90.f];
-				[chartGradient release];
+				NSTimeInterval timestampMax = floor([[NSDate date] timeIntervalSinceReferenceDate]) - 60.0;
+				NSTimeInterval timestampMin = timestampMax - _chartRange;
+				CGFloat xScale = chartRect.size.width / (CGFloat)_chartRange;
+				CGFloat yScale = chartRect.size.height / 100;
 				
-//				[[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] set];
-//				[path fill];
+				NSBezierPath *path = [NSBezierPath bezierPath];
+				[path setFlatness:0.1f];
+				[path setLineJoinStyle:NSRoundLineJoinStyle];
+				MonitoringDatapoint *datapoint = [_datapoints lastObject];
+				
+				//TBTrace(@"count: %d", [_datapoints count]);
+				if ([datapoint timestamp] > timestampMin) {
+					CGFloat x, y;
+					NSUInteger i;
+				
+					x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
+					y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
+					[path moveToPoint:NSMakePoint(x, y)];
+					//TBTrace(@"x: %.1f, y: %.1f", x, y);
+				
+					for (i = [_datapoints count] - 2; (NSInteger)i >= 0; i--) {
+						datapoint = [_datapoints objectAtIndex:i];
+						x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
+						y = ROUND_5(NSMinY(chartRect) + datapoint.maximum * yScale) + 1.5f;
+						[path lineToPoint:NSMakePoint(x, y)];
+						//TBTrace(@"x: %.1f, y: %.1f", x, y);
+					}
+					
+					//TBTrace(@"i: %d", i);
+
+					for (i = 0; i < [_datapoints count]; i++) {
+						datapoint = [_datapoints objectAtIndex:i];
+						x = (CGFloat)(NSMinX(chartRect) + ([datapoint timestamp] - timestampMin) * xScale);
+						y = ROUND_5(NSMinY(chartRect) + datapoint.minimum * yScale) + .5f;
+						[path lineToPoint:NSMakePoint(x, y)];
+						//TBTrace(@"x: %.1f, y: %.1f", x, y);
+					}
+
+					//TBTrace(@"i: %d", i);
+
+					[path closePath];
+					
+					NSColor *startingColor = [NSColor colorWithDeviceRed:(35.f/255.f) green:(120.f/255.f) blue:(200.f/255.f) alpha:1.f];
+					NSColor *endingColor = [NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f];
+
+					[endingColor set];
+					[path setLineWidth:.5f];
+					[path stroke];
+					
+					[path setClip];
+					NSGradient *chartGradient = [[NSGradient alloc] initWithStartingColor:startingColor
+																			  endingColor:endingColor];
+					[chartGradient drawInBezierPath:clipPath angle:-90.f];
+					[chartGradient release];
+					
+//					[[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] set];
+//					[path fill];
+				}
 			}
 		}
-		else {
-			[self showSpinner];
-		}
-	}
-	[NSGraphicsContext restoreGraphicsState];
+		[NSGraphicsContext restoreGraphicsState];
+//	}
+//	@catch (NSException *e) {
+//		NSLog(@"%@", e);
+//	}
 }
 
 - (void)showSpinner

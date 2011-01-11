@@ -22,7 +22,7 @@
 
 - (id)transformedValue:(id)value
 {
-	TBTrace(@"reverseTransformedValue: %@", value);
+	TBTrace("reverseTransformedValue: %@", value);
 	
 	NSInteger refreshInterval = [value intValue];
 	
@@ -46,7 +46,7 @@
 
 - (id)reverseTransformedValue:(id)value
 {
-	TBTrace(@"transformedValue: %@", value);
+	TBTrace("transformedValue: %@", value);
 	
 	float sliderValue = [value floatValue];
 

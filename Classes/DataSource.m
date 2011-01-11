@@ -122,7 +122,7 @@ static DataSource * _sharedInstance = nil;
 
 		NSMutableDictionary *requestInfo = [_runningRequests objectForKey:@"r"];
 		if (requestInfo) {
-			TBTrace(@"refresh is already in progress !!!");
+			TBTrace("refresh is already in progress !!!");
 			return;
 		}
 		requestInfo = [NSMutableDictionary dictionary];
@@ -174,7 +174,7 @@ static DataSource * _sharedInstance = nil;
 		
 		NSMutableDictionary *requestInfo = [_runningRequests objectForKey:instanceId];
 		if (requestInfo) {
-			TBTrace(@"refresh for %@ is already in progress !!!", instanceId);
+			TBTrace("refresh for %@ is already in progress !!!", instanceId);
 			return;
 		}
 		requestInfo = [NSMutableDictionary dictionary];
@@ -210,7 +210,7 @@ static DataSource * _sharedInstance = nil;
 				|| ![monitoringRequest.response.result.datapoints count])
 				[requestSet addObject:monitoringRequest];
 			else
-				TBTrace(@"skipping instance %@ stats request with age: %.2f", instanceId, -[[monitoringRequest completedAt] timeIntervalSinceNow]);
+				TBTrace("skipping instance %@ stats request with age: %.2f", instanceId, -[[monitoringRequest completedAt] timeIntervalSinceNow]);
 		}
 	
 		// do we have anything scheduled? then add requestInfo to running requests and start requests
@@ -264,9 +264,9 @@ static DataSource * _sharedInstance = nil;
 	NSDate *finishedAt = [finishedRequest objectForKey:@"kFinishedAt"];
 	NSString *instanceId = [finishedRequest objectForKey:kDataSourceInstanceIdInfoKey];
 	if (instanceId)
-		TBTrace(@"%.2fs, instance %@", [finishedAt timeIntervalSinceDate:startedAt], instanceId);
+		TBTrace("%.2fs, instance %@", [finishedAt timeIntervalSinceDate:startedAt], instanceId);
 	else
-		TBTrace(@"%.2fs, all instances", [finishedAt timeIntervalSinceDate:startedAt]);
+		TBTrace("%.2fs, all instances", [finishedAt timeIntervalSinceDate:startedAt]);
 #endif
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
@@ -306,7 +306,7 @@ static DataSource * _sharedInstance = nil;
 #ifdef TB_DEBUG
 	NSDate *startedAt = [finishedRequest objectForKey:@"kStartedAt"];
 	NSDate *finishedAt = [finishedRequest objectForKey:@"kFinishedAt"];
-	TBTrace(@"%.2fs, error: %@", [finishedAt timeIntervalSinceDate:startedAt], error);
+	TBTrace("%.2fs, error: %@", [finishedAt timeIntervalSinceDate:startedAt], error);
 #endif
 	
 	[finishedRequest setObject:error forKey:kDataSourceErrorInfoKey];

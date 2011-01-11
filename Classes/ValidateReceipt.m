@@ -9,7 +9,7 @@
 #import "ValidateReceipt.h"
 #import "Constants.h"
 
-// link with Foundation.framework, IOKit.framework, Security.framework and libCrypto.dylib
+// Requires linking with Foundation.framework, IOKit.framework, Security.framework and libCrypto.dylib
 
 #import <IOKit/IOKitLib.h>
 #import <Foundation/Foundation.h>
@@ -23,9 +23,9 @@
 #include <openssl/err.h>
 
 #ifdef TB_USE_SAMPLE_RECEIPT
-#warning *************(***********************
+#warning *************************************
 #warning ******* USING SAMPLE RECEIPT! *******
-#warning **************(**********************
+#warning *************************************
 #endif
 
 NSString *const kReceiptBundleIdentifer		= @"BundleIdentifier";
@@ -34,18 +34,17 @@ NSString *const kReceiptVersion				= @"Version";
 NSString *const kReceiptOpaqueValue			= @"OpaqueValue";
 NSString *const kReceiptHash				= @"Hash";
 
-NSData* appleRootCert(void);
-NSDictionary* dictionaryWithAppStoreReceipt(NSString *path);
-CFDataRef copyMACAddress(void);
+static NSData* _appleRootCertData(void);
+static NSDictionary* _dictionaryWithAppStoreReceipt(NSString *path);
+static CFDataRef _macAddress(void);
 
-NSData* appleRootCert(void)
+NSData* _appleRootCertData(void)
 {
 	OSStatus status;
 	
 	SecKeychainRef keychain = nil;
 	status = SecKeychainOpen("/System/Library/Keychains/SystemRootCertificates.keychain", &keychain);
-	if (status != noErr)
-	{
+	if (status != noErr) {
 		if (keychain)
 			CFRelease(keychain);
 		return nil;
@@ -63,8 +62,7 @@ NSData* appleRootCert(void)
 	
 	SecKeychainSearchRef searchRef = nil;
 	status = SecKeychainSearchCreateFromAttributes(searchList, kSecCertificateItemClass, NULL, &searchRef);
-	if (status != noErr)
-	{
+	if (status != noErr) {
 		if (searchRef)
 			CFRelease(searchRef);
 		if (searchList)
@@ -75,8 +73,7 @@ NSData* appleRootCert(void)
 	SecKeychainItemRef itemRef = nil;
 	NSData* resultData = nil;
 	
-	while (SecKeychainSearchCopyNext(searchRef, &itemRef) == noErr && resultData == nil)
-	{
+	while (SecKeychainSearchCopyNext(searchRef, &itemRef) == noErr && resultData == nil) {
 		// Grab the name of the certificate
 		SecKeychainAttributeList list;
 		SecKeychainAttribute attributes[1];
@@ -86,19 +83,17 @@ NSData* appleRootCert(void)
 		list.count = 1;
 		list.attr = attributes;
 		
-		SecKeychainItemCopyContent(itemRef, nil, &list, nil, nil);
-//		NSData *nameData = [NSData dataWithBytesNoCopy:attributes[0].data length:attributes[0].length freeWhenDone:NO];
-//		NSString *name = [[NSString alloc] initWithData:nameData encoding:NSUTF8StringEncoding];
+		SecKeychainItemCopyContent(itemRef, NULL, &list, NULL, NULL);
 		NSString *name = [[NSString alloc] initWithBytes:attributes[0].data
 												  length:attributes[0].length
 												encoding:NSUTF8StringEncoding];
+		SecKeychainItemFreeContent(&list, NULL);
 		
-		if ([name isEqualToString:@"Apple Root CA"])
-		{
+		if ([name isEqualToString:@"Apple Root CA"]) {
 			CSSM_DATA certData;
+			
 			status = SecCertificateGetData((SecCertificateRef)itemRef, &certData);
-			if (status != noErr)
-			{
+			if (status != noErr) {
 				if (itemRef)
 					CFRelease(itemRef);
 				[name release];
@@ -107,7 +102,6 @@ NSData* appleRootCert(void)
 			
 			resultData = [NSData dataWithBytes:certData.Data length:certData.Length];
 			
-			SecKeychainItemFreeContent(&list, NULL);
 			if (itemRef)
 				CFRelease(itemRef);
 			[name release];
@@ -125,9 +119,9 @@ NSData* appleRootCert(void)
 	return resultData;
 }
 
-NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
+NSDictionary* _dictionaryWithAppStoreReceipt(NSString *path)
 {
-	NSData* rootCertData = appleRootCert();
+	NSData* rootCertData = _appleRootCertData();
 	
 	enum ATTRIBUTES
 	{
@@ -159,14 +153,12 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 	if (!p7)
 		return nil;
 	
-	if (!PKCS7_type_is_signed(p7))
-	{
+	if (!PKCS7_type_is_signed(p7)) {
 		PKCS7_free(p7);
 		return nil;
 	}
 	
-	if (!PKCS7_type_is_data(p7->d.sign->contents))
-	{
+	if (!PKCS7_type_is_data(p7->d.sign->contents)) {
 		PKCS7_free(p7);
 		return nil;
 	}
@@ -174,13 +166,11 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 	int verifyReturnValue = 0;
 	X509_STORE *store = X509_STORE_new();
 	
-	if (store)
-	{
+	if (store) {
 		unsigned char const *data = (unsigned char *)(rootCertData.bytes);
 		X509 *appleCA = d2i_X509(NULL, &data, (long)rootCertData.length);
 		
-		if (appleCA)
-		{
+		if (appleCA) {
 			BIO *payload = BIO_new(BIO_s_mem());
 			X509_STORE_add_cert(store, appleCA);
 			
@@ -195,10 +185,9 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 			unsigned long err = ERR_get_error();
 			if (err)
 				printf("%lu: %s\n", err, ERR_error_string(err,NULL));
-			else
-			{
+			else {
 				STACK_OF(X509) *stack = PKCS7_get0_signers(p7, NULL, 0);
-				for(NSUInteger i = 0; i < sk_num(stack); i++) {
+				for (NSUInteger i = 0; i < sk_num(stack); i++) {
 					const X509 *signer = (X509*)sk_value(stack, i);
 					NSLog(@"name = %s", signer->name);
 				}
@@ -211,8 +200,7 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 	}
 	EVP_cleanup();
 	
-	if (verifyReturnValue != 1)
-	{
+	if (verifyReturnValue != 1) {
 		PKCS7_free(p7);
 		return nil; 
 	}
@@ -226,16 +214,14 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 	long length = 0;
 	
 	ASN1_get_object(&p, &length, &type, &xclass, end - p);
-	if (type != V_ASN1_SET)
-	{
+	if (type != V_ASN1_SET) {
 		PKCS7_free(p7);
 		return nil;
 	}
 	
 	NSMutableDictionary *info = [NSMutableDictionary dictionary];
 	
-	while (p < end)
-	{
+	while (p < end)	{
 		ASN1_get_object(&p, &length, &type, &xclass, end - p);
 		if (type != V_ASN1_SEQUENCE)
 			break;
@@ -247,36 +233,31 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 		
 		// Attribute type
 		ASN1_get_object(&p, &length, &type, &xclass, seq_end - p);
-		if (type == V_ASN1_INTEGER && length == 1)
-		{
+		if (type == V_ASN1_INTEGER && length == 1) {
 			attr_type = p[0];
 		}
 		p += length;
 		
 		// Attribute version
 		ASN1_get_object(&p, &length, &type, &xclass, seq_end - p);
-		if (type == V_ASN1_INTEGER && length == 1)
-		{
+		if (type == V_ASN1_INTEGER && length == 1) {
 			attr_version = p[0];
 			attr_version = attr_version;
 		}
 		p += length;
 		
 		// Only parse attributes we're interested in
-		if (attr_type > ATTR_START && attr_type < ATTR_END)
-		{
+		if (attr_type > ATTR_START && attr_type < ATTR_END) {
 			NSString *key;
 			
 			ASN1_get_object(&p, &length, &type, &xclass, seq_end - p);
-			if (type == V_ASN1_OCTET_STRING)
-			{
+			if (type == V_ASN1_OCTET_STRING) {
+
 				// Bytes
-				if (attr_type == BUNDLE_ID || attr_type == OPAQUE_VALUE || attr_type == HASH)
-				{
+				if (attr_type == BUNDLE_ID || attr_type == OPAQUE_VALUE || attr_type == HASH) {
 					NSData *data = [NSData dataWithBytes:p length:(NSUInteger)length];
 					
-					switch (attr_type)
-					{
+					switch (attr_type) {
 						case BUNDLE_ID:
 							// This is included for hash generation
 							key = kReceiptBundleIdentiferData;
@@ -293,20 +274,17 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 				}
 				
 				// Strings
-				if (attr_type == BUNDLE_ID || attr_type == VERSION)
-				{
+				if (attr_type == BUNDLE_ID || attr_type == VERSION) {
 					int str_type = 0;
 					long str_length = 0;
 					unsigned char const *str_p = p;
 					ASN1_get_object(&str_p, &str_length, &str_type, &xclass, seq_end - str_p);
-					if (str_type == V_ASN1_UTF8STRING)
-					{
+					if (str_type == V_ASN1_UTF8STRING) {
 						NSString *string = [[[NSString alloc] initWithBytes:str_p
 																	 length:(NSUInteger)str_length
 																   encoding:NSUTF8StringEncoding] autorelease];
 						
-						switch (attr_type)
-						{
+						switch (attr_type) {
 							case BUNDLE_ID:
 								key = kReceiptBundleIdentifer;
 								break;
@@ -323,8 +301,7 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 		}
 		
 		// Skip any remaining fields in this SEQUENCE
-		while (p < seq_end)
-		{
+		while (p < seq_end) {
 			ASN1_get_object(&p, &length, &type, &xclass, seq_end - p);
 			p += length;
 		}
@@ -335,7 +312,7 @@ NSDictionary* dictionaryWithAppStoreReceipt(NSString *path)
 	return info;
 }
 
-CFDataRef copyMACAddress(void)
+CFDataRef _macAddress(void)
 {
 	kern_return_t			  kernResult;
 	mach_port_t				  master_port;
@@ -345,70 +322,68 @@ CFDataRef copyMACAddress(void)
 	CFDataRef				  macAddress = nil;
 	
 	kernResult = IOMasterPort(MACH_PORT_NULL, &master_port);
-	if (kernResult != KERN_SUCCESS)
-	{
+	if (kernResult != KERN_SUCCESS) {
 		NSLog(@"IOMasterPort returned %d", kernResult);
 		return nil;
 	}
 	
 	matchingDict = IOBSDNameMatching(master_port, 0, "en0");
-	if (!matchingDict)
-	{
+	if (!matchingDict) {
 		NSLog(@"IOBSDNameMatching returned empty dictionary");
 		return nil;
 	}
 	
 	kernResult = IOServiceGetMatchingServices(master_port, matchingDict, &iterator);
-	if (kernResult != KERN_SUCCESS)
-	{
+	if (kernResult != KERN_SUCCESS) {
 		NSLog(@"IOServiceGetMatchingServices returned %d", kernResult);
 		return nil;
 	}
 	
-	while((service = IOIteratorNext(iterator)) != 0)
-	{
-		io_object_t		   parentService;
+	while((service = IOIteratorNext(iterator)) != 0) {
+		io_object_t parentService;
 		
 		kernResult = IORegistryEntryGetParentEntry(service, kIOServicePlane, &parentService);
-		if (kernResult == KERN_SUCCESS)
-		{
+		if (kernResult == KERN_SUCCESS) {
 			if (macAddress)
 				CFRelease(macAddress);
 			
 			macAddress = IORegistryEntryCreateCFProperty(parentService, CFSTR("IOMACAddress"), kCFAllocatorDefault, 0);
 			IOObjectRelease(parentService);
 		}
-		else
-		{
+		else {
 			NSLog(@"IORegistryEntryGetParentEntry returned %d", kernResult);
 		}
 		
 		IOObjectRelease(service);
 	}
 	
+	if (macAddress)
+		CFMakeCollectable(macAddress);
+	
 	return macAddress;
 }
 
-#define VALIDATION_FAIL_EXITCODE	173
+#define VALIDATION_FAIL_EXIT_STATUS		173
 
 void validateReceiptAtPath(NSString *path)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-	NSDictionary *receipt = dictionaryWithAppStoreReceipt(path);
+	NSDictionary *receipt = _dictionaryWithAppStoreReceipt(path);
 	if (!receipt) {
 		[pool drain];
-		exit(VALIDATION_FAIL_EXITCODE);
+		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
 	
 	NSData *guidData = nil;
 	
-	// it turns out, it's a bad idea, to use these two NSBundle methods in your app:
+	// as it turns out, it's a bad idea, to use these two NSBundle methods in your app:
 	//
 	// bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 	// bundleIdentifer = [[NSBundle mainBundle] bundleIdentifier];
 	//
 	// http://www.craftymind.com/2011/01/06/mac-app-store-hacked-how-developers-can-better-protect-themselves/
+
 	NSString *bundleVersion = nil;
 	NSString *bundleIdentifer = nil;
 
@@ -417,24 +392,23 @@ void validateReceiptAtPath(NSString *path)
 	bundleVersion = @"1.0.2";
 	bundleIdentifer = @"com.example.SampleApp";
 
-	// Example GUID for use with example receipt
+	// example GUID for use with example receipt from Apple
 	unsigned char guid[] = { 0x00, 0x17, 0xf2, 0xc4, 0xbc, 0xc0 };		
 	guidData = [NSData dataWithBytes:guid length:sizeof(guid)];
 #else
 	bundleVersion = kElasticBundleShortVersionString;
 	bundleIdentifer = kElasticBundleIdentifier;
 
-	guidData = (NSData *)copyMACAddress();
-	
-	if ([NSGarbageCollector defaultCollector])
-		[[NSGarbageCollector defaultCollector] enableCollectorForPointer:guidData];
-	else 
-		[guidData autorelease];
-	
+	guidData = (NSData *)_macAddress();
 	if (!guidData) {
 		[pool drain];
-		exit(VALIDATION_FAIL_EXITCODE);
+		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
+	
+//	if ([NSGarbageCollector defaultCollector])
+//		[[NSGarbageCollector defaultCollector] enableCollectorForPointer:guidData];
+//	else 
+//		[guidData autorelease];
 	
 	// double-check that hardcoded values match
 	if (![bundleVersion isEqualToString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]) {
@@ -442,7 +416,7 @@ void validateReceiptAtPath(NSString *path)
 		abort();
 	}
 	if (![bundleIdentifer isEqualToString:[[NSBundle mainBundle] bundleIdentifier]]) {
-		NSLog(@"CFBundleIdentifier mismatch");
+		NSLog(@"CFBundleIdentifier mismatch !");
 		abort();
 	}
 #endif
@@ -460,9 +434,9 @@ void validateReceiptAtPath(NSString *path)
 		|| [hash isEqualToData:[receipt objectForKey:kReceiptHash]] == NO)
 	{
 		[pool drain];
-		exit(VALIDATION_FAIL_EXITCODE);
+		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
 	
 	[pool drain];
-//	exit(VALIDATION_FAIL_EXITCODE);
+//	exit(VALIDATION_FAIL_EXIT_STATUS);
 }

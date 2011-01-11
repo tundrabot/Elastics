@@ -1,0 +1,5 @@
+== 1.0
+
+* initial "loading" message
+* weird min/max/avg when there are no datapoints or time frame is far in the past
+

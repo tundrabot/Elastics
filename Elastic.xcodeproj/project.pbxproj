@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -46,6 +46,7 @@
 		C32C32B112C23CDA00F2C136 /* NSString+DateConversions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32B012C23CDA00F2C136 /* NSString+DateConversions.m */; };
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
+		C3603D7412DBD72500B13219 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = C3603D7312DBD72500B13219 /* TODO */; };
 		C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */; };
 		C379FBD512D89B6B00D055EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FBD412D89B6B00D055EF /* Keychain.m */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
@@ -173,6 +174,7 @@
 		C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringDatapoint.m; sourceTree = "<group>"; };
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
+		C3603D7312DBD72500B13219 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		C379FBD312D89B6B00D055EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keychain.h; path = ElasticPreferences/Classes/Keychain.h; sourceTree = SOURCE_ROOT; };
 		C379FBD412D89B6B00D055EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keychain.m; path = ElasticPreferences/Classes/Keychain.m; sourceTree = SOURCE_ROOT; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -186,8 +188,8 @@
 		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
 		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
 		C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRefreshing.png; sourceTree = "<group>"; };
-		C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValidateReceipt.h; sourceTree = "<group>"; };
-		C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ValidateReceipt.m; sourceTree = "<group>"; };
+		C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ValidateReceipt.h; path = Classes/ValidateReceipt.h; sourceTree = "<group>"; };
+		C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ValidateReceipt.m; path = Classes/ValidateReceipt.m; sourceTree = "<group>"; };
 		C3D1DA7F12DB33D8005E576A /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		C3D1DA8312DB33E5005E576A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		C3D1DB3F12DB3471005E576A /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 		29B97314FDCFA39411CA2CEA /* Elastic */ = {
 			isa = PBXGroup;
 			children = (
+				C3603D7312DBD72500B13219 /* TODO */,
 				C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -474,7 +477,7 @@
 				ORGANIZATIONNAME = "Tundra Bot";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastic" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -526,6 +529,7 @@
 				C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */,
 				C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */,
 				C3D1DC6912DB574F005E576A /* Credits.html in Resources */,
+				C3603D7412DBD72500B13219 /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,7 +656,7 @@
 					TB_USE_SAMPLE_RECEIPT,
 					TB_DEBUG,
 				);
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -674,7 +678,7 @@
 					NS_BLOCK_ASSERTIONS,
 					TB_USE_SAMPLE_RECEIPT,
 				);
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -692,7 +696,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
-				GCC_VERSION = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;

@@ -35,11 +35,11 @@ extern NSString *const kAWSNetworkInMetric;
 extern NSString *const kAWSNetworkOutMetric;
 
 // Supported metric statistics ranges
-#define kAWSLastHourRange		3600
-#define kAWSLast3HoursRange		10800
-#define kAWSLast6HoursRange		21600
-#define kAWSLast12HoursRange	43200
-#define kAWSLast24HoursRange	86400
+#define kAWSLastHourRange		3600U
+#define kAWSLast3HoursRange		10800U
+#define kAWSLast6HoursRange		21600U
+#define kAWSLast12HoursRange	43200U
+#define kAWSLast24HoursRange	86400U
 
 // Errors
 extern NSString *const kAWSErrorDomain;

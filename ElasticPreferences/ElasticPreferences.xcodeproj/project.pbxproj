@@ -41,13 +41,13 @@
 		C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AWSConstants.h; path = ../API/AWSConstants.h; sourceTree = SOURCE_ROOT; };
 		C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AWSConstants.m; path = ../API/AWSConstants.m; sourceTree = SOURCE_ROOT; };
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
+		C3603D4612DBD2E900B13219 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../TBDebug.h; sourceTree = SOURCE_ROOT; };
+		C3603D4712DBD2E900B13219 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../TBMacros.h; sourceTree = SOURCE_ROOT; };
 		C379FAFE12D881B600D055EF /* KeychainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainController.h; sourceTree = "<group>"; };
 		C379FAFF12D881B600D055EF /* KeychainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainController.m; sourceTree = "<group>"; };
 		C3CE00A012D739C4006E87EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C3CEFE7012D72E41006E87EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keychain.h; sourceTree = "<group>"; };
 		C3CEFE7112D72E41006E87EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keychain.m; sourceTree = "<group>"; };
-		C3D71EA312CA572D00C4FFFE /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
-		C3D71EA412CA572D00C4FFFE /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C3F1A54012C78EA5001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = ../Icon.icns; sourceTree = "<group>"; };
 		C3F1A54412C78F1E001AB554 /* ElasticPreferences.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ElasticPreferences.xcconfig; sourceTree = "<group>"; };
 		C3F1A5FC12C79B72001AB554 /* EU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EU.png; sourceTree = "<group>"; };
@@ -77,9 +77,9 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C3603D4612DBD2E900B13219 /* TBDebug.h */,
+				C3603D4712DBD2E900B13219 /* TBMacros.h */,
 				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
-				C3D71EA312CA572D00C4FFFE /* TBDebug.h */,
-				C3D71EA412CA572D00C4FFFE /* TBMacros.h */,
 				C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */,
 				C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
@@ -318,6 +318,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = TB_DEBUG;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -335,6 +336,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -344,6 +347,37 @@
 			};
 			name = Release;
 		};
+		C3603C6E12DBC71D00B13219 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticPreferences.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Distribution;
+		};
+		C3603C6F12DBC71D00B13219 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticPreferences.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ElasticPreferences_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = ElasticPreferences;
+			};
+			name = Distribution;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -352,6 +386,7 @@
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
 				C01FCF4C08A954540054247B /* Release */,
+				C3603C6F12DBC71D00B13219 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -361,6 +396,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				C3603C6E12DBC71D00B13219 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

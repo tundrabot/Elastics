@@ -323,7 +323,7 @@ static NSImage *_statusItemAlertImage;
 			if ([instanceId length] > 0) {
 				// was refresh for selected instance
 
-				TBTrace(@"%@", instanceId);
+				TBTrace("%@", instanceId);
 				
 				EC2Instance *instance = [dataSource instance:instanceId];
 
@@ -340,7 +340,7 @@ static NSImage *_statusItemAlertImage;
 			else {
 				// was refresh for all instances
 
-				TBTrace(@"all instances");
+				TBTrace("all instances");
 
 				[_statusMenu removeAllItems];
 
@@ -670,15 +670,24 @@ static NSImage *_statusItemAlertImage;
 			   withObject:notification
 			   afterDelay:0.
 				  inModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
-//	[self performSelectorOnMainThread:@selector(refreshMenu:) withObject:notification waitUntilDone:NO];
-//	[self performSelectorOnMainThread:@selector(refreshMenu:) withObject:notification waitUntilDone:NO modes:[NSArray arrayWithObject:NSEventTrackingRunLoopMode]];
+
+//	[self performSelectorOnMainThread:@selector(refreshMenu:)
+//						   withObject:notification
+//						waitUntilDone:NO];
+
+//	[self performSelectorOnMainThread:@selector(refreshMenu:)
+//						   withObject:notification
+//						waitUntilDone:NO
+//								modes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
+
 //	[self refreshMenu:notification];
 }
 
 #pragma mark -
 #pragma mark Menu delegate
 
-- (void)menuWillOpen:(NSMenu *)menu
+//- (void)menuWillOpen:(NSMenu *)menu
+- (void)menuNeedsUpdate:(NSMenu *)menu
 {
 	NSString *instanceId = [menu title];
 	
@@ -719,7 +728,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)loadPreferences
 {
-	TBTrace(@"reloading preferences");
+	TBTrace("reloading preferences");
 
 	[[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -761,7 +770,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)preferencesDidChange:(NSNotification *)notification
 {
-	TBTrace(@"%@", notification);
+	TBTrace("%@", notification);
 
 	[self loadPreferences];
 	[self refresh:nil];
@@ -772,7 +781,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)enableRefreshTimer
 {
-	TBTrace(@"enabling background refresh");
+	TBTrace("enabling background refresh");
 
 	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
 	
@@ -788,7 +797,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)disableRefreshTimer
 {
-	TBTrace(@"disabling background refresh");
+	TBTrace("disabling background refresh");
 
 	[_refreshTimer invalidate];
 	TBRelease(_refreshTimer);
@@ -804,7 +813,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)workspaceSessionDidBecomeActive:(NSNotification *)notification
 {
-	TBTrace(@"performing refresh and enabling background refresh timer");
+	TBTrace("performing refresh and enabling background refresh timer");
 	
 	[self refresh:nil];
 	[self enableRefreshTimer];
@@ -812,14 +821,14 @@ static NSImage *_statusItemAlertImage;
 
 - (void)workspaceSessionDidResignActive:(NSNotification *)notification
 {
-	TBTrace(@"disabling background refresh timer");
+	TBTrace("disabling background refresh timer");
 	
 	[self disableRefreshTimer];
 }
 
 - (void)workspaceDidWake:(NSNotification *)notification
 {
-	TBTrace(@"scheduling refresh and enabling background refresh timer");
+	TBTrace("scheduling refresh and enabling background refresh timer");
 
 	[self enableRefreshTimer];
 	[self performSelector:@selector(refresh:) withObject:nil afterDelay:15.0];

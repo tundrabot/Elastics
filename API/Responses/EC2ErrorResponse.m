@@ -20,7 +20,7 @@
 		if ([elementName isEqualToString:@"Errors"])
 			_errors = [[self parseElement:element asArrayOf:[AWSError class]] retain];
 		else
-			TBTrace(@"ignoring element %@", elementName);
+			TBTrace("ignoring element %@", elementName);
 		
 		element = element->nextSibling;
 	}

@@ -9,7 +9,7 @@
 #	ifdef NS_BLOCK_ASSERTIONS
 #		undef NS_BLOCK_ASSERTIONS
 #	endif
-#	define TBTrace(format, ...) NSLog(@"%@:%d %s %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(format), ##__VA_ARGS__])
+#	define TBTrace(format, ...) NSLog(@"%@:%d %s %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:@format, ##__VA_ARGS__])
 #else
 #	ifndef NS_BLOCK_ASSERTIONS
 #		define NS_BLOCK_ASSERTIONS
@@ -17,7 +17,7 @@
 #	define TBTrace(format, ...)
 #endif
 
-#define TBLog(format, ...) NSLog(@"%@:%d %s %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:(format), ##__VA_ARGS__])
+#define TBLog(format, ...) NSLog(@"%@:%d %s %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:@format, ##__VA_ARGS__])
 
 
 //#define _MDLog(fmt, args...)	{\

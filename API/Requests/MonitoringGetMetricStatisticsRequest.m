@@ -84,7 +84,7 @@
 			period = @"360";
 			break;
 		default:
-			NSLog(@"Unsuported range value: %d", _range);
+			NSLog(@"Unsuported range value: %lu", (unsigned long)_range);
 			break;
 	}
 	[parameters setObject:[[[NSDate date] dateByAddingTimeInterval:-((NSTimeInterval)_range + 360.0)] iso8601String] forKey:kAWSStartTimeParameter];

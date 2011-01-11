@@ -40,7 +40,7 @@
 	if (_awsAccessKeyId == nil)
 		[self _getAwsCredentials];
 
-	TBTrace(@"%@", _awsAccessKeyId);
+	TBTrace("%@", _awsAccessKeyId);
 	return _awsAccessKeyId;
 }
 
@@ -49,7 +49,7 @@
 	if (_awsSecretAccessKey == nil)
 		[self _getAwsCredentials];
 	
-	TBTrace(@"%@", _awsSecretAccessKey);
+	TBTrace("%@", _awsSecretAccessKey);
 	return _awsSecretAccessKey;
 }
 

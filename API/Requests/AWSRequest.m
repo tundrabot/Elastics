@@ -542,7 +542,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFailWithError:(NSError *)error
 {
-	TBLog(@"%@", error);
+	TBLog("%@", error);
 	
 	self.completedAt = [NSDate date];
 
