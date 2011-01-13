@@ -125,7 +125,7 @@
 				NSTimeInterval timestampMax = floor([[NSDate date] timeIntervalSinceReferenceDate]) - 60.0;
 				NSTimeInterval timestampMin = timestampMax - _chartRange;
 				CGFloat xScale = chartRect.size.width / (CGFloat)_chartRange;
-				CGFloat yScale = chartRect.size.height / 100;
+				CGFloat yScale = (chartRect.size.height - 2.0f - .5f) / 100.f;
 				
 				NSBezierPath *path = [NSBezierPath bezierPath];
 				[path setFlatness:0.1f];

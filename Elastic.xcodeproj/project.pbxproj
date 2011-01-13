@@ -47,7 +47,7 @@
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
-		C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */; };
+		C379FA7612D7F90300D055EF /* Elastic Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */; };
 		C379FBD512D89B6B00D055EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FBD412D89B6B00D055EF /* Keychain.m */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
@@ -73,7 +73,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D1107260486CEB800E47090 /* ElasticPreferences */;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
 			remoteInfo = ElasticPreferences;
 		};
 		C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */ = {
@@ -92,7 +92,7 @@
 			dstPath = Contents/Helpers;
 			dstSubfolderSpec = 1;
 			files = (
-				C379FA7612D7F90300D055EF /* ElasticPreferences.app in CopyFiles */,
+				C379FA7612D7F90300D055EF /* Elastic Preferences.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +431,7 @@
 		C3BFED5712D76B1A007A4EDF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */,
+				C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -502,10 +502,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		C3BFED5B12D76B1A007A4EDF /* ElasticPreferences.app */ = {
+		C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = ElasticPreferences.app;
+			path = "Elastic Preferences.app";
 			remoteRef = C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
