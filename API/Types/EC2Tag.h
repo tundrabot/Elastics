@@ -1,6 +1,6 @@
 //
 //  EC2Tag.h
-//  Elastic
+//  Elastics
 //
 //  Created by Dmitri Goutnik on 02/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.

@@ -1,12 +1,12 @@
 //
-//  ElasticAppDelegate.m
-//  Elastic
+//  ElasticsAppDelegate.m
+//  Elastics
 //
 //  Created by Dmitri Goutnik on 21/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
-#import "ElasticAppDelegate.h"
+#import "ElasticsAppDelegate.h"
 #import "DataSource.h"
 #import "ChartView.h"
 #import "Preferences.h"
@@ -18,10 +18,10 @@
 
 #define MESSAGE_TABLE_WIDTH						180.f
 
-static NSString *const kElasticPreferencesApplicationPath	= @"Contents/Helpers/Elastic Preferences.app";
-static NSString *const kElasticPreferencesSuite				= @"com.tundrabot.Elastic-Preferences";
+static NSString *const kElasticsPreferencesApplicationPath	= @"Contents/Helpers/Elastics Preferences.app";
+static NSString *const kElasticsPreferencesSuite				= @"com.tundrabot.Elastics-Preferences";
 
-@interface ElasticAppDelegate ()
+@interface ElasticsAppDelegate ()
 - (void)resetMenu;
 - (void)addMenuActionItems;
 - (void)refreshMenu:(NSNotification *)notification;
@@ -62,7 +62,7 @@ static NSString *const kElasticPreferencesSuite				= @"com.tundrabot.Elastic-Pre
 - (void)aboutAction:(id)sender;
 @end
 
-@implementation ElasticAppDelegate
+@implementation ElasticsAppDelegate
 
 @synthesize aboutPanel = _aboutPanel;
 @synthesize aboutVersionLabel = _aboutVersionLabel;
@@ -104,7 +104,7 @@ static NSImage *_statusItemAlertImage;
 	NSString *receiptPath = nil;
 	
 #ifdef TB_USE_SAMPLE_RECEIPT
-	receiptPath = kElasticSampleReceiptPath;
+	receiptPath = kElasticsSampleReceiptPath;
 #else
 	receiptPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/_MASReceipt/receipt"];
 #endif
@@ -186,8 +186,8 @@ static NSImage *_statusItemAlertImage;
 {
 	// register preferences set through Preferences helper app and defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults addSuiteNamed:kElasticPreferencesSuite];
-	[userDefaults registerDefaults:[userDefaults defaultElasticPreferences]];
+	[userDefaults addSuiteNamed:kElasticsPreferencesSuite];
+	[userDefaults registerDefaults:[userDefaults defaultElasticsPreferences]];
 
 	// load current preferences
 	[self loadPreferences];
@@ -852,7 +852,7 @@ static NSImage *_statusItemAlertImage;
 
 - (void)editPreferencesAction:(id)sender
 {
-	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:kElasticPreferencesApplicationPath];
+	NSString *preferencesBundlePath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:kElasticsPreferencesApplicationPath];
 	[[NSWorkspace sharedWorkspace] launchApplication:preferencesBundlePath];
 }
 

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  ElasticPreferences
+//  ElasticsPreferences
 //
 //  Created by Dmitri Goutnik on 26/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		256AC3DA0F4B6AC300CF3369 /* ElasticAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */; };
+		256AC3DA0F4B6AC300CF3369 /* ElasticsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ElasticsAppDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -47,7 +47,7 @@
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
-		C379FA7612D7F90300D055EF /* Elastic Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */; };
+		C379FA7612D7F90300D055EF /* Elastics Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */; };
 		C379FBD512D89B6B00D055EF /* Keychain.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FBD412D89B6B00D055EF /* Keychain.m */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
@@ -69,19 +69,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C3603A8512DB8CD400B13219 /* PBXContainerItemProxy */ = {
+		C36C7D2613126103001158B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
+			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8D1107260486CEB800E47090;
-			remoteInfo = ElasticPreferences;
+			remoteInfo = "Elastics Preferences";
 		};
 		C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
+			containerPortal = C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8D1107320486CEB800E47090;
-			remoteInfo = ElasticPreferences;
+			remoteInfo = ElasticsPreferences;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -92,7 +92,7 @@
 			dstPath = Contents/Helpers;
 			dstSubfolderSpec = 1;
 			files = (
-				C379FA7612D7F90300D055EF /* Elastic Preferences.app in CopyFiles */,
+				C379FA7612D7F90300D055EF /* Elastics Preferences.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,17 +102,17 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		256AC3D80F4B6AC300CF3369 /* ElasticAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElasticAppDelegate.h; sourceTree = "<group>"; };
-		256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ElasticAppDelegate.m; sourceTree = "<group>"; };
-		256AC3F00F4B6AF500CF3369 /* Elastic_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Elastic_Prefix.pch; sourceTree = "<group>"; };
+		256AC3D80F4B6AC300CF3369 /* ElasticsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElasticsAppDelegate.h; sourceTree = "<group>"; };
+		256AC3D90F4B6AC300CF3369 /* ElasticsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ElasticsAppDelegate.m; sourceTree = "<group>"; };
+		256AC3F00F4B6AF500CF3369 /* Elastics_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Elastics_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Elastic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elastic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Elastics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elastics.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
 		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
-		C32C28C912C0C09200F2C136 /* Elastic.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Elastic.xcconfig; sourceTree = "<group>"; };
+		C32C28C912C0C09200F2C136 /* Elastics.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Elastics.xcconfig; sourceTree = "<group>"; };
 		C32C28E712C0C2F500F2C136 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
 		C32C28E812C0C2F500F2C136 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C32C290A12C0C60900F2C136 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSConstants.h; sourceTree = "<group>"; };
@@ -175,8 +175,8 @@
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
 		C3603E5912DC7AA100B13219 /* Progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Progress.png; sourceTree = "<group>"; };
-		C379FBD312D89B6B00D055EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keychain.h; path = ElasticPreferences/Classes/Keychain.h; sourceTree = SOURCE_ROOT; };
-		C379FBD412D89B6B00D055EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keychain.m; path = ElasticPreferences/Classes/Keychain.m; sourceTree = SOURCE_ROOT; };
+		C379FBD312D89B6B00D055EF /* Keychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Keychain.h; path = ElasticsPreferences/Classes/Keychain.h; sourceTree = SOURCE_ROOT; };
+		C379FBD412D89B6B00D055EF /* Keychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Keychain.m; path = ElasticsPreferences/Classes/Keychain.m; sourceTree = SOURCE_ROOT; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C391BB0A12CB9F3E00BD929A /* AWSErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSErrorResponse.h; sourceTree = "<group>"; };
 		C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSErrorResponse.m; sourceTree = "<group>"; };
@@ -200,9 +200,9 @@
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
 		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
 		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
-		C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ElasticPreferences.xcodeproj; path = ElasticPreferences/ElasticPreferences.xcodeproj; sourceTree = "<group>"; };
-		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = ElasticPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
-		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = ElasticPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
+		C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ElasticsPreferences.xcodeproj; path = ElasticsPreferences/ElasticsPreferences.xcodeproj; sourceTree = "<group>"; };
+		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = ElasticsPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
+		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = ElasticsPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,8 +227,8 @@
 			children = (
 				C3D1DB3F12DB3471005E576A /* Constants.h */,
 				C3D1DB4012DB3471005E576A /* Constants.m */,
-				256AC3D80F4B6AC300CF3369 /* ElasticAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* ElasticAppDelegate.m */,
+				256AC3D80F4B6AC300CF3369 /* ElasticsAppDelegate.h */,
+				256AC3D90F4B6AC300CF3369 /* ElasticsAppDelegate.m */,
 				C32C2A0012C0CF2000F2C136 /* DataSource.h */,
 				C32C2A0112C0CF2000F2C136 /* DataSource.m */,
 				C3DAED6C12C34DE200A0106D /* ChartView.h */,
@@ -259,15 +259,15 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Elastic.app */,
+				8D1107320486CEB800E47090 /* Elastics.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Elastic */ = {
+		29B97314FDCFA39411CA2CEA /* Elastics */ = {
 			isa = PBXGroup;
 			children = (
-				C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */,
+				C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				C32C298712C0C63900F2C136 /* TBXML */,
@@ -278,15 +278,15 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				C32C28E712C0C2F500F2C136 /* TBDebug.h */,
 				C32C28E812C0C2F500F2C136 /* TBMacros.h */,
-				C32C28C912C0C09200F2C136 /* Elastic.xcconfig */,
+				C32C28C912C0C09200F2C136 /* Elastics.xcconfig */,
 			);
-			name = Elastic;
+			name = Elastics;
 			sourceTree = "<group>";
 		};
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3F00F4B6AF500CF3369 /* Elastic_Prefix.pch */,
+				256AC3F00F4B6AF500CF3369 /* Elastics_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -431,7 +431,7 @@
 		C3BFED5712D76B1A007A4EDF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */,
+				C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -448,9 +448,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* Elastic */ = {
+		8D1107260486CEB800E47090 /* Elastics */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastics" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -460,12 +460,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				C3603A8612DB8CD400B13219 /* PBXTargetDependency */,
+				C36C7D2713126103001158B6 /* PBXTargetDependency */,
 			);
-			name = Elastic;
+			name = Elastics;
 			productInstallPath = "$(HOME)/Applications";
-			productName = Elastic;
-			productReference = 8D1107320486CEB800E47090 /* Elastic.app */;
+			productName = Elastics;
+			productReference = 8D1107320486CEB800E47090 /* Elastics.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -476,7 +476,7 @@
 			attributes = {
 				ORGANIZATIONNAME = "Tundra Bot";
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastic" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastics" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -486,26 +486,26 @@
 				French,
 				German,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Elastic */;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Elastics */;
 			projectDirPath = "";
 			projectReferences = (
 				{
 					ProductGroup = C3BFED5712D76B1A007A4EDF /* Products */;
-					ProjectRef = C3F1A54B12C78F98001AB554 /* ElasticPreferences.xcodeproj */;
+					ProjectRef = C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* Elastic */,
+				8D1107260486CEB800E47090 /* Elastics */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		C3BFED5B12D76B1A007A4EDF /* Elastic Preferences.app */ = {
+		C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = "Elastic Preferences.app";
+			path = "Elastics Preferences.app";
 			remoteRef = C3BFED5A12D76B1A007A4EDF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -541,7 +541,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				256AC3DA0F4B6AC300CF3369 /* ElasticAppDelegate.m in Sources */,
+				256AC3DA0F4B6AC300CF3369 /* ElasticsAppDelegate.m in Sources */,
 				C32C295D12C0C60900F2C136 /* AWSConstants.m in Sources */,
 				C32C295E12C0C60900F2C136 /* AWSRequest.m in Sources */,
 				C32C295F12C0C60900F2C136 /* NSData+Base64.m in Sources */,
@@ -584,10 +584,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C3603A8612DB8CD400B13219 /* PBXTargetDependency */ = {
+		C36C7D2713126103001158B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = ElasticPreferences;
-			targetProxy = C3603A8512DB8CD400B13219 /* PBXContainerItemProxy */;
+			name = "Elastics Preferences";
+			targetProxy = C36C7D2613126103001158B6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -622,10 +622,10 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Elastic_Prefix.pch;
+				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Elastic;
+				PRODUCT_NAME = Elastics;
 			};
 			name = Debug;
 		};
@@ -637,16 +637,16 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Elastic_Prefix.pch;
+				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Elastic;
+				PRODUCT_NAME = Elastics;
 			};
 			name = Release;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastics.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -669,15 +669,12 @@
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastics.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NS_BLOCK_ASSERTIONS,
-					TB_USE_SAMPLE_RECEIPT,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -690,7 +687,7 @@
 		};
 		C3603AFB12DB93BA00B13219 /* Distribution */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastic.xcconfig */;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastics.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -714,17 +711,17 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Elastic_Prefix.pch;
+				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = Elastic;
+				PRODUCT_NAME = Elastics;
 			};
 			name = Distribution;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastic" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -734,7 +731,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastic" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Elastics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

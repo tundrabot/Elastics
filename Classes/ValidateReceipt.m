@@ -1,6 +1,6 @@
 //
 //	ValidateReceipt.m
-//	Elastic
+//	Elastics
 //
 //	Created by Dmitri Goutnik on 10/01/2011.
 //	Copyright 2011 Tundra Bot. All rights reserved.
@@ -396,8 +396,8 @@ void validateReceiptAtPath(NSString *path)
 	unsigned char guid[] = { 0x00, 0x17, 0xf2, 0xc4, 0xbc, 0xc0 };		
 	guidData = [NSData dataWithBytes:guid length:sizeof(guid)];
 #else
-	bundleVersion = kElasticBundleShortVersionString;
-	bundleIdentifer = kElasticBundleIdentifier;
+	bundleVersion = kElasticsBundleShortVersionString;
+	bundleIdentifer = kElasticsBundleIdentifier;
 
 	guidData = (NSData *)_macAddress();
 	if (!guidData) {

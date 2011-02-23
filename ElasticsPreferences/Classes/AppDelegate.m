@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  ElasticPreferences
+//  ElasticsPreferences
 //
 //  Created by Dmitri Goutnik on 26/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -50,7 +50,7 @@
 	
 	// register default preference values
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	[userDefaults registerDefaults:[userDefaults defaultElasticPreferences]];
+	[userDefaults registerDefaults:[userDefaults defaultElasticsPreferences]];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification

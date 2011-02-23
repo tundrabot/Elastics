@@ -34,14 +34,14 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSCustomObject" id="976324537">
-				<string key="NSClassName">ElasticAppDelegate</string>
+				<string key="NSClassName">ElasticsAppDelegate</string>
 			</object>
 			<object class="NSWindowTemplate" id="892835031">
 				<int key="NSWindowStyleMask">19</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{196, 339}, {254, 171}}</string>
 				<int key="NSWTFlags">1677722624</int>
-				<string key="NSWindowTitle">About Elastic</string>
+				<string key="NSWindowTitle">About Elastics</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -91,7 +91,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="951905407">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">138413056</int>
-								<string key="NSContents">Elastic</string>
+								<string key="NSContents">Elastics</string>
 								<object class="NSFont" key="NSSupport">
 									<string key="NSName">LucidaGrande-Bold</string>
 									<double key="NSSize">14</double>
@@ -622,7 +622,7 @@
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">ElasticAppDelegate</string>
+					<string key="className">ElasticsAppDelegate</string>
 					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -665,7 +665,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Classes/ElasticAppDelegate.h</string>
+						<string key="minorKey">Classes/ElasticsAppDelegate.h</string>
 					</object>
 				</object>
 			</object>
@@ -1135,7 +1135,7 @@
 			<integer value="3000" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../../Elastic.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">../../Elastics.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">NSApplicationIcon</string>

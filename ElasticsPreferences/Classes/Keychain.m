@@ -1,6 +1,6 @@
 //
 //  Keychain.m
-//  ElasticPreferences
+//  ElasticsPreferences
 //
 //  Created by Dmitri Goutnik on 07/01/2011.
 //  Copyright 2011 Tundra Bot. All rights reserved.
@@ -9,8 +9,8 @@
 #import "Keychain.h"
 #include <Security/Security.h>
 
-static NSString *const _secServiceName			= @"com.tundrabot.Elastic";
-static NSString *const _mainAppBundleIdentifier = @"com.tundrabot.Elastic";
+static NSString *const _secServiceName			= @"com.tundrabot.Elastics";
+static NSString *const _mainAppBundleIdentifier = @"com.tundrabot.Elastics";
 
 void
 GetAWSCredentials(NSString **accessKeyId, NSString **secretAccessKey)
@@ -74,7 +74,7 @@ GetAWSCredentials(NSString **accessKeyId, NSString **secretAccessKey)
 void
 SetAWSCredentials(NSString *accessKeyId, NSString *secretAccessKey)
 {
-	const char *label			= "Elastic";
+	const char *label			= "Elastics";
     const char *serviceNameUTF8 = [_secServiceName UTF8String];
     const char *accountUTF8		= accessKeyId ? [accessKeyId UTF8String] : "";
     const char *passwordUTF8	= secretAccessKey ? [secretAccessKey UTF8String] : "";

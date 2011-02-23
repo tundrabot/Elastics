@@ -1,6 +1,6 @@
 //
 //  main.m
-//  Elastic
+//  Elastics
 //
 //  Created by Dmitri Goutnik on 21/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 //	NSString *receiptPath = nil;
 //	
 //#ifdef TB_USE_SAMPLE_RECEIPT
-//	receiptPath = kElasticSampleReceiptPath;
+//	receiptPath = kElasticsSampleReceiptPath;
 //#else
 //	receiptPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/_MASReceipt/receipt"];
 //#endif

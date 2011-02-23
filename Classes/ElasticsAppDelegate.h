@@ -1,6 +1,6 @@
 //
-//  ElasticAppDelegate.h
-//  Elastic
+//  ElasticsAppDelegate.h
+//  Elastics
 //
 //  Created by Dmitri Goutnik on 21/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ValidateReceipt.h"
 
-@interface ElasticAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
+@interface ElasticsAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 @private
 	NSStatusItem	*_statusItem;
 	NSMenu			*_statusMenu;

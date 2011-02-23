@@ -1,6 +1,6 @@
 //
 //  Preferences.m
-//  ElasticPreferences
+//  ElasticsPreferences
 //
 //  Created by Dmitri Goutnik on 26/12/2010.
 //  Copyright 2010 Tundra Bot. All rights reserved.
@@ -10,10 +10,10 @@
 #import "AWSConstants.h"
 
 // Distributed notification sent when preferences are changed
-NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Elastic.PreferencesDidChangeNotification";
+NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Elastics.PreferencesDidChangeNotification";
 
 // Distributed notification sent when main application terminates
-NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elastic.PreferencesShouldTerminateNotification";
+NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elastics.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
 NSString *const kPreferencesAWSRegionKey				= @"awsRegion";
@@ -33,7 +33,7 @@ enum {
 
 static NSDictionary *_defaults;
 
-@implementation NSUserDefaults (ElasticPreferences)
+@implementation NSUserDefaults (ElasticsPreferences)
 
 @dynamic awsRegion;
 @dynamic refreshInterval;
@@ -42,7 +42,7 @@ static NSDictionary *_defaults;
 @dynamic sshUserName;
 @dynamic firstLaunch;
 
-- (NSDictionary *)defaultElasticPreferences
+- (NSDictionary *)defaultElasticsPreferences
 {
 	if (!_defaults) {
 		_defaults = [[NSDictionary alloc]

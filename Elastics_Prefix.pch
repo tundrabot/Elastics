@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'Elastic' target in the 'Elastic' project
+// Prefix header for all source files of the 'Elastics' target in the 'Elastics' project
 //
 
 #ifdef __OBJC__
