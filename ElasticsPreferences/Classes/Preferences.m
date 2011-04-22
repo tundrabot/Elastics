@@ -28,7 +28,8 @@ enum {
 	kPreferencesAWSUSEastRegion,
 	kPreferencesAWSUSWestRegion,
 	kPreferencesAWSEURegion,
-	kPreferencesAWSAsiaPacificRegion,
+	kPreferencesAWSAsiaPacificSingaporeRegion,
+	kPreferencesAWSAsiaPacificJapanRegion,
 };
 
 static NSDictionary *_defaults;
@@ -71,8 +72,10 @@ static NSDictionary *_defaults;
 			return kAWSUSWestRegion;
 		case kPreferencesAWSEURegion:
 			return kAWSEURegion;
-		case kPreferencesAWSAsiaPacificRegion:
-			return kAWSAsiaPacificRegion;
+		case kPreferencesAWSAsiaPacificSingaporeRegion:
+			return kAWSAsiaPacificSingaporeRegion;
+		case kPreferencesAWSAsiaPacificJapanRegion:
+			return kAWSAsiaPacificJapanRegion;
 		default:
 			return nil;
 	}
@@ -88,8 +91,8 @@ static NSDictionary *_defaults;
 		region = kPreferencesAWSUSWestRegion;
 	else if ([value isEqualToString:kAWSEURegion])
 		region = kPreferencesAWSEURegion;
-	else if ([value isEqualToString:kAWSAsiaPacificRegion])
-		region = kPreferencesAWSAsiaPacificRegion;
+	else if ([value isEqualToString:kAWSAsiaPacificSingaporeRegion])
+		region = kPreferencesAWSAsiaPacificSingaporeRegion;
 	
 	[self setInteger:region forKey:kPreferencesAWSRegionKey];
 }

@@ -10,7 +10,8 @@
 extern NSString *const kAWSUSEastRegion;
 extern NSString *const kAWSUSWestRegion;
 extern NSString *const kAWSEURegion;
-extern NSString *const kAWSAsiaPacificRegion;
+extern NSString *const kAWSAsiaPacificSingaporeRegion;
+extern NSString *const kAWSAsiaPacificJapanRegion;
 
 // Services
 extern NSString *const kAWSEC2Service;

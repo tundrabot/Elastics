@@ -12,6 +12,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		C30A507F13615BF200998D56 /* JP.png in Resources */ = {isa = PBXBuildFile; fileRef = C30A507E13615BF200998D56 /* JP.png */; };
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
 		C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3603DCA12DC6D0B00B13219 /* Credits.html */; };
@@ -40,6 +41,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Elastics Preferences.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Elastics Preferences.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C30A507E13615BF200998D56 /* JP.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = JP.png; sourceTree = "<group>"; };
 		C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AWSConstants.h; path = ../API/AWSConstants.h; sourceTree = SOURCE_ROOT; };
 		C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AWSConstants.m; path = ../API/AWSConstants.m; sourceTree = SOURCE_ROOT; };
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 		C3F1A5FB12C79B5B001AB554 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C30A507E13615BF200998D56 /* JP.png */,
 				C313CFA412DA0115007CB52D /* PreferencesConsole.png */,
 				C3F1A5FC12C79B72001AB554 /* EU.png */,
 				C3F1A5FD12C79B72001AB554 /* SG.png */,
@@ -242,6 +245,7 @@
 				C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */,
 				C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */,
 				C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */,
+				C30A507F13615BF200998D56 /* JP.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

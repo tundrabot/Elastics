@@ -26,10 +26,11 @@ NSString *const kAWSPathOption					= @"AWSPath";
 NSString *const kAWSUseSSLOption				= @"AWSUseSSL";
 
 // Human region titles
-static NSString *const kAWSUSEastRegionTitle		= @"US East (Virginia)";
-static NSString *const kAWSUSWestRegionTitle		= @"US West (North California)";
-static NSString *const kAWSEURegionTitle			= @"EU West (Ireland)";
-static NSString *const kAWSAsiaPacificRegionTitle	= @"Asia Pacific (Singapore)";
+static NSString *const kAWSUSEastRegionTitle				= @"US East (Virginia)";
+static NSString *const kAWSUSWestRegionTitle				= @"US West (North California)";
+static NSString *const kAWSEURegionTitle					= @"EU West (Ireland)";
+static NSString *const kAWSAsiaPacificSingaporeRegionTitle	= @"Asia Pacific (Singapore)";
+static NSString *const kAWSAsiaPacificJapanRegionTitle		= @"Asia Pacific (Japan)";
 
 // Static variables
 static NSMutableDictionary *_awsRequestDefaultOptions;
@@ -96,8 +97,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		return kAWSUSWestRegionTitle;
 	else if ([region isEqualToString:kAWSEURegion])
 		return kAWSEURegionTitle;
-	else if ([region isEqualToString:kAWSAsiaPacificRegion])
-		return kAWSAsiaPacificRegionTitle;
+	else if ([region isEqualToString:kAWSAsiaPacificSingaporeRegion])
+		return kAWSAsiaPacificSingaporeRegionTitle;
+	else if ([region isEqualToString:kAWSAsiaPacificJapanRegion])
+		return kAWSAsiaPacificJapanRegionTitle;
 	else
 		return nil;
 }
