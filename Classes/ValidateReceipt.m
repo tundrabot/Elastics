@@ -22,11 +22,13 @@
 #include <openssl/x509.h>
 #include <openssl/err.h>
 
+
 #ifdef TB_USE_SAMPLE_RECEIPT
 #warning *************************************
 #warning ******* USING SAMPLE RECEIPT! *******
 #warning *************************************
 #endif
+
 
 NSString *const kReceiptBundleIdentifer		= @"BundleIdentifier";
 NSString *const kReceiptBundleIdentiferData = @"BundleIdentifierData";
@@ -37,6 +39,7 @@ NSString *const kReceiptHash				= @"Hash";
 static NSData* _appleRootCertData(void);
 static NSDictionary* _dictionaryWithAppStoreReceipt(NSString *path);
 static CFDataRef _macAddress(void);
+
 
 NSData* _appleRootCertData(void)
 {
