@@ -487,19 +487,26 @@ static NSImage *_statusItemAlertImage;
 
 	// set item image according to instance state
 	NSImage *stateImage = nil;
-	switch (instance.instanceState.code) {
-		case EC2_INSTANCE_STATE_RUNNING:
-			stateImage = [NSImage imageNamed:@"InstanceStateRunning.png"];
-			break;
-		case EC2_INSTANCE_STATE_STOPPED:
-			stateImage = [NSImage imageNamed:@"InstanceStateStopped.png"];
-			break;
-		case EC2_INSTANCE_STATE_TERMINATED:
-			stateImage = [NSImage imageNamed:@"InstanceStateTerminated.png"];
-			break;
-		default:
-			stateImage = [NSImage imageNamed:@"InstanceStateOther.png"];
-			break;
+	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING_272) {
+		// special running state with 0x100 bit set to indicate problems with the host
+		stateImage = [NSImage imageNamed:@"InstanceStateRunning272.png"];
+	}
+	else {
+		// otherwise, according to API spec, high byte should be ignored
+		switch (instance.instanceState.code & 0xff) {
+			case EC2_INSTANCE_STATE_RUNNING:
+				stateImage = [NSImage imageNamed:@"InstanceStateRunning.png"];
+				break;
+			case EC2_INSTANCE_STATE_STOPPED:
+				stateImage = [NSImage imageNamed:@"InstanceStateStopped.png"];
+				break;
+			case EC2_INSTANCE_STATE_TERMINATED:
+				stateImage = [NSImage imageNamed:@"InstanceStateTerminated.png"];
+				break;
+			default:
+				stateImage = [NSImage imageNamed:@"InstanceStateOther.png"];
+				break;
+		}
 	}
 	[menuItem setImage:stateImage];
 	

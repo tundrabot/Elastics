@@ -53,6 +53,7 @@
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
 		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
 		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
+		C39E88D3136A952C00397C30 /* InstanceStateRunning272.png in Resources */ = {isa = PBXBuildFile; fileRef = C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */; };
 		C3B3741C12D4B36200A1E47E /* Notification.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741A12D4B36200A1E47E /* Notification.png */; };
 		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
 		C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CE021812D76678006E87EF /* StatusItemAlert.png */; };
@@ -184,6 +185,7 @@
 		C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2ErrorResponse.m; sourceTree = "<group>"; };
 		C391BB1012CBA10A00BD929A /* MonitoringErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringErrorResponse.h; sourceTree = "<group>"; };
 		C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringErrorResponse.m; sourceTree = "<group>"; };
+		C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRunning272.png; sourceTree = "<group>"; };
 		C3B3741A12D4B36200A1E47E /* Notification.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification.png; sourceTree = "<group>"; };
 		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
 		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
@@ -424,6 +426,7 @@
 				C32C2B5012C0E2B600F2C136 /* InstanceStateStopped.png */,
 				C32C2B5112C0E2B600F2C136 /* InstanceStateTerminated.png */,
 				C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */,
+				C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -530,6 +533,7 @@
 				C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */,
 				C3D1DC6912DB574F005E576A /* Credits.html in Resources */,
 				C3603E5A12DC7AA100B13219 /* Progress.png in Resources */,
+				C39E88D3136A952C00397C30 /* InstanceStateRunning272.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
