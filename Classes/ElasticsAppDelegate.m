@@ -253,7 +253,9 @@ static NSImage *_statusItemAlertImage;
 	
 	// post app termination notification so Preferences will terminate too
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesShouldTerminateNotification
-																   object:nil];
+																   object:nil
+                                                                 userInfo:nil
+                                                       deliverImmediately:YES];
 }
 
 - (void)dealloc

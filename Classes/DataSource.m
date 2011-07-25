@@ -94,7 +94,7 @@ static DataSource * _sharedInstance = nil;
 	return NSUIntegerMax;
 }
 
-- (void)release
+- (oneway void)release
 {
 }
 

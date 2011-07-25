@@ -38,7 +38,7 @@ NSString *const kReceiptHash				= @"Hash";
 
 static NSData* _appleRootCertData(void);
 static NSDictionary* _dictionaryWithAppStoreReceipt(NSString *path);
-static CFDataRef _macAddress(void);
+//static CFDataRef _macAddress(void);
 
 
 NSData* _appleRootCertData(void)
@@ -315,56 +315,56 @@ NSDictionary* _dictionaryWithAppStoreReceipt(NSString *path)
 	return info;
 }
 
-CFDataRef _macAddress(void)
-{
-	kern_return_t			  kernResult;
-	mach_port_t				  master_port;
-	CFMutableDictionaryRef	  matchingDict;
-	io_iterator_t			  iterator;
-	io_object_t				  service;
-	CFDataRef				  macAddress = nil;
-	
-	kernResult = IOMasterPort(MACH_PORT_NULL, &master_port);
-	if (kernResult != KERN_SUCCESS) {
-		NSLog(@"IOMasterPort returned %d", kernResult);
-		return nil;
-	}
-	
-	matchingDict = IOBSDNameMatching(master_port, 0, "en0");
-	if (!matchingDict) {
-		NSLog(@"IOBSDNameMatching returned empty dictionary");
-		return nil;
-	}
-	
-	kernResult = IOServiceGetMatchingServices(master_port, matchingDict, &iterator);
-	if (kernResult != KERN_SUCCESS) {
-		NSLog(@"IOServiceGetMatchingServices returned %d", kernResult);
-		return nil;
-	}
-	
-	while((service = IOIteratorNext(iterator)) != 0) {
-		io_object_t parentService;
-		
-		kernResult = IORegistryEntryGetParentEntry(service, kIOServicePlane, &parentService);
-		if (kernResult == KERN_SUCCESS) {
-			if (macAddress)
-				CFRelease(macAddress);
-			
-			macAddress = IORegistryEntryCreateCFProperty(parentService, CFSTR("IOMACAddress"), kCFAllocatorDefault, 0);
-			IOObjectRelease(parentService);
-		}
-		else {
-			NSLog(@"IORegistryEntryGetParentEntry returned %d", kernResult);
-		}
-		
-		IOObjectRelease(service);
-	}
-	
-	if (macAddress)
-		CFMakeCollectable(macAddress);
-	
-	return macAddress;
-}
+//CFDataRef _macAddress(void)
+//{
+//	kern_return_t			  kernResult;
+//	mach_port_t				  master_port;
+//	CFMutableDictionaryRef	  matchingDict;
+//	io_iterator_t			  iterator;
+//	io_object_t				  service;
+//	CFDataRef				  macAddress = nil;
+//	
+//	kernResult = IOMasterPort(MACH_PORT_NULL, &master_port);
+//	if (kernResult != KERN_SUCCESS) {
+//		NSLog(@"IOMasterPort returned %d", kernResult);
+//		return nil;
+//	}
+//	
+//	matchingDict = IOBSDNameMatching(master_port, 0, "en0");
+//	if (!matchingDict) {
+//		NSLog(@"IOBSDNameMatching returned empty dictionary");
+//		return nil;
+//	}
+//	
+//	kernResult = IOServiceGetMatchingServices(master_port, matchingDict, &iterator);
+//	if (kernResult != KERN_SUCCESS) {
+//		NSLog(@"IOServiceGetMatchingServices returned %d", kernResult);
+//		return nil;
+//	}
+//	
+//	while((service = IOIteratorNext(iterator)) != 0) {
+//		io_object_t parentService;
+//		
+//		kernResult = IORegistryEntryGetParentEntry(service, kIOServicePlane, &parentService);
+//		if (kernResult == KERN_SUCCESS) {
+//			if (macAddress)
+//				CFRelease(macAddress);
+//			
+//			macAddress = IORegistryEntryCreateCFProperty(parentService, CFSTR("IOMACAddress"), kCFAllocatorDefault, 0);
+//			IOObjectRelease(parentService);
+//		}
+//		else {
+//			NSLog(@"IORegistryEntryGetParentEntry returned %d", kernResult);
+//		}
+//		
+//		IOObjectRelease(service);
+//	}
+//	
+//	if (macAddress)
+//		CFMakeCollectable(macAddress);
+//	
+//	return macAddress;
+//}
 
 #define VALIDATION_FAIL_EXIT_STATUS		173
 

@@ -212,7 +212,9 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[_keychainController synchronize];
 	
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesDidChangeNotification
-																   object:nil];
+                                                                   object:nil
+                                                                 userInfo:nil
+                                                       deliverImmediately:YES];
 }
 
 - (void)userDefaultsDidChange:(NSNotification *)notification
@@ -259,7 +261,9 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[panel beginSheetModalForWindow:_window
 				  completionHandler:^(NSInteger result) {
 					  if (result == NSOKButton) {
-						  [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:[[panel filenames] objectAtIndex:0]];
+                          NSString *filename = [[[panel URLs] objectAtIndex:0] path];
+//						  [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:[[panel filenames] objectAtIndex:0]];
+                          [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:filename];
 					  }
 				  }];
 }
