@@ -270,8 +270,8 @@ static DataSource * _sharedInstance = nil;
 #endif
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName:kDataSourceRefreshCompletedNotification
-														object:self
-													  userInfo:finishedRequest];
+                                                        object:self
+                                                      userInfo:finishedRequest];
 	
 	[finishedRequest release];
 }

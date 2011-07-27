@@ -10,7 +10,7 @@
 #import "Preferences.h"
 #import "RefreshIntervalValueTransformer.h"
 #import "RefreshIntervalLabelValueTransformer.h"
-#import "KeychainController.h"
+#import "Account.h"
 
 #define GENERAL_PANE_INDEX				0
 #define ADVANCED_PANE_INDEX				1
@@ -21,6 +21,7 @@
 - (void)schedulePreferenceChangeNotification;
 - (void)postPreferenceChangeNotification;
 - (void)userDefaultsDidChange:(NSNotification *)notification;
+- (void)accountDidChange:(NSNotification *)notification;
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated;
 - (void)addContentSubview:(NSView *)view;
 - (void)preferencesShouldTerminate:(NSNotification *)notification;
@@ -31,12 +32,15 @@
 @synthesize window = _window;
 @synthesize generalPane = _generalPane;
 @synthesize advancedPane = _advancedPane;
-@synthesize keychainController = _keychainController;
-@synthesize awsAccessKeyIdField = _awsAccessKeyIdField;
+//@synthesize keychainController = _keychainController;
 @synthesize keypairFileField = _keypairFileField;
 @synthesize aboutPanel = _aboutPanel;
 @synthesize aboutVersionLabel = _aboutVersionLabel;
 @synthesize aboutCopyrightLabel = _aboutCopyrightLabel;
+@synthesize accountPanel = _accountPanel;
+@synthesize accountPanelSaveButton = _accountPanelSaveButton;
+@synthesize accountPanelAccessKeyIdField = _accountPanelAccessKeyIdField;
+@synthesize accountPanelSecretAccessKeyField = _accountPanelSecretAccessKeyField;
 
 + (void)initialize
 {
@@ -64,27 +68,30 @@
 	// show General pane on launch
 	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
 	
-	// if there's no AWS credentials, set focus to Access ID field
-	if (![_keychainController.awsAccessKeyId length]) {
-		[_window makeFirstResponder:_awsAccessKeyIdField];
-	}
-	
-	// observe user defaults change notifications
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+
+	// observe user defaults change notifications
 	[notificationCenter addObserver:self
 						   selector:@selector(userDefaultsDidChange:)
 							   name:NSUserDefaultsDidChangeNotification
 							 object:nil];
+
+	// observe accounts change notifications
+	[notificationCenter addObserver:self
+						   selector:@selector(accountDidChange:)
+							   name:kAccountDidChangeNotification
+							 object:nil];
 	
-	// observe KeychainController value changes
-	[_keychainController addObserver:self
-						  forKeyPath:@"awsAccessKeyId"
-							 options:NSKeyValueObservingOptionNew
-							 context:NULL];
-	[_keychainController addObserver:self
-						  forKeyPath:@"awsSecretAccessKey"
-							 options:NSKeyValueObservingOptionNew
-							 context:NULL];
+	// XXX
+//	// observe KeychainController value changes
+//	[_keychainController addObserver:self
+//						  forKeyPath:@"awsAccessKeyId"
+//							 options:NSKeyValueObservingOptionNew
+//							 context:NULL];
+//	[_keychainController addObserver:self
+//						  forKeyPath:@"awsSecretAccessKey"
+//							 options:NSKeyValueObservingOptionNew
+//							 context:NULL];
 	
 	// observe termination notification from main app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
@@ -115,6 +122,7 @@
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated
 {
 	NSView *pane = nil;
+
 	switch (paneIndex) {
 		case GENERAL_PANE_INDEX:
 			pane = _generalPane;
@@ -123,9 +131,11 @@
 			pane = _advancedPane;
 			break;
 	}
+	
 	if (pane) {
 		NSView *contentView = [_window contentView];
 		NSView *currentPane = [[contentView subviews] count] ? [[contentView subviews] objectAtIndex:0] : nil;
+	
 		if (pane != currentPane) {
 			// cancel all pending 'show pane' requests
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
@@ -168,8 +178,8 @@
 	[contentView addSubview:view];
 }
 
-#pragma mark -
-#pragma mark Toolbar delegate
+
+#pragma mark - Toolbar delegate
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
 {
@@ -182,8 +192,8 @@
 	return selectableItemIdentifiers;
 }
 
-#pragma mark -
-#pragma mark Window delegate
+
+#pragma mark - Window delegate
 
 - (void)windowWillClose:(NSNotification *)notification
 {
@@ -191,8 +201,8 @@
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-#pragma mark -
-#pragma mark Preference data changes notifications
+
+#pragma mark - Preference data changes notifications
 
 const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
@@ -209,7 +219,7 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 - (void)postPreferenceChangeNotification
 {
 	[[NSUserDefaults standardUserDefaults] synchronize];
-	[_keychainController synchronize];
+//	[_keychainController saveAccounts];
 	
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kPreferencesDidChangeNotification
                                                                    object:nil
@@ -222,25 +232,88 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[self schedulePreferenceChangeNotification];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-					  ofObject:(id)object
-						change:(NSDictionary *)change
-					   context:(void *)context
+- (void)accountDidChange:(NSNotification *)notification
 {
-	if (object == _keychainController)
-		[self schedulePreferenceChangeNotification];
+	[self schedulePreferenceChangeNotification];
 }
 
-#pragma mark -
-#pragma mark Main app notifications
+//- (void)observeValueForKeyPath:(NSString *)keyPath
+//					  ofObject:(id)object
+//						change:(NSDictionary *)change
+//					   context:(void *)context
+//{
+//	if (object == _keychainController)
+//		[self schedulePreferenceChangeNotification];
+//}
+
+
+#pragma mark - Main app notifications
 
 - (void)preferencesShouldTerminate:(NSNotification *)notification
 {
 	[NSApp terminate:nil];
 }
 
+
 #pragma mark -
-#pragma mark Actions
+#pragma mark Account sheet
+
+#define ACCOUNT_SHEET_RETURNCODE_SAVE		1
+#define ACCOUNT_SHEET_RETURNCODE_CANCEL		0
+
+- (IBAction)accountSheetSaveAction:(id)sender
+{
+	[NSApp endSheet:_accountPanel returnCode:ACCOUNT_SHEET_RETURNCODE_SAVE];
+}
+
+- (IBAction)accountSheetCancelAction:(id)sender
+{
+	[NSApp endSheet:_accountPanel returnCode:ACCOUNT_SHEET_RETURNCODE_CANCEL];
+}
+
+- (void)accountSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+	[_accountPanel orderOut:self];
+	if (returnCode == ACCOUNT_SHEET_RETURNCODE_SAVE) {
+		//
+	}
+}
+
+- (NSString *)_accountPanelAccessKeyIDValue
+{
+	return [[_accountPanelAccessKeyIdField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)_accountPanelSecretAccessKeyValue
+{
+	return [[_accountPanelSecretAccessKeyField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+	id obj = [notification object];
+	
+	if (obj == _accountPanelAccessKeyIdField || obj == _accountPanelSecretAccessKeyField) {
+		BOOL canSave = [[self _accountPanelAccessKeyIDValue] length] > 0 && [[self _accountPanelSecretAccessKeyValue] length] > 0;
+		[_accountPanelSaveButton setEnabled:canSave];
+	}
+}
+
+- (IBAction)addAccountAction:(id)sender
+{
+	[NSApp beginSheet:_accountPanel
+	   modalForWindow:[NSApp mainWindow]
+		modalDelegate:self
+	   didEndSelector:@selector(accountSheetDidEnd:returnCode:contextInfo:)
+		  contextInfo:NULL];
+}
+
+- (IBAction)removeAccountAction:(id)sender
+{
+}
+
+
+#pragma mark - Actions
 
 - (IBAction)showGeneralPaneAction:(id)sender
 {
