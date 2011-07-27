@@ -85,9 +85,9 @@
 			children = (
 				C3603D4612DBD2E900B13219 /* TBDebug.h */,
 				C3603D4712DBD2E900B13219 /* TBMacros.h */,
-				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
 				C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */,
 				C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */,
+				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.m */,
 				C3F1A65312C7A77D001AB554 /* Preferences.h */,

@@ -16,4 +16,7 @@
 - (void)loadAccounts;
 - (void)saveAccounts;
 
+- (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
+- (void)removeAccountAtIndex:(NSUInteger)idx;
+
 @end

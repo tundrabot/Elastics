@@ -46,7 +46,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 		_itemRef = NULL;
 		_name = [name copy];
 		_accessKeyID = [accessKeyId copy];
-		_secretAccessKey = [_secretAccessKey copy];
+		_secretAccessKey = [secretAccessKey copy];
 		_defaultRegion = 0;
 		_order = 0;
     }
@@ -82,9 +82,13 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 			
 			// attr.data is the Access Key Id and data is the password Secret Access Key
 			
-			self.accessKeyID = [[NSString alloc] initWithBytes:attrs[0].data length:attrs[0].length encoding:NSUTF8StringEncoding];
-			self.secretAccessKey = [[NSString alloc] initWithBytes:data length:length encoding:NSUTF8StringEncoding];
-			[self unarchiveGenericAttributes:attrs[1].data];
+			TBRelease(_accessKeyID);
+			_accessKeyID = [[NSString alloc] initWithBytes:attrs[0].data length:attrs[0].length encoding:NSUTF8StringEncoding];
+			
+			TBRelease(_secretAccessKey);
+			_secretAccessKey = [[NSString alloc] initWithBytes:data length:length encoding:NSUTF8StringEncoding];
+			
+			[self unarchiveGenericAttributes:[NSData dataWithBytes:attrs[1].data length:attrs[1].length]];
 			
 			SecKeychainItemFreeContent(&attributes, data);
 		}
@@ -175,6 +179,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 													  NULL,
 													  accessRef,
 													  &_itemRef);
+			CFRetain(_itemRef);
 			CFRelease(accessRef);
 			
 			if (status == noErr) {
@@ -270,9 +275,10 @@ static NSString *const kAccountAttributeOrderKey = @"order";
 	if (data && [data length] > 0) {
 		NSDictionary *attributes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 		
-		self.name = [attributes objectForKey:kAccountAttributeNameKey];
-		self.defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
-		self.order = [[attributes objectForKey:kAccountAttributeOrderKey] integerValue];
+		TBRelease(_name);
+		_name = [[attributes objectForKey:kAccountAttributeNameKey] retain];
+		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
+		_order = [[attributes objectForKey:kAccountAttributeOrderKey] integerValue];
 	}
 }
 

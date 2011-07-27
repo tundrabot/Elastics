@@ -651,7 +651,7 @@ static NSImage *_statusItemAlertImage;
 
 	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING) {
 		[menu addItem:[NSMenuItem separatorItem]];
-		[menu addItem:[self actionItemWithLabel:@"Connect..." action:@selector(connectToInstanceAction:)]];
+		[menu addItem:[self actionItemWithLabel:@"Connect (SSH)..." action:@selector(connectToInstanceAction:)]];
 	}
 	
 //	[menu addItem:[NSMenuItem separatorItem]];

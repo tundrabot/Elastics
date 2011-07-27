@@ -32,13 +32,16 @@
 @synthesize window = _window;
 @synthesize generalPane = _generalPane;
 @synthesize advancedPane = _advancedPane;
-//@synthesize keychainController = _keychainController;
+@synthesize accountsManager = _accountsManager;
+@synthesize accountsController = _accountsController;
+@synthesize accountsTableView = _accountsTableView;
 @synthesize keypairFileField = _keypairFileField;
 @synthesize aboutPanel = _aboutPanel;
 @synthesize aboutVersionLabel = _aboutVersionLabel;
 @synthesize aboutCopyrightLabel = _aboutCopyrightLabel;
 @synthesize accountPanel = _accountPanel;
 @synthesize accountPanelSaveButton = _accountPanelSaveButton;
+@synthesize accountPanelNameField = _accountPanelNameField;
 @synthesize accountPanelAccessKeyIdField = _accountPanelAccessKeyIdField;
 @synthesize accountPanelSecretAccessKeyField = _accountPanelSecretAccessKeyField;
 
@@ -66,6 +69,8 @@
 		[_window center];
 	
 	// show General pane on launch
+	[_accountsTableView setTarget:self];
+	[_accountsTableView	setDoubleAction:@selector(editAccountAction:)];
 	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
 	
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -81,17 +86,6 @@
 						   selector:@selector(accountDidChange:)
 							   name:kAccountDidChangeNotification
 							 object:nil];
-	
-	// XXX
-//	// observe KeychainController value changes
-//	[_keychainController addObserver:self
-//						  forKeyPath:@"awsAccessKeyId"
-//							 options:NSKeyValueObservingOptionNew
-//							 context:NULL];
-//	[_keychainController addObserver:self
-//						  forKeyPath:@"awsSecretAccessKey"
-//							 options:NSKeyValueObservingOptionNew
-//							 context:NULL];
 	
 	// observe termination notification from main app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
@@ -237,15 +231,6 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 	[self schedulePreferenceChangeNotification];
 }
 
-//- (void)observeValueForKeyPath:(NSString *)keyPath
-//					  ofObject:(id)object
-//						change:(NSDictionary *)change
-//					   context:(void *)context
-//{
-//	if (object == _keychainController)
-//		[self schedulePreferenceChangeNotification];
-//}
-
 
 #pragma mark - Main app notifications
 
@@ -261,6 +246,26 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 #define ACCOUNT_SHEET_RETURNCODE_SAVE		1
 #define ACCOUNT_SHEET_RETURNCODE_CANCEL		0
 
+enum {
+	kAccountActionAddAccount = 1000,
+	kAccountActionEditAccount,
+};
+
+- (NSString *)_accountPanelNameValue
+{
+	return [[_accountPanelNameField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)_accountPanelAccessKeyIDValue
+{
+	return [[_accountPanelAccessKeyIdField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)_accountPanelSecretAccessKeyValue
+{
+	return [[_accountPanelSecretAccessKeyField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 - (IBAction)accountSheetSaveAction:(id)sender
 {
 	[NSApp endSheet:_accountPanel returnCode:ACCOUNT_SHEET_RETURNCODE_SAVE];
@@ -274,19 +279,28 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 - (void)accountSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
 	[_accountPanel orderOut:self];
+	
 	if (returnCode == ACCOUNT_SHEET_RETURNCODE_SAVE) {
-		//
+		switch (_accountActionType) {
+			case kAccountActionAddAccount: {
+				[_accountsManager addAccountWithName:[self _accountPanelNameValue] accessKeyId:[self _accountPanelAccessKeyIDValue] secretAccessKey:[self _accountPanelSecretAccessKeyValue]];
+				break;
+			}
+				
+			case kAccountActionEditAccount: {
+				NSUInteger selectionIndex = [_accountsController selectionIndex];
+
+				if (selectionIndex != NSNotFound) {
+					Account *account = [[_accountsManager accounts] objectAtIndex:selectionIndex];
+					account.name = [self _accountPanelNameValue];
+					account.accessKeyID = [self _accountPanelAccessKeyIDValue];
+					account.secretAccessKey = [self _accountPanelSecretAccessKeyValue];
+					[account save];
+				}
+				break;
+			}
+		}
 	}
-}
-
-- (NSString *)_accountPanelAccessKeyIDValue
-{
-	return [[_accountPanelAccessKeyIdField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-}
-
-- (NSString *)_accountPanelSecretAccessKeyValue
-{
-	return [[_accountPanelSecretAccessKeyField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (void)controlTextDidChange:(NSNotification *)notification
@@ -301,6 +315,13 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
 - (IBAction)addAccountAction:(id)sender
 {
+	_accountActionType = kAccountActionAddAccount;
+	[_accountPanelAccessKeyIdField setStringValue:@""];
+	[_accountPanelSecretAccessKeyField setStringValue:@""];
+	[_accountPanelNameField setStringValue:@""];
+	[_accountPanelSaveButton setEnabled:NO];
+	[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
+	
 	[NSApp beginSheet:_accountPanel
 	   modalForWindow:[NSApp mainWindow]
 		modalDelegate:self
@@ -308,8 +329,33 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 		  contextInfo:NULL];
 }
 
+- (IBAction)editAccountAction:(id)sender
+{
+	if ([_accountsTableView clickedRow] >= 0) {
+		
+		Account *account = [[_accountsController selectedObjects] objectAtIndex:0];
+		if (account) {
+		
+			_accountActionType = kAccountActionEditAccount;
+			
+			[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID];
+			[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey];
+			[_accountPanelNameField setStringValue:account.name];
+			[_accountPanelSaveButton setEnabled:YES];
+			[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
+			
+			[NSApp beginSheet:_accountPanel
+			   modalForWindow:[NSApp mainWindow]
+				modalDelegate:self
+			   didEndSelector:@selector(accountSheetDidEnd:returnCode:contextInfo:)
+				  contextInfo:NULL];
+		}
+	}
+}
+
 - (IBAction)removeAccountAction:(id)sender
 {
+	[_accountsManager removeAccountAtIndex:[_accountsController selectionIndex]];
 }
 
 

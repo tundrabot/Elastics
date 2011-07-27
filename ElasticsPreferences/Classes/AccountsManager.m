@@ -13,6 +13,12 @@
 static NSString *const _secServiceName			= @"com.tundrabot.Elastics";
 static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
+
+@interface AccountsManager ()
+- (void)insertObject:(Account *)accont inAccountsAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromAccountsAtIndex:(NSUInteger)idx;
+@end
+
 @implementation AccountsManager
 
 @synthesize accounts = _accounts;
@@ -76,6 +82,18 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	for (Account *account in _accounts) {
 		[account save];
 	}
+}
+
+- (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
+{
+	Account *account = [Account accountWithName:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey];
+	[self insertObject:account inAccountsAtIndex:[_accounts count]];
+	[account save];
+}
+
+- (void)removeAccountAtIndex:(NSUInteger)idx
+{
+	[self removeObjectFromAccountsAtIndex:idx];
 }
 
 
