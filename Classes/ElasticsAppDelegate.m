@@ -10,7 +10,7 @@
 #import "DataSource.h"
 #import "ChartView.h"
 #import "Preferences.h"
-#import "Keychain.h"
+#import "AccountsManager.h"
 #import "ValidateReceipt.h"
 
 #define INSTANCE_INFO_TABLE_WIDTH				220.f
@@ -54,6 +54,8 @@ static NSString *const kElasticsPreferencesSuite				= @"com.tundrabot.Elastics-P
 - (void)workspaceDidWake:(NSNotification *)notification;
 
 - (void)nopAction:(id)sender;
+- (void)selectAccountAction:(id)sender;
+- (void)selectRegionAction:(id)sender;
 - (void)refreshAction:(id)sender;
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
@@ -98,6 +100,12 @@ static NSDictionary *_infoColumnAttributes;
 
 static NSImage *_statusItemImage;
 static NSImage *_statusItemAlertImage;
+
+static NSImage *_usImage;
+static NSImage *_euImage;
+static NSImage *_sgImage;
+static NSImage *_jpImage;
+
 
 + (void)initialize
 {
@@ -180,6 +188,11 @@ static NSImage *_statusItemAlertImage;
 	
 	if (!_statusItemImage)			_statusItemImage = [NSImage imageNamed:@"StatusItem.png"];
 	if (!_statusItemAlertImage)		_statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert.png"];
+	
+	if (!_usImage)	_usImage = [NSImage imageNamed:@"US.png"];
+	if (!_euImage)	_euImage = [NSImage imageNamed:@"EU.png"];
+	if (!_sgImage)	_sgImage = [NSImage imageNamed:@"SG.png"];
+	if (!_jpImage)	_jpImage = [NSImage imageNamed:@"JP.png"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -189,13 +202,16 @@ static NSImage *_statusItemAlertImage;
 	[userDefaults addSuiteNamed:kElasticsPreferencesSuite];
 	[userDefaults registerDefaults:[userDefaults defaultElasticsPreferences]];
 
+	// load accounts
+	_accountsManager = [[AccountsManager alloc] init];
+	
 	// load current preferences
 	[self loadPreferences];
 
 	// set up status item menu
 	_statusMenu = [[NSMenu alloc] initWithTitle:@""];
 	[_statusMenu setAutoenablesItems:NO];
-	[_statusMenu setShowsStateColumn:NO];
+//	[_statusMenu setShowsStateColumn:NO];
 	[_statusMenu setDelegate:self];
 	[self resetMenu];
 
@@ -264,6 +280,7 @@ static NSImage *_statusItemAlertImage;
 	TBRelease(_statusMenu);
 	[_refreshTimer invalidate];
 	TBRelease(_refreshTimer);
+	TBRelease(_accountsManager);
 	[super dealloc];
 }
 
@@ -277,12 +294,74 @@ static NSImage *_statusItemAlertImage;
 	[self addMenuActionItems];
 }
 
-- (void)addMenuActionItems {
-
-	if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
+- (void)addMenuActionItems
+{
+	if ([[_accountsManager accounts] count]) {
+		// if there are configured accounts, show accounts and region selection
+		
+		NSInteger currentAccountId = [[NSUserDefaults standardUserDefaults] accountId];
+		NSInteger currentRegion = [[NSUserDefaults standardUserDefaults] region];
+		
+		// Accounts
+		
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
-		[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+		
+		[_statusMenu addItem:[self titleItemWithTitle:@"AWS ACCOUNTS"]];
+		for (Account *account in [_accountsManager accounts]) {
+			NSMenuItem *item = [self actionItemWithLabel:account.title action:@selector(selectAccountAction:)];
+			[item setTag:account.id];
+			[item setState:account.id == currentAccountId ? NSOnState : NSOffState];
+			[_statusMenu addItem:item];
+		}
+		
+		// Regions
+		
+		[_statusMenu addItem:[NSMenuItem separatorItem]];
+		
+		[_statusMenu addItem:[self titleItemWithTitle:@"AWS REGIONS"]];
+		NSMenuItem *item;
+		
+		// TODO: ugly
+		item = [self actionItemWithLabel:@"US East (Virginia)" action:@selector(selectRegionAction:)];
+		[item setImage:_usImage];
+		[item setTag:kPreferencesAWSUSEastRegion];
+		[item setState:kPreferencesAWSUSEastRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+		
+		item = [self actionItemWithLabel:@"US West (North California)" action:@selector(selectRegionAction:)];
+		[item setImage:_usImage];
+		[item setTag:kPreferencesAWSUSWestRegion];
+		[item setState:kPreferencesAWSUSWestRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+		
+		item = [self actionItemWithLabel:@"EU West (Ireland)" action:@selector(selectRegionAction:)];
+		[item setImage:_euImage];
+		[item setTag:kPreferencesAWSEURegion];
+		[item setState:kPreferencesAWSEURegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+		
+		item = [self actionItemWithLabel:@"Asia Pacific (Singapore)" action:@selector(selectRegionAction:)];
+		[item setImage:_sgImage];
+		[item setTag:kPreferencesAWSAsiaPacificSingaporeRegion];
+		[item setState:kPreferencesAWSAsiaPacificSingaporeRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+		
+		item = [self actionItemWithLabel:@"Asia Pacific (Japan)" action:@selector(selectRegionAction:)];
+		[item setImage:_jpImage];
+		[item setTag:kPreferencesAWSAsiaPacificJapanRegion];
+		[item setState:kPreferencesAWSAsiaPacificJapanRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+
+		// Refresh
+		
+		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
+			[_statusMenu addItem:[NSMenuItem separatorItem]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+		}
 	}
+	
+	// Preferences and Quit
+
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
 	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
 //	[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
@@ -751,19 +830,25 @@ static NSImage *_statusItemAlertImage;
 {
 	NSMutableDictionary *options = [NSMutableDictionary dictionary];
 	
-	// setup AWS credentials, these are stored in from Keychain
-	NSString *awsAccessKeyId = nil;
-	NSString *awsSecretAccessKey = nil;
-	
-	GetAWSCredentials(&awsAccessKeyId, &awsSecretAccessKey);
-	
-	if (awsAccessKeyId) {
-		[options setObject:awsAccessKeyId forKey:kAWSAccessKeyIdOption];
-		[awsAccessKeyId release];
+	// reload accounts
+	[_accountsManager loadAccounts];
+
+	// get selected account
+	Account *account = [_accountsManager accountWithId:[[NSUserDefaults standardUserDefaults] accountId]];
+	if (!account && [[_accountsManager accounts] count] > 0) {
+		// if previously selected account does not exist, get the first one
+		account = [[_accountsManager accounts] objectAtIndex:0];
 	}
-	if (awsSecretAccessKey) {
-		[options setObject:awsSecretAccessKey forKey:kAWSSecretAccessKeyOption];
-		[awsSecretAccessKey release];
+	
+	if (account) {
+		[[NSUserDefaults standardUserDefaults] setAccountId:account.id];
+		[options setObject:account.accessKeyID forKey:kAWSAccessKeyIdOption];
+		[options setObject:account.secretAccessKey forKey:kAWSSecretAccessKeyOption];
+	}
+	else {
+		// reset credentials in API
+		[options setObject:@"" forKey:kAWSAccessKeyIdOption];
+		[options setObject:@"" forKey:kAWSSecretAccessKeyOption];
 	}
 	
 	// setup AWS region from user defaults
@@ -849,6 +934,22 @@ static NSImage *_statusItemAlertImage;
 {
 }
 
+- (void)selectAccountAction:(id)sender
+{
+	NSInteger accountId = [sender tag];
+	[[NSUserDefaults standardUserDefaults] setAccountId:accountId];
+	
+	[self preferencesDidChange:nil];
+}
+
+- (void)selectRegionAction:(id)sender
+{
+	NSInteger region = [sender tag];
+	[[NSUserDefaults standardUserDefaults] setRegion:region];
+	
+	[self preferencesDidChange:nil];
+}
+
 - (void)refreshAction:(id)sender
 {
 	[self refresh:nil];
@@ -877,6 +978,8 @@ static NSImage *_statusItemAlertImage;
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
 	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
+	NSInteger terminalApplication = [[NSUserDefaults standardUserDefaults] terminalApplication];
+	BOOL openInTerminalTab = [[NSUserDefaults standardUserDefaults] openInTerminalTab];
 	
 	if (instance) {
 		NSString *sshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
@@ -890,10 +993,88 @@ static NSImage *_statusItemAlertImage;
 			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instance.ipAddress];
 		else
 			cmd = [cmd stringByAppendingFormat:@"%@", instance.ipAddress];
+
+		switch (terminalApplication) {
+			// use iTerm terminal
+			case kPreferencesTerminalApplicationiTerm:
+				if (openInTerminalTab) {
+					// new iTerm tab
+
+					cmd = [NSString stringWithFormat:
+						   @"tell application \"iTerm\"\n"
+						   @"	activate\n"
+						   @"	try\n"
+						   @"		set myterm to (current terminal)\n"
+						   @"		tell myterm\n"
+						   @"			launch session \"Default Session\"\n"
+						   @"			tell the last session\n"
+						   @"				write text \"%@\"\n"
+						   @"			end tell\n"
+						   @"		end tell\n"
+						   @"	on error\n"
+						   @"		set myterm to (make new terminal)\n"
+						   @"		tell myterm\n"
+						   @"			launch session \"Default Session\"\n"
+						   @"			tell the last session\n"
+						   @"				write text \"%@\"\n"
+						   @"			end tell\n"
+						   @"		end tell\n"
+						   @"	end try\n"
+						   @"end tell",
+						   cmd, cmd];
+				}
+				else {
+					// new iTerm window
+					
+					cmd = [NSString stringWithFormat:
+						   @"tell application \"iTerm\"\n"
+						   @"	activate\n"
+						   @"	set myterm to (make new terminal)\n"
+						   @"	tell myterm\n"
+						   @"		launch session \"Default Session\"\n"
+						   @"		tell the last session\n"
+						   @"			write text \"%@\"\n"
+						   @"		end tell\n"
+						   @"	end tell\n"
+						   @"end tell",
+						   cmd];
+				}
+				break;
+
+			// use Terminal terminal
+			default:
+				if (openInTerminalTab) {
+					// new Terminal tab
+					
+					cmd = [NSString stringWithFormat:
+						   @"activate application \"Terminal\"\n"
+						   @"tell application \"System Events\"\n"
+						   @"	keystroke \"t\" using {command down}\n"
+						   @"end tell\n"
+						   @"tell application \"Terminal\"\n"
+						   @"	repeat with win in windows\n"
+						   @"	try\n"
+						   @"		if get frontmost of win is true then\n"
+						   @"			do script \"%@\" in (selected tab of win)\n"
+						   @"		end if\n"
+						   @"	end try\n"
+						   @"	end repeat\n"
+						   @"end tell",
+						   cmd];
+				}
+				else {
+					// new Terminal window
+					
+					cmd = [NSString stringWithFormat:
+						   @"tell application \"Terminal\"\n"
+						   @"	do script \"%@\"\n"
+						   @"end tell",
+						   cmd];
+				}
+				break;
+		}
 		
-		cmd = [NSString stringWithFormat:
-			   @"tell application \"Terminal\" to do script \"%@\"",
-			   cmd];
+		TBTrace("%@", cmd);
 
 		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
 		NSDictionary *errorInfo = nil;

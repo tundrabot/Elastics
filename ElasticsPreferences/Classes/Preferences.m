@@ -16,21 +16,15 @@ NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Elastics.Pr
 NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elastics.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
+NSString *const kPreferencesAccountIdKey				= @"accountId";
 NSString *const kPreferencesAWSRegionKey				= @"awsRegion";
 NSString *const kPreferencesRefreshIntervalKey			= @"refreshInterval";
 NSString *const kPreferencesRefreshOnMenuOpenKey		= @"refreshOnMenuOpen";
 NSString *const kPreferencesSshPrivateKeyFileKey		= @"sshPrivateKeyFile";
 NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
+NSString *const kPreferencesTerminalApplicationKey		= @"terminalApplication";
+NSString *const kPreferencesOpenInTerminalTabKey		= @"openInTerminalTab";
 NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
-
-// AWS regions as stored in prefs and selected in combo
-enum {
-	kPreferencesAWSUSEastRegion,
-	kPreferencesAWSUSWestRegion,
-	kPreferencesAWSEURegion,
-	kPreferencesAWSAsiaPacificSingaporeRegion,
-	kPreferencesAWSAsiaPacificJapanRegion,
-};
 
 static NSDictionary *_defaults;
 
@@ -63,6 +57,26 @@ static NSDictionary *_defaults;
 	return _defaults;
 }
 
+- (NSInteger)accountId
+{
+	return [self integerForKey:kPreferencesAccountIdKey];
+}
+
+- (void)setAccountId:(NSInteger)value
+{
+	[self setInteger:value forKey:kPreferencesAccountIdKey];
+}
+
+- (NSInteger)region
+{
+	return [self integerForKey:kPreferencesAWSRegionKey];
+}
+
+- (void)setRegion:(NSInteger)region
+{
+	[self setInteger:region forKey:kPreferencesAWSRegionKey];
+}
+
 - (NSString *)awsRegion
 {
 	switch ([self integerForKey:kPreferencesAWSRegionKey]) {
@@ -81,21 +95,21 @@ static NSDictionary *_defaults;
 	}
 }
 
-- (void)setAwsRegion:(NSString *)value
-{
-	NSInteger region = kPreferencesAWSUSEastRegion;
-	
-	if ([value isEqualToString:kAWSUSEastRegion])
-		region = kPreferencesAWSUSEastRegion;
-	else if ([value isEqualToString:kAWSUSWestRegion])
-		region = kPreferencesAWSUSWestRegion;
-	else if ([value isEqualToString:kAWSEURegion])
-		region = kPreferencesAWSEURegion;
-	else if ([value isEqualToString:kAWSAsiaPacificSingaporeRegion])
-		region = kPreferencesAWSAsiaPacificSingaporeRegion;
-	
-	[self setInteger:region forKey:kPreferencesAWSRegionKey];
-}
+//- (void)setAwsRegion:(NSString *)value
+//{
+//	NSInteger region = kPreferencesAWSUSEastRegion;
+//	
+//	if ([value isEqualToString:kAWSUSEastRegion])
+//		region = kPreferencesAWSUSEastRegion;
+//	else if ([value isEqualToString:kAWSUSWestRegion])
+//		region = kPreferencesAWSUSWestRegion;
+//	else if ([value isEqualToString:kAWSEURegion])
+//		region = kPreferencesAWSEURegion;
+//	else if ([value isEqualToString:kAWSAsiaPacificSingaporeRegion])
+//		region = kPreferencesAWSAsiaPacificSingaporeRegion;
+//	
+//	[self setInteger:region forKey:kPreferencesAWSRegionKey];
+//}
 
 - (NSInteger)refreshInterval
 {
@@ -135,6 +149,26 @@ static NSDictionary *_defaults;
 - (void)setSshUserName:(NSString *)value
 {
 	[self setObject:value forKey:kPreferencesSshUserNameKey];
+}
+
+- (NSInteger)terminalApplication
+{
+	return [self integerForKey:kPreferencesTerminalApplicationKey];
+}
+
+- (void)setTerminalApplication:(NSInteger)value
+{
+	[self setInteger:value forKey:kPreferencesTerminalApplicationKey];
+}
+
+- (BOOL)openInTerminalTab
+{
+	return [self boolForKey:kPreferencesOpenInTerminalTabKey];
+}
+
+- (void)setOpenInTerminalTab:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesOpenInTerminalTabKey];
 }
 
 - (BOOL)isFirstLaunch

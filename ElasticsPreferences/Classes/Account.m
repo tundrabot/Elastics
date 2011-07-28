@@ -15,23 +15,23 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 
 @interface Account ()
-- (NSString *)title;
-- (NSData *)archiveGenericAttributes;
-- (void)unarchiveGenericAttributes:(NSData *)data;
+- (NSString *)_keychainItemTitle;
+- (NSData *)_archiveGenericAttributes;
+- (void)_unarchiveGenericAttributes:(NSData *)data;
 @end
 
 
 @implementation Account
 
+@synthesize id = _id;
 @synthesize name = _name;
 @synthesize accessKeyID = _accessKeyID;
 @synthesize secretAccessKey = _secretAccessKey;
 @synthesize defaultRegion = _defaultRegion;
-@synthesize order = _order;
 
-+ (id)accountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
++ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
 {
-	return [[[self alloc] initWithName:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey] autorelease];
+	return [[[self alloc] initWithID:id name:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey] autorelease];
 }
 
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef
@@ -39,16 +39,16 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	return [[[self alloc] initWithKeychainItemRef:itemRef] autorelease];
 }
 
-- (id)initWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
+- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
 {
     self = [super init];
     if (self) {
-		_itemRef = NULL;
+		_id = id;
 		_name = [name copy];
 		_accessKeyID = [accessKeyId copy];
 		_secretAccessKey = [secretAccessKey copy];
 		_defaultRegion = 0;
-		_order = 0;
+		_itemRef = NULL;
     }
     
     return self;
@@ -88,7 +88,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 			TBRelease(_secretAccessKey);
 			_secretAccessKey = [[NSString alloc] initWithBytes:data length:length encoding:NSUTF8StringEncoding];
 			
-			[self unarchiveGenericAttributes:[NSData dataWithBytes:attrs[1].data length:attrs[1].length]];
+			[self _unarchiveGenericAttributes:[NSData dataWithBytes:attrs[1].data length:attrs[1].length]];
 			
 			SecKeychainItemFreeContent(&attributes, data);
 		}
@@ -98,13 +98,13 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 - (void)dealloc
 {
+	[_name release];
+	[_accessKeyID release];
+	[_secretAccessKey release];
+
 	if (_itemRef) {
 		CFRelease(_itemRef);
 	}
-	
-	[_accessKeyID release];
-	[_secretAccessKey release];
-	[_name release];
 	
 	[super dealloc];
 }
@@ -121,10 +121,10 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	}
 
     const char *serviceNameUTF8		= [_secServiceName UTF8String];
-	const char *titleUTF8			= [[self title]  UTF8String];
+	const char *titleUTF8			= [[self _keychainItemTitle]  UTF8String];
 	const char *accountUTF8			= [_accessKeyID UTF8String];
 	const char *passwordUTF8		= [_secretAccessKey UTF8String];
-	NSData *genericAttributesData	= [self archiveGenericAttributes];
+	NSData *genericAttributesData	= [self _archiveGenericAttributes];
 	
 	// set up the attribute vector for item create/update (each attribute consists of {tag, length, data})
 	SecKeychainAttribute attrs[] = {
@@ -194,8 +194,15 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 {
 	// remove account keychain item
 	if (_itemRef) {
-		SecKeychainItemDelete(_itemRef);
+		OSStatus status;
+
+		status = SecKeychainItemDelete(_itemRef);
 		CFRelease(_itemRef), _itemRef = NULL;
+	
+		if (status == noErr) {
+			// notify observers that Acoount info just changed
+			[[NSNotificationCenter defaultCenter] postNotificationName:kAccountDidChangeNotification object:self];
+		}
 	}
 }
 
@@ -241,44 +248,53 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	}
 }
 
-- (void)setOrder:(NSInteger)order
+- (NSString *)title
 {
-	if (_order != order) {
-		_order = order;
-		
-		[self save];
+	if ([_name length] > 0) {
+		return _name;
 	}
+	else if ([_accessKeyID length] > 0) {
+		if ([_accessKeyID length] > 10) {
+			return [NSString stringWithFormat:@"%@...%@",
+					[_accessKeyID substringToIndex:5],
+					[_accessKeyID substringFromIndex:[_accessKeyID length] - 5]];
+		}
+		else
+			return _accessKeyID;
+	}
+	else
+		return @"Untitled";		// should not happen
 }
 
-- (NSString *)title
+- (NSString *)_keychainItemTitle
 {
 	return [NSString stringWithFormat:@"Elastics.%@", _accessKeyID];
 }
 
 
-static NSString *const kAccountAttributeNameKey = @"name";
-static NSString *const kAccountAttributeDefaultRegionKey = @"defaultRegion";
-static NSString *const kAccountAttributeOrderKey = @"order";
+static NSString *const kAccountAttributeIDKey				= @"id";
+static NSString *const kAccountAttributeNameKey				= @"name";
+static NSString *const kAccountAttributeDefaultRegionKey	= @"defaultRegion";
 
-- (NSData *)archiveGenericAttributes
+- (NSData *)_archiveGenericAttributes
 {
 	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+								[NSNumber numberWithInteger:_id], kAccountAttributeIDKey,
 								_name, kAccountAttributeNameKey,
 								[NSNumber numberWithInteger:_defaultRegion], kAccountAttributeDefaultRegionKey,
-								[NSNumber numberWithInteger:_order], kAccountAttributeOrderKey,
 								nil];
 	return [NSKeyedArchiver archivedDataWithRootObject:attributes];
 }
 
-- (void)unarchiveGenericAttributes:(NSData *)data
+- (void)_unarchiveGenericAttributes:(NSData *)data
 {
 	if (data && [data length] > 0) {
 		NSDictionary *attributes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-		
+
+		_id = [[attributes objectForKey:kAccountAttributeIDKey] integerValue];
 		TBRelease(_name);
 		_name = [[attributes objectForKey:kAccountAttributeNameKey] retain];
 		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
-		_order = [[attributes objectForKey:kAccountAttributeOrderKey] integerValue];
 	}
 }
 

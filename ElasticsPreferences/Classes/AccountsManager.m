@@ -86,14 +86,37 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 - (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
 {
-	Account *account = [Account accountWithName:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey];
-	[self insertObject:account inAccountsAtIndex:[_accounts count]];
-	[account save];
+	// make new account id to be max(existing IDs) + 1
+	NSInteger __block maxAccountId = -1;
+	[_accounts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		Account *account = (Account *)obj;
+		maxAccountId = MAX(account.id, maxAccountId);
+	}];
+	NSInteger newAccountId = maxAccountId + 1;
+	
+	Account *newAccount = [Account accountWithID:newAccountId name:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey];
+	[self insertObject:newAccount inAccountsAtIndex:[_accounts count]];
+	[newAccount save];
 }
 
 - (void)removeAccountAtIndex:(NSUInteger)idx
 {
 	[self removeObjectFromAccountsAtIndex:idx];
+}
+
+- (Account *)accountWithId:(NSInteger)anId
+{
+	Account __block *result = nil;
+	
+	[_accounts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		Account *account = (Account *)obj;
+		if (account.id == anId) {
+			result = account;
+			*stop = YES;
+		}
+	}];
+	
+	return result;
 }
 
 

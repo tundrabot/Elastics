@@ -14,27 +14,29 @@ extern NSString *const kAccountDidChangeNotification;
 
 @interface Account : NSObject {
 @private
-	SecKeychainItemRef	_itemRef;
+	NSInteger			_id;
+	NSString			*_name;
 	NSString			*_accessKeyID;
 	NSString			*_secretAccessKey;
-	NSString			*_name;
 	NSInteger			_defaultRegion;
-	NSInteger			_order;
+	SecKeychainItemRef	_itemRef;
 }
 
-+ (id)accountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
++ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
-- (id)initWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
+- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
 - (id)initWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
 - (void)save;
 - (void)remove;
 
+@property (nonatomic, readonly) NSInteger id;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *accessKeyID;
 @property (nonatomic, copy) NSString *secretAccessKey;
 @property (nonatomic, assign) NSInteger defaultRegion;
-@property (nonatomic, assign) NSInteger order;
+
+@property (nonatomic, readonly) NSString *title;
 
 @end

@@ -20,6 +20,7 @@
 		C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3603F8D12DC87C200B13219 /* ElasticsIcon.icns */; };
 		C379FB0012D881B600D055EF /* AccountsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FAFF12D881B600D055EF /* AccountsManager.m */; };
 		C3CE00A112D739C4006E87EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CE00A012D739C4006E87EF /* Security.framework */; };
+		C3EA80F513E1A04C00FFFF7F /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80F313E1A04C00FFFF7F /* Edit.png */; };
 		C3F1A54112C78EA5001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A54012C78EA5001AB554 /* Icon.icns */; };
 		C3F1A5FF12C79B72001AB554 /* EU.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A5FC12C79B72001AB554 /* EU.png */; };
 		C3F1A60012C79B72001AB554 /* SG.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A5FD12C79B72001AB554 /* SG.png */; };
@@ -54,6 +55,7 @@
 		C379FAFE12D881B600D055EF /* AccountsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountsManager.h; sourceTree = "<group>"; };
 		C379FAFF12D881B600D055EF /* AccountsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountsManager.m; sourceTree = "<group>"; };
 		C3CE00A012D739C4006E87EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C3EA80F313E1A04C00FFFF7F /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Edit.png; sourceTree = "<group>"; };
 		C3F1A54012C78EA5001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = ../Icon.icns; sourceTree = "<group>"; };
 		C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ElasticsPreferences.xcconfig; sourceTree = "<group>"; };
 		C3F1A5FC12C79B72001AB554 /* EU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EU.png; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		C3F1A5FB12C79B5B001AB554 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C3EA80F313E1A04C00FFFF7F /* Edit.png */,
 				C30A507E13615BF200998D56 /* JP.png */,
 				C313CFA412DA0115007CB52D /* PreferencesConsole.png */,
 				C3F1A5FC12C79B72001AB554 /* EU.png */,
@@ -249,6 +252,7 @@
 				C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */,
 				C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */,
 				C30A507F13615BF200998D56 /* JP.png in Resources */,
+				C3EA80F513E1A04C00FFFF7F /* Edit.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

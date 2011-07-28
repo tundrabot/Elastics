@@ -7,16 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "ValidateReceipt.h"
+#import "AccountsManager.h"
 
 @interface ElasticsAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
 @private
-	NSStatusItem	*_statusItem;
-	NSMenu			*_statusMenu;
-	NSTimer			*_refreshTimer;
-	NSPanel			*_aboutPanel;
-	NSTextField		*_aboutVersionLabel;
-	NSTextField		*_aboutCopyrightLabel;
+	NSStatusItem		*_statusItem;
+	NSMenu				*_statusMenu;
+	NSTimer				*_refreshTimer;
+	NSPanel				*_aboutPanel;
+	NSTextField			*_aboutVersionLabel;
+	NSTextField			*_aboutCopyrightLabel;
+	AccountsManager		*_accountsManager;
 }
 
 @property (nonatomic, assign) IBOutlet NSPanel *aboutPanel;

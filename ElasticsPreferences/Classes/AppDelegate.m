@@ -331,31 +331,51 @@ enum {
 
 - (IBAction)editAccountAction:(id)sender
 {
-	if ([_accountsTableView clickedRow] >= 0) {
+	if ([sender isKindOfClass:[NSTableView class]] && [_accountsTableView clickedRow] < 0)
+		return;		// click on header row
 		
-		Account *account = [[_accountsController selectedObjects] objectAtIndex:0];
-		if (account) {
+	Account *account = [[_accountsController selectedObjects] objectAtIndex:0];
+	if (account) {
+	
+		_accountActionType = kAccountActionEditAccount;
 		
-			_accountActionType = kAccountActionEditAccount;
-			
-			[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID];
-			[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey];
-			[_accountPanelNameField setStringValue:account.name];
-			[_accountPanelSaveButton setEnabled:YES];
-			[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
-			
-			[NSApp beginSheet:_accountPanel
-			   modalForWindow:[NSApp mainWindow]
-				modalDelegate:self
-			   didEndSelector:@selector(accountSheetDidEnd:returnCode:contextInfo:)
-				  contextInfo:NULL];
-		}
+		[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID];
+		[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey];
+		[_accountPanelNameField setStringValue:account.name];
+		[_accountPanelSaveButton setEnabled:YES];
+		[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
+		
+		[NSApp beginSheet:_accountPanel
+		   modalForWindow:[NSApp mainWindow]
+			modalDelegate:self
+		   didEndSelector:@selector(accountSheetDidEnd:returnCode:contextInfo:)
+			  contextInfo:NULL];
+	}
+}
+
+- (void)removeAccountAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+	[[alert window] orderOut:nil];
+	
+	if (returnCode == 0) {
+		[_accountsManager removeAccountAtIndex:[_accountsController selectionIndex]];
 	}
 }
 
 - (IBAction)removeAccountAction:(id)sender
 {
-	[_accountsManager removeAccountAtIndex:[_accountsController selectionIndex]];
+	Account *account = [[_accountsController selectedObjects] objectAtIndex:0];
+	
+	NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"Remove account \"%@\"?", account.title]
+									 defaultButton:@"Cancel"
+								   alternateButton:@"Remove"
+									   otherButton:nil
+						 informativeTextWithFormat:@""];
+	
+	[alert beginSheetModalForWindow:[NSApp mainWindow]
+					  modalDelegate:self
+					 didEndSelector:@selector(removeAccountAlertDidEnd:returnCode:contextInfo:)
+						contextInfo:nil];
 }
 
 

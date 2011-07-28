@@ -6,6 +6,7 @@
 //  Copyright 2011 Tundra Bot. All rights reserved.
 //
 
+#import "Account.h"
 
 @interface AccountsManager : NSObject {
     NSMutableArray  *_accounts;
@@ -18,5 +19,7 @@
 
 - (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
 - (void)removeAccountAtIndex:(NSUInteger)idx;
+
+- (Account *)accountWithId:(NSInteger)id;
 
 @end

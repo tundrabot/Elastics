@@ -12,14 +12,33 @@ extern NSString *const kPreferencesDidChangeNotification;
 // Distributed notification sent when main application terminates
 extern NSString *const kPreferencesShouldTerminateNotification;
 
+// AWS regions as stored in prefs and selected in combo
+enum {
+	kPreferencesAWSUSEastRegion,
+	kPreferencesAWSUSWestRegion,
+	kPreferencesAWSEURegion,
+	kPreferencesAWSAsiaPacificSingaporeRegion,
+	kPreferencesAWSAsiaPacificJapanRegion,
+};
+
+enum {
+	kPreferencesTerminalApplicationTerminal,
+	kPreferencesTerminalApplicationiTerm,
+};
+
 @interface NSUserDefaults (ElasticsPreferences)
 - (NSDictionary *)defaultElasticsPreferences;
 
-@property (nonatomic, assign) NSString *awsRegion;
+@property (nonatomic, assign) NSInteger accountId;
+@property (nonatomic, assign) NSInteger region;				// from the enum above
+@property (nonatomic, readonly) NSString *awsRegion;		// translated as expected by AWS API
 @property (nonatomic, assign) NSInteger refreshInterval;
 @property (nonatomic, assign, getter=isRefreshOnMenuOpen) BOOL refreshOnMenuOpen;
 @property (nonatomic, assign) NSString *sshPrivateKeyFile;
 @property (nonatomic, assign) NSString *sshUserName;
+@property (nonatomic, assign) NSInteger terminalApplication;
+@property (nonatomic, assign) BOOL openInTerminalTab;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;
+
 @end
