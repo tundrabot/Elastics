@@ -129,6 +129,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */,
 			);
 			name = ElasticsPreferences;
 			sourceTree = "<group>";
@@ -136,7 +137,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */,
 				256AC3F00F4B6AF500CF3369 /* ElasticsPreferences_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -303,7 +303,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ElasticsPreferences_Prefix.pch;
@@ -319,13 +318,13 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ElasticsPreferences_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Elastics Preferences";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -386,13 +385,13 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ElasticsPreferences_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Elastics Preferences";
+				SKIP_INSTALL = YES;
 			};
 			name = Distribution;
 		};

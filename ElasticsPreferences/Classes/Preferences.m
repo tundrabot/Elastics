@@ -24,6 +24,8 @@ NSString *const kPreferencesSshPrivateKeyFileKey		= @"sshPrivateKeyFile";
 NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
 NSString *const kPreferencesTerminalApplicationKey		= @"terminalApplication";
 NSString *const kPreferencesOpenInTerminalTabKey		= @"openInTerminalTab";
+NSString *const kPreferencesRdpApplicationKey			= @"rdpApplication";
+
 NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
 
 static NSDictionary *_defaults;
@@ -169,6 +171,16 @@ static NSDictionary *_defaults;
 - (void)setOpenInTerminalTab:(BOOL)value
 {
 	[self setBool:value forKey:kPreferencesOpenInTerminalTabKey];
+}
+
+- (NSInteger)rdpApplication
+{
+	return [self integerForKey:kPreferencesRdpApplicationKey];
+}
+
+- (void)setRdpApplication:(NSInteger)value
+{
+	[self setInteger:value forKey:kPreferencesRdpApplicationKey];
 }
 
 - (BOOL)isFirstLaunch

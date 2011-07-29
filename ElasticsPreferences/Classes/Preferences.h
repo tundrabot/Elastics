@@ -26,6 +26,10 @@ enum {
 	kPreferencesTerminalApplicationiTerm,
 };
 
+enum {
+	kPreferencesRdpApplicationCoRD,
+};
+
 @interface NSUserDefaults (ElasticsPreferences)
 - (NSDictionary *)defaultElasticsPreferences;
 
@@ -38,6 +42,7 @@ enum {
 @property (nonatomic, assign) NSString *sshUserName;
 @property (nonatomic, assign) NSInteger terminalApplication;
 @property (nonatomic, assign) BOOL openInTerminalTab;
+@property (nonatomic, assign) NSInteger rdpApplication;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;
 

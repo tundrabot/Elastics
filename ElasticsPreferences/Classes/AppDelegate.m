@@ -332,7 +332,7 @@ enum {
 - (IBAction)editAccountAction:(id)sender
 {
 	if ([sender isKindOfClass:[NSTableView class]] && [_accountsTableView clickedRow] < 0)
-		return;		// click on header row
+		return;		// clicked on a header row
 		
 	Account *account = [[_accountsController selectedObjects] objectAtIndex:0];
 	if (account) {

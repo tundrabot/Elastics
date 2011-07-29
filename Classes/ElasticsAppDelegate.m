@@ -25,6 +25,7 @@ static NSString *const kElasticsPreferencesSuite				= @"com.tundrabot.Elastics-P
 - (void)resetMenu;
 - (void)addMenuActionItems;
 - (void)refreshMenu:(NSNotification *)notification;
+
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title;
 - (NSMenuItem *)messageItemWithTitle:(NSString *)title image:(NSImage *)image;
 - (NSMenuItem *)progressMessageItemWithTitle:(NSString *)title;
@@ -60,7 +61,8 @@ static NSString *const kElasticsPreferencesSuite				= @"com.tundrabot.Elastics-P
 - (void)quitAction:(id)sender;
 - (void)editPreferencesAction:(id)sender;
 - (void)copyToPasteboardAction:(id)sender;
-- (void)connectToInstanceAction:(id)sender;
+- (void)connectToInstanceWithSshAction:(id)sender;
+- (void)connectToInstanceWithRdpAction:(id)sender;
 - (void)aboutAction:(id)sender;
 @end
 
@@ -186,13 +188,13 @@ static NSImage *_jpImage;
 								  //infoParagraphStyle, NSParagraphStyleAttributeName,
 								  nil] retain];
 	
-	if (!_statusItemImage)			_statusItemImage = [NSImage imageNamed:@"StatusItem.png"];
-	if (!_statusItemAlertImage)		_statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert.png"];
+	if (!_statusItemImage)		    _statusItemImage = [NSImage imageNamed:@"StatusItem.png"];
+	if (!_statusItemAlertImage)	    _statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert.png"];
 	
-	if (!_usImage)	_usImage = [NSImage imageNamed:@"US.png"];
-	if (!_euImage)	_euImage = [NSImage imageNamed:@"EU.png"];
-	if (!_sgImage)	_sgImage = [NSImage imageNamed:@"SG.png"];
-	if (!_jpImage)	_jpImage = [NSImage imageNamed:@"JP.png"];
+	if (!_usImage)	                _usImage = [NSImage imageNamed:@"US.png"];
+	if (!_euImage)	                _euImage = [NSImage imageNamed:@"EU.png"];
+	if (!_sgImage)	                _sgImage = [NSImage imageNamed:@"SG.png"];
+	if (!_jpImage)	                _jpImage = [NSImage imageNamed:@"JP.png"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -670,6 +672,20 @@ static NSImage *_jpImage;
 	return menuItem;
 }
 
+// HACK HACK HACK: this item is added at the beginning of the refresh and removed at the completion
+// to force menu redrawing
+- (NSMenuItem *)dummyItem
+{
+	NSView *dummyView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 0.01)] autorelease];
+	
+	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
+	[menuItem setIndentationLevel:1];
+	[menuItem setView:dummyView];
+	
+	return menuItem;
+}
+
+
 #pragma mark -
 #pragma mark Submenu
 
@@ -730,7 +746,11 @@ static NSImage *_jpImage;
 
 	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING) {
 		[menu addItem:[NSMenuItem separatorItem]];
-		[menu addItem:[self actionItemWithLabel:@"Connect (SSH)..." action:@selector(connectToInstanceAction:)]];
+
+		if ([instance.platform isEqualToString:@"windows"])
+			[menu addItem:[self actionItemWithLabel:@"Connect (RDP)..." action:@selector(connectToInstanceWithRdpAction:)]];
+		else
+			[menu addItem:[self actionItemWithLabel:@"Connect (SSH)..." action:@selector(connectToInstanceWithSshAction:)]];
 	}
 	
 //	[menu addItem:[NSMenuItem separatorItem]];
@@ -753,6 +773,9 @@ static NSImage *_jpImage;
 
 - (void)refreshCompleted:(NSNotification *)notification
 {
+//	[_statusMenu insertItem:[self dummyItem] atIndex:0];
+	[_statusMenu addItem:[self dummyItem]];
+	
 	[self performSelector:@selector(refreshMenu:)
 			   withObject:notification
 			   afterDelay:0.
@@ -973,7 +996,7 @@ static NSImage *_jpImage;
 	[pasteBoard setString:[menuItem representedObject] forType:NSStringPboardType];
 }
 
-- (void)connectToInstanceAction:(id)sender
+- (void)connectToInstanceWithSshAction:(id)sender
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
@@ -1080,6 +1103,39 @@ static NSImage *_jpImage;
 		NSDictionary *errorInfo = nil;
 		[appleScript executeAndReturnError:&errorInfo];
 
+		// TODO: handle errors
+	}
+}
+
+- (void)connectToInstanceWithRdpAction:(id)sender
+{
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
+	NSString *instanceId = [[menuItem menu] title];
+	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
+	
+	if (instance) {
+		// NSInteger rdpApplication = [[NSUserDefaults standardUserDefaults] rdpApplication];
+		// TODO: switch ...
+		
+		NSString *cmd = nil;
+		
+		cmd = [NSString stringWithFormat:
+			   @"tell application \"Finder\" to set the clipboard to \"%@\"\n"
+			   @"tell application \"CoRD\" to activate\n"
+			   @"tell application \"System Events\"\n"
+			   @"	keystroke \"g\" using command down\n"
+			   @"	keystroke \"v\" using command down\n"
+			   @"	do shell script \"sleep 1\"\n"
+			   @"	keystroke return\n"
+			   @"end tell\n",
+			   instance.ipAddress];
+
+		TBTrace("%@", cmd);
+		
+		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
+		NSDictionary *errorInfo = nil;
+		[appleScript executeAndReturnError:&errorInfo];
+		
 		// TODO: handle errors
 	}
 }

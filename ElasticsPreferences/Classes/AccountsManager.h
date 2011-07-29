@@ -12,7 +12,7 @@
     NSMutableArray  *_accounts;
 }
 
-@property (nonatomic, readonly) NSMutableArray *accounts;
+@property (nonatomic, retain, readonly) NSMutableArray *accounts;
 
 - (void)loadAccounts;
 - (void)saveAccounts;
