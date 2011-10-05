@@ -25,6 +25,7 @@ NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
 NSString *const kPreferencesTerminalApplicationKey		= @"terminalApplication";
 NSString *const kPreferencesOpenInTerminalTabKey		= @"openInTerminalTab";
 NSString *const kPreferencesRdpApplicationKey			= @"rdpApplication";
+NSString *const kPreferencesSortInstancesByTitleKey		= @"sortInstancesByTitle";
 
 NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
 
@@ -50,6 +51,8 @@ static NSDictionary *_defaults;
 						[NSNumber numberWithFloat:180], kPreferencesRefreshIntervalKey,
 						// refresh on menu open
 						[NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
+						// sort instances alphabetically
+						[NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
 						// SSH user name
 						@"root", kPreferencesSshUserNameKey,
 						// first launch
@@ -163,7 +166,7 @@ static NSDictionary *_defaults;
 	[self setInteger:value forKey:kPreferencesTerminalApplicationKey];
 }
 
-- (BOOL)openInTerminalTab
+- (BOOL)isOpenInTerminalTab
 {
 	return [self boolForKey:kPreferencesOpenInTerminalTabKey];
 }
@@ -181,6 +184,16 @@ static NSDictionary *_defaults;
 - (void)setRdpApplication:(NSInteger)value
 {
 	[self setInteger:value forKey:kPreferencesRdpApplicationKey];
+}
+
+- (BOOL)isSortInstancesByTitle
+{
+	return [self boolForKey:kPreferencesSortInstancesByTitleKey];
+}
+
+- (void)setSortInstancesByTitle:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesSortInstancesByTitleKey];
 }
 
 - (BOOL)isFirstLaunch

@@ -19,7 +19,7 @@
 #define MESSAGE_TABLE_WIDTH						180.f
 
 static NSString *const kElasticsPreferencesApplicationPath	= @"Contents/Helpers/Elastics Preferences.app";
-static NSString *const kElasticsPreferencesSuite				= @"com.tundrabot.Elastics-Preferences";
+static NSString *const kElasticsPreferencesSuite			= @"com.tundrabot.Elastics-Preferences";
 
 @interface ElasticsAppDelegate ()
 - (void)resetMenu;
@@ -431,7 +431,9 @@ static NSImage *_jpImage;
 				[_statusMenu removeAllItems];
 
 				[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
-				for (EC2Instance *instance in dataSource.instances) {
+				//for (EC2Instance *instance in dataSource.instances) {
+				NSArray *instances = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle] ? dataSource.sortedInstances : dataSource.instances;
+				for (EC2Instance *instance in instances) {
 					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
 				}
 
@@ -1002,17 +1004,29 @@ static NSImage *_jpImage;
 	NSString *instanceId = [[menuItem menu] title];
 	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
 	NSInteger terminalApplication = [[NSUserDefaults standardUserDefaults] terminalApplication];
-	BOOL openInTerminalTab = [[NSUserDefaults standardUserDefaults] openInTerminalTab];
+	BOOL isOpenInTerminalTab = [[NSUserDefaults standardUserDefaults] isOpenInTerminalTab];
 	
 	if (instance) {
-		NSString *sshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
-		NSString *sshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
-		NSString *cmd = @"ssh";
+		Account *account = [_accountsManager accountWithId:[[NSUserDefaults standardUserDefaults] accountId]];
 		
-		if (sshPrivateKeyFile)
+		NSString *sshPrivateKeyFile = nil;
+		if ([account.sshPrivateKeyFile length] > 0)
+			sshPrivateKeyFile = account.sshPrivateKeyFile;
+		else
+			sshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
+		
+		NSString *sshUserName = nil;
+		if ([account.sshUserName length] > 0)
+			sshUserName = account.sshUserName;
+		else
+			sshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+		
+		NSString *cmd = @"ssh";
+
+		if ([sshPrivateKeyFile length] > 0)
 			cmd = [cmd stringByAppendingFormat:@" -i \'%@\'", sshPrivateKeyFile];
 		
-		if (sshUserName)
+		if ([sshUserName length] > 0)
 			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instance.ipAddress];
 		else
 			cmd = [cmd stringByAppendingFormat:@"%@", instance.ipAddress];
@@ -1020,7 +1034,7 @@ static NSImage *_jpImage;
 		switch (terminalApplication) {
 			// use iTerm terminal
 			case kPreferencesTerminalApplicationiTerm:
-				if (openInTerminalTab) {
+				if (isOpenInTerminalTab) {
 					// new iTerm tab
 
 					cmd = [NSString stringWithFormat:
@@ -1066,7 +1080,7 @@ static NSImage *_jpImage;
 
 			// use Terminal terminal
 			default:
-				if (openInTerminalTab) {
+				if (isOpenInTerminalTab) {
 					// new Terminal tab
 					
 					cmd = [NSString stringWithFormat:

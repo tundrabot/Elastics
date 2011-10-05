@@ -31,6 +31,7 @@ enum {
 };
 
 @interface NSUserDefaults (ElasticsPreferences)
+
 - (NSDictionary *)defaultElasticsPreferences;
 
 @property (nonatomic, assign) NSInteger accountId;
@@ -41,8 +42,9 @@ enum {
 @property (nonatomic, assign) NSString *sshPrivateKeyFile;
 @property (nonatomic, assign) NSString *sshUserName;
 @property (nonatomic, assign) NSInteger terminalApplication;
-@property (nonatomic, assign) BOOL openInTerminalTab;
+@property (nonatomic, assign, getter=isOpenInTerminalTab) BOOL openInTerminalTab;
 @property (nonatomic, assign) NSInteger rdpApplication;
+@property (nonatomic, assign, getter=isSortInstancesByTitle) BOOL sortInstancesByTitle;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;
 

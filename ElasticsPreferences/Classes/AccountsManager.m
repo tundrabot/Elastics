@@ -8,16 +8,15 @@
 
 #import "AccountsManager.h"
 #import "Account.h"
+#import "Constants.h"
 #include <Security/Security.h>
-
-static NSString *const _secServiceName			= @"com.tundrabot.Elastics";
-static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 
 @interface AccountsManager ()
 - (void)insertObject:(Account *)accont inAccountsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromAccountsAtIndex:(NSUInteger)idx;
 @end
+
 
 @implementation AccountsManager
 
@@ -46,7 +45,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 - (void)loadAccounts
 {
-    const char *serviceNameUTF8 = [_secServiceName UTF8String];
+    const char *serviceNameUTF8 = [kElasticsSecServiceName UTF8String];
 	
 	OSStatus status;
 	SecKeychainItemRef itemRef = NULL;
@@ -84,7 +83,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	}
 }
 
-- (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
+- (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
 	// make new account id to be max(existing IDs) + 1
 	NSInteger __block maxAccountId = -1;
@@ -94,7 +93,12 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	}];
 	NSInteger newAccountId = maxAccountId + 1;
 	
-	Account *newAccount = [Account accountWithID:newAccountId name:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey];
+	Account *newAccount = [Account accountWithID:newAccountId
+											name:name
+									 accessKeyId:accessKeyId
+								 secretAccessKey:secretAccessKey
+							   sshPrivateKeyFile:sshPrivateKeyFile
+									 sshUserName:sshUserName];
 	[self insertObject:newAccount inAccountsAtIndex:[_accounts count]];
 	[newAccount save];
 }
@@ -120,7 +124,8 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 }
 
 
-#pragma mark - KVC magic methods
+#pragma mark -
+#pragma mark KVC magic methods
 
 - (void)insertObject:(Account *)accont inAccountsAtIndex:(NSUInteger)idx
 {

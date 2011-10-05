@@ -33,24 +33,18 @@ extern NSString *const kDataSourceErrorInfoKey;
 + (NSDictionary *)defaultRequestOptions;
 + (void)setDefaultRequestOptions:(NSDictionary *)options;
 
-// Set of metric names to monitor globally
-@property (nonatomic, retain) NSSet *compositeMonitoringMetrics;
-// Set of metric names to monitor for each instance
-@property (nonatomic, retain) NSSet *instanceMonitoringMetrics;
+@property (nonatomic, retain) NSSet *compositeMonitoringMetrics;	// set of metric names to monitor globally
+@property (nonatomic, retain) NSSet *instanceMonitoringMetrics;		// set of metric names to monitor for each instance
 
-// Refresh instance info and monitoring stats
-- (void)refresh;
-- (void)refreshInstance:(NSString *)instanceId;
+- (void)refresh;									// refresh all instances info and monitoring stats
+- (void)refreshInstance:(NSString *)instanceId;		// refresh instances info and monitoring stats for selected instance
 
-// All instances (array of EC2Instance)
-@property (nonatomic, retain, readonly) NSArray *instances;
-// Returns an instance with given id
-- (EC2Instance *)instance:(NSString *)instanceId;
-// All statistics for metric (array of MonitoringDatapoint)
-//- (NSArray *)statisticsForMetric:(NSString *)metric;
+- (NSArray *)instances;								// all instances (array of EC2Instance)
+- (NSArray *)sortedInstances;						// all instances (array of EC2Instance), sorted by title
+- (EC2Instance *)instance:(NSString *)instanceId;	// instance with given id
 
-// Returns statistics for metric for given instance id
-- (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId;
+//- (NSArray *)statisticsForMetric:(NSString *)metric;										// composite statistics for metric (array of MonitoringDatapoint)
+- (NSArray *)statisticsForMetric:(NSString *)metric forInstance:(NSString *)instanceId;		// instance statistics for metric (array of MonitoringDatapoint)
 
 // Max/Min/Average metric values
 //- (CGFloat)maximumValueForMetric:(NSString *)metric forRange:(NSUInteger)range;

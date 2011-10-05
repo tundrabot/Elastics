@@ -16,6 +16,7 @@
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
 		C31FFAF513DECA2300F5D20B /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C31FFAF413DECA2300F5D20B /* Account.m */; };
+		C34FAA98143C4C7C00F607DD /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = C34FAA97143C4C7C00F607DD /* Constants.m */; };
 		C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3603DCA12DC6D0B00B13219 /* Credits.html */; };
 		C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3603F8D12DC87C200B13219 /* ElasticsIcon.icns */; };
 		C379FB0012D881B600D055EF /* AccountsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FAFF12D881B600D055EF /* AccountsManager.m */; };
@@ -48,6 +49,8 @@
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
 		C31FFAF313DECA2300F5D20B /* Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Account.h; sourceTree = "<group>"; };
 		C31FFAF413DECA2300F5D20B /* Account.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Account.m; sourceTree = "<group>"; };
+		C34FAA96143C4C7C00F607DD /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../../Classes/Constants.h; sourceTree = "<group>"; };
+		C34FAA97143C4C7C00F607DD /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = ../../Classes/Constants.m; sourceTree = "<group>"; };
 		C3603D4612DBD2E900B13219 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../TBDebug.h; sourceTree = SOURCE_ROOT; };
 		C3603D4712DBD2E900B13219 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../TBMacros.h; sourceTree = SOURCE_ROOT; };
 		C3603DCA12DC6D0B00B13219 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
@@ -85,6 +88,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C34FAA96143C4C7C00F607DD /* Constants.h */,
+				C34FAA97143C4C7C00F607DD /* Constants.m */,
 				C3603D4612DBD2E900B13219 /* TBDebug.h */,
 				C3603D4712DBD2E900B13219 /* TBMacros.h */,
 				C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */,
@@ -271,6 +276,7 @@
 				C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */,
 				C379FB0012D881B600D055EF /* AccountsManager.m in Sources */,
 				C31FFAF513DECA2300F5D20B /* Account.m in Sources */,
+				C34FAA98143C4C7C00F607DD /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

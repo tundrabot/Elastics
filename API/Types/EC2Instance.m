@@ -110,4 +110,11 @@
 	return [nameTagValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
+- (NSString *)title
+{
+	NSString *nameTag = [self nameTag];
+	
+	return [nameTag length] > 0 ? nameTag : _instanceId;
+}
+
 @end

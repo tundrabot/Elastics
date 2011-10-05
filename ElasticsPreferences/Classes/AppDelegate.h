@@ -25,6 +25,8 @@
 	NSTextField			*_accountPanelNameField;
 	NSTextField			*_accountPanelAccessKeyIdField;
 	NSTextField			*_accountPanelSecretAccessKeyField;
+	NSTextField			*_accountPanelSshPrivateKeyFileField;
+	NSTextField			*_accountPanelSshUserNameField;
 	NSButton			*_accountPanelSaveButton;
 	NSInteger			_accountActionType;
 }
@@ -44,6 +46,8 @@
 @property (assign) IBOutlet NSTextField *accountPanelNameField;
 @property (assign) IBOutlet NSTextField *accountPanelAccessKeyIdField;
 @property (assign) IBOutlet NSTextField *accountPanelSecretAccessKeyField;
+@property (assign) IBOutlet NSTextField *accountPanelSshPrivateKeyFileField;
+@property (assign) IBOutlet NSTextField *accountPanelSshUserNameField;
 
 - (IBAction)showGeneralPaneAction:(id)sender;
 - (IBAction)showAdvancedPaneAction:(id)sender;
@@ -52,7 +56,8 @@
 - (IBAction)removeAccountAction:(id)sender;
 - (IBAction)accountSheetSaveAction:(id)sender;
 - (IBAction)accountSheetCancelAction:(id)sender;
-- (IBAction)chooseKeypairAction:(id)sender;
+- (IBAction)chooseDefaultKeypairAction:(id)sender;
+- (IBAction)chooseAccountKeypairAction:(id)sender;
 - (IBAction)aboutAction:(id)sender;
 
 @end

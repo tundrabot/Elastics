@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <Security/Security.h>
+#import <Security/Security.h>
 
 // Notication set by Account when account data changes
 extern NSString *const kAccountDidChangeNotification;
@@ -19,13 +19,15 @@ extern NSString *const kAccountDidChangeNotification;
 	NSString			*_accessKeyID;
 	NSString			*_secretAccessKey;
 	NSInteger			_defaultRegion;
+	NSString			*_sshPrivateKeyFile;
+	NSString			*_sshUserName;
 	SecKeychainItemRef	_itemRef;
 }
 
-+ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
++ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
-- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
+- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
 - (id)initWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
 - (void)save;
@@ -36,6 +38,8 @@ extern NSString *const kAccountDidChangeNotification;
 @property (nonatomic, copy) NSString *accessKeyID;
 @property (nonatomic, copy) NSString *secretAccessKey;
 @property (nonatomic, assign) NSInteger defaultRegion;
+@property (nonatomic, copy) NSString *sshPrivateKeyFile;
+@property (nonatomic, copy) NSString *sshUserName;
 
 @property (nonatomic, readonly) NSString *title;
 

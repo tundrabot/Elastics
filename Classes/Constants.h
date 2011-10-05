@@ -6,6 +6,9 @@
 //  Copyright 2011 Tundra Bot. All rights reserved.
 //
 
+// Keychain API service name
+extern NSString *const kElasticsSecServiceName;
+
 // Hardcoded values for receipt validation
 extern NSString *const kElasticsBundleShortVersionString;
 extern NSString *const kElasticsBundleIdentifier;

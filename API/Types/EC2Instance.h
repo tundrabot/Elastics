@@ -41,4 +41,7 @@
 // Returns value of "Name" tag if present, nil otherwise
 - (NSString *)nameTag;
 
+// Return value of "Name" tag if present, instanceId otherwise
+- (NSString *)title;
+
 @end

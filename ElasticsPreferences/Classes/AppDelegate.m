@@ -17,6 +17,7 @@
 
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
+
 @interface AppDelegate ()
 - (void)schedulePreferenceChangeNotification;
 - (void)postPreferenceChangeNotification;
@@ -26,6 +27,7 @@
 - (void)addContentSubview:(NSView *)view;
 - (void)preferencesShouldTerminate:(NSNotification *)notification;
 @end
+
 
 @implementation AppDelegate
 
@@ -44,6 +46,8 @@
 @synthesize accountPanelNameField = _accountPanelNameField;
 @synthesize accountPanelAccessKeyIdField = _accountPanelAccessKeyIdField;
 @synthesize accountPanelSecretAccessKeyField = _accountPanelSecretAccessKeyField;
+@synthesize accountPanelSshPrivateKeyFileField = _accountPanelSshPrivateKeyFileField;
+@synthesize accountPanelSshUserNameField = _accountPanelSshUserNameField;
 
 + (void)initialize
 {
@@ -173,7 +177,8 @@
 }
 
 
-#pragma mark - Toolbar delegate
+#pragma mark -
+#pragma mark Toolbar delegate
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
 {
@@ -187,7 +192,8 @@
 }
 
 
-#pragma mark - Window delegate
+#pragma mark -
+#pragma mark Window delegate
 
 - (void)windowWillClose:(NSNotification *)notification
 {
@@ -196,7 +202,8 @@
 }
 
 
-#pragma mark - Preference data changes notifications
+#pragma mark -
+#pragma mark Preference data changes notifications
 
 const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
@@ -232,7 +239,8 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 }
 
 
-#pragma mark - Main app notifications
+#pragma mark -
+#pragma mark Main app notifications
 
 - (void)preferencesShouldTerminate:(NSNotification *)notification
 {
@@ -241,7 +249,7 @@ const NSTimeInterval kPreferenceChangeNotificationDelay = .5;
 
 
 #pragma mark -
-#pragma mark Account sheet
+#pragma mark Accounts sheet
 
 #define ACCOUNT_SHEET_RETURNCODE_SAVE		1
 #define ACCOUNT_SHEET_RETURNCODE_CANCEL		0
@@ -266,6 +274,16 @@ enum {
 	return [[_accountPanelSecretAccessKeyField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
+- (NSString *)_accountPanelSshPrivateKeyFileValue
+{
+	return [[_accountPanelSshPrivateKeyFileField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)_accountPanelSshUserNameValue
+{
+	return [[_accountPanelSshUserNameField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 - (IBAction)accountSheetSaveAction:(id)sender
 {
 	[NSApp endSheet:_accountPanel returnCode:ACCOUNT_SHEET_RETURNCODE_SAVE];
@@ -283,7 +301,11 @@ enum {
 	if (returnCode == ACCOUNT_SHEET_RETURNCODE_SAVE) {
 		switch (_accountActionType) {
 			case kAccountActionAddAccount: {
-				[_accountsManager addAccountWithName:[self _accountPanelNameValue] accessKeyId:[self _accountPanelAccessKeyIDValue] secretAccessKey:[self _accountPanelSecretAccessKeyValue]];
+				[_accountsManager addAccountWithName:[self _accountPanelNameValue]
+										 accessKeyId:[self _accountPanelAccessKeyIDValue]
+									 secretAccessKey:[self _accountPanelSecretAccessKeyValue]
+								   sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
+										 sshUserName:[self _accountPanelSshUserNameValue]];
 				break;
 			}
 				
@@ -295,6 +317,8 @@ enum {
 					account.name = [self _accountPanelNameValue];
 					account.accessKeyID = [self _accountPanelAccessKeyIDValue];
 					account.secretAccessKey = [self _accountPanelSecretAccessKeyValue];
+					account.sshPrivateKeyFile = [self _accountPanelSshPrivateKeyFileValue];
+					account.sshUserName = [self _accountPanelSshUserNameValue];
 					[account save];
 				}
 				break;
@@ -316,9 +340,19 @@ enum {
 - (IBAction)addAccountAction:(id)sender
 {
 	_accountActionType = kAccountActionAddAccount;
+	
+	NSString *defaultSshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
+	NSString *defaultSshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+	
+	[_accountPanelNameField setStringValue:@""];
 	[_accountPanelAccessKeyIdField setStringValue:@""];
 	[_accountPanelSecretAccessKeyField setStringValue:@""];
-	[_accountPanelNameField setStringValue:@""];
+	[_accountPanelSshPrivateKeyFileField setStringValue:@""];
+	[_accountPanelSshUserNameField setStringValue:@""];
+	
+	[_accountPanelSshPrivateKeyFileField.cell setPlaceholderString:defaultSshPrivateKeyFile ? defaultSshPrivateKeyFile : @""];
+	[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @""];
+
 	[_accountPanelSaveButton setEnabled:NO];
 	[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
 	
@@ -339,9 +373,18 @@ enum {
 	
 		_accountActionType = kAccountActionEditAccount;
 		
-		[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID];
-		[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey];
-		[_accountPanelNameField setStringValue:account.name];
+		NSString *defaultSshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
+		NSString *defaultSshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+
+		[_accountPanelNameField setStringValue:account.name ? account.name : @""];
+		[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID ? account.accessKeyID : @""];
+		[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey ? account.secretAccessKey : @""];
+		[_accountPanelSshPrivateKeyFileField setStringValue:account.sshPrivateKeyFile ? account.sshPrivateKeyFile : @""];
+		[_accountPanelSshUserNameField setStringValue:account.sshUserName ? account.sshUserName : @""];
+
+		[_accountPanelSshPrivateKeyFileField.cell setPlaceholderString:defaultSshPrivateKeyFile ? defaultSshPrivateKeyFile : @""];
+		[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @""];
+
 		[_accountPanelSaveButton setEnabled:YES];
 		[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
 		
@@ -379,7 +422,8 @@ enum {
 }
 
 
-#pragma mark - Actions
+#pragma mark -
+#pragma mark Actions
 
 - (IBAction)showGeneralPaneAction:(id)sender
 {
@@ -391,20 +435,36 @@ enum {
 	[self showPreferencePane:ADVANCED_PANE_INDEX animated:YES];
 }
 
-- (IBAction)chooseKeypairAction:(id)sender
+- (IBAction)chooseDefaultKeypairAction:(id)sender
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	
 	[panel setShowsHiddenFiles:YES];
 
-	[panel beginSheetModalForWindow:_window
-				  completionHandler:^(NSInteger result) {
-					  if (result == NSOKButton) {
-                          NSString *filename = [[[panel URLs] objectAtIndex:0] path];
-//						  [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:[[panel filenames] objectAtIndex:0]];
-                          [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:filename];
-					  }
-				  }];
+//	[panel beginSheetModalForWindow:_window
+//				  completionHandler:^(NSInteger result) {
+//					  if (result == NSOKButton) {
+//                          NSString *filename = [[[panel URLs] objectAtIndex:0] path];
+//                          [[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:filename];
+//					  }
+//				  }];
+	
+	if ([panel runModal] == NSFileHandlingPanelOKButton) {
+		NSString *filename = [[[panel URLs] objectAtIndex:0] path];
+		[[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:filename];
+	}
+}
+
+- (IBAction)chooseAccountKeypairAction:(id)sender
+{
+	NSOpenPanel *panel = [NSOpenPanel openPanel];
+	
+	[panel setShowsHiddenFiles:YES];
+	
+	if ([panel runModal] == NSFileHandlingPanelOKButton) {
+		NSString *filename = [[[panel URLs] objectAtIndex:0] path];
+		[_accountPanelSshPrivateKeyFileField setStringValue:filename];
+	}
 }
 
 - (void)aboutAction:(id)sender

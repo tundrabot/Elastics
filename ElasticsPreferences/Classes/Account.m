@@ -7,11 +7,10 @@
 //
 
 #import "Account.h"
+#import "Constants.h"
+
 
 NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification";
-
-static NSString *const _secServiceName			= @"com.tundrabot.Elastics";
-static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 
 
 @interface Account ()
@@ -28,10 +27,18 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 @synthesize accessKeyID = _accessKeyID;
 @synthesize secretAccessKey = _secretAccessKey;
 @synthesize defaultRegion = _defaultRegion;
+@synthesize sshPrivateKeyFile = _sshPrivateKeyFile;
+@synthesize sshUserName = _sshUserName;
 
-+ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
++ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
-	return [[[self alloc] initWithID:id name:name accessKeyId:accessKeyId secretAccessKey:secretAccessKey] autorelease];
+	return [[[self alloc] initWithID:id
+								name:name
+						 accessKeyId:accessKeyId
+					 secretAccessKey:secretAccessKey
+				   sshPrivateKeyFile:sshPrivateKeyFile
+						 sshUserName:sshUserName]
+			autorelease];
 }
 
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef
@@ -39,7 +46,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	return [[[self alloc] initWithKeychainItemRef:itemRef] autorelease];
 }
 
-- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey
+- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
     self = [super init];
     if (self) {
@@ -48,6 +55,8 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 		_accessKeyID = [accessKeyId copy];
 		_secretAccessKey = [secretAccessKey copy];
 		_defaultRegion = 0;
+		_sshPrivateKeyFile = [sshPrivateKeyFile copy];
+		_sshUserName = [_sshUserName copy];
 		_itemRef = NULL;
     }
     
@@ -79,7 +88,6 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 											&length,
 											&data);
 		if (status == noErr) {
-			
 			// attr.data is the Access Key Id and data is the password Secret Access Key
 			
 			TBRelease(_accessKeyID);
@@ -101,6 +109,8 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	[_name release];
 	[_accessKeyID release];
 	[_secretAccessKey release];
+	[_sshPrivateKeyFile release];
+	[_sshUserName release];
 
 	if (_itemRef) {
 		CFRelease(_itemRef);
@@ -120,7 +130,7 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 		return;
 	}
 
-    const char *serviceNameUTF8		= [_secServiceName UTF8String];
+    const char *serviceNameUTF8		= [kElasticsSecServiceName UTF8String];
 	const char *titleUTF8			= [[self _keychainItemTitle]  UTF8String];
 	const char *accountUTF8			= [_accessKeyID UTF8String];
 	const char *passwordUTF8		= [_secretAccessKey UTF8String];
@@ -163,14 +173,14 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 		SecTrustedApplicationRef preferencesApp, mainApp;
 		
 		// get path to main application bundle
-		NSString *mainAppBundlePath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:_mainAppBundleIdentifier];
+		NSString *mainAppBundlePath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:kElasticsBundleIdentifier];
 		
 		status = SecTrustedApplicationCreateFromPath(NULL, &preferencesApp);
 		status = SecTrustedApplicationCreateFromPath([mainAppBundlePath UTF8String], &mainApp);
 		trustedApplications = [NSArray arrayWithObjects:(id)preferencesApp, (id)mainApp, nil];
 		
 		// create an access object
-		status = SecAccessCreate((CFStringRef)_secServiceName, (CFArrayRef)trustedApplications, &accessRef);
+		status = SecAccessCreate((CFStringRef)kElasticsSecServiceName, (CFArrayRef)trustedApplications, &accessRef);
 		if (status == noErr) {
 			status = SecKeychainItemCreateFromContent(kSecGenericPasswordItemClass,
 													  &attributes,
@@ -206,43 +216,64 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 	}
 }
 
+
 #pragma mark -
 #pragma mark Properties
 
-- (void)setName:(NSString *)name
+- (void)setName:(NSString *)value
 {
-	if (_name != name) {
+	if (_name != value) {
 		[_name release];
-		_name = [name copy];
+		_name = [value copy];
 		
 		[self save];
 	}
 }
 
-- (void)setAccessKeyID:(NSString *)accessKeyID
+- (void)setAccessKeyID:(NSString *)value
 {
-	if (_accessKeyID != accessKeyID) {
+	if (_accessKeyID != value) {
 		[_accessKeyID release];
-		_accessKeyID = [accessKeyID copy];
+		_accessKeyID = [value copy];
 		
 		[self save];
 	}
 }
 
-- (void)setSecretAccessKey:(NSString *)secretAccessKey
+- (void)setSecretAccessKey:(NSString *)value
 {
-	if (_secretAccessKey != secretAccessKey) {
+	if (_secretAccessKey != value) {
 		[_secretAccessKey release];
-		_secretAccessKey = [secretAccessKey copy];
+		_secretAccessKey = [value copy];
 		
 		[self save];
 	}
 }
 
-- (void)setDefaultRegion:(NSInteger)defaultRegion
+- (void)setDefaultRegion:(NSInteger)value
 {
-	if (_defaultRegion != defaultRegion) {
-		_defaultRegion = defaultRegion;
+	if (_defaultRegion != value) {
+		_defaultRegion = value;
+		
+		[self save];
+	}
+}
+
+- (void)setSshPrivateKeyFile:(NSString *)value
+{
+	if (_sshPrivateKeyFile != value) {
+		[_sshPrivateKeyFile release];
+		_sshPrivateKeyFile = [value copy];
+		
+		[self save];
+	}
+}
+
+- (void)setSshUserName:(NSString *)value
+{
+	if (_sshUserName != value) {
+		[_sshUserName release];
+		_sshUserName = [value copy];
 		
 		[self save];
 	}
@@ -266,6 +297,9 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 		return @"Untitled";		// should not happen
 }
 
+
+#pragma mark -
+
 - (NSString *)_keychainItemTitle
 {
 	return [NSString stringWithFormat:@"Elastics.%@", _accessKeyID];
@@ -275,6 +309,8 @@ static NSString *const _mainAppBundleIdentifier	= @"com.tundrabot.Elastics";
 static NSString *const kAccountAttributeIDKey				= @"id";
 static NSString *const kAccountAttributeNameKey				= @"name";
 static NSString *const kAccountAttributeDefaultRegionKey	= @"defaultRegion";
+static NSString *const kAccountSshPrivateKeyFileKey			= @"sshPrivateKeyFile";
+static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 
 - (NSData *)_archiveGenericAttributes
 {
@@ -282,6 +318,8 @@ static NSString *const kAccountAttributeDefaultRegionKey	= @"defaultRegion";
 								[NSNumber numberWithInteger:_id], kAccountAttributeIDKey,
 								_name, kAccountAttributeNameKey,
 								[NSNumber numberWithInteger:_defaultRegion], kAccountAttributeDefaultRegionKey,
+								_sshPrivateKeyFile, kAccountSshPrivateKeyFileKey,
+								_sshUserName, kAccountSshUserNameKey,
 								nil];
 	return [NSKeyedArchiver archivedDataWithRootObject:attributes];
 }
@@ -292,9 +330,10 @@ static NSString *const kAccountAttributeDefaultRegionKey	= @"defaultRegion";
 		NSDictionary *attributes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 
 		_id = [[attributes objectForKey:kAccountAttributeIDKey] integerValue];
-		TBRelease(_name);
-		_name = [[attributes objectForKey:kAccountAttributeNameKey] retain];
+		self.name = [attributes objectForKey:kAccountAttributeNameKey];
 		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
+		self.sshPrivateKeyFile = [attributes objectForKey:kAccountSshPrivateKeyFileKey];
+		self.sshUserName = [attributes objectForKey:kAccountSshUserNameKey];
 	}
 }
 

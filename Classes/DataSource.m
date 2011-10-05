@@ -15,11 +15,6 @@ NSString *const kDataSourceRefreshCompletedNotification = @"DataSourceRefreshCom
 NSString *const kDataSourceInstanceIdInfoKey = @"DataSourceInstanceIdInfo";
 NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 
-//@interface DataSource ()
-//@property (nonatomic, retain) NSDate *startedAt;
-//@property (nonatomic, retain) NSDate *completedAt;
-//@property (nonatomic, retain) EC2DescribeInstancesRequest *instancesRequest;
-//@end
 
 @implementation DataSource
 
@@ -53,6 +48,7 @@ NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 	TBRelease(_instanceMonitoringRequests);
 	[super dealloc];
 }
+
 
 #pragma mark -
 #pragma mark Singleton
@@ -102,6 +98,7 @@ static DataSource * _sharedInstance = nil;
 {
 	return self;
 }
+
 
 #pragma mark -
 #pragma mark Request handling
@@ -224,6 +221,7 @@ static DataSource * _sharedInstance = nil;
 	}
 }
 
+
 #pragma mark -
 #pragma mark Request delegate
 
@@ -317,12 +315,18 @@ static DataSource * _sharedInstance = nil;
 	[finishedRequest release];
 }
 
+
 #pragma mark -
 #pragma mark Data accessors and helpers
 
 - (NSArray *)instances
 {
 	return _instancesRequest.response.instancesSet;
+}
+
+- (NSArray *)sortedInstances
+{
+	return [_instancesRequest.response.instancesSet sortedArrayUsingSelector:@selector(title)];
 }
 
 - (EC2Instance *)instance:(NSString *)instanceId

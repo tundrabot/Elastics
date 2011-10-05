@@ -8,7 +8,9 @@
 
 #import "Constants.h"
 
-NSString *const kElasticsBundleShortVersionString	= @"1.3";
+NSString *const kElasticsSecServiceName				= @"com.tundrabot.Elastics";
+
+NSString *const kElasticsBundleShortVersionString	= @"1.4";
 NSString *const kElasticsBundleIdentifier			= @"com.tundrabot.Elastics";
 
 NSString *const kElasticsSampleReceiptPath			= @"~/Documents/receipt.sample";
