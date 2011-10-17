@@ -69,10 +69,10 @@
         
         while (SecKeychainSearchCopyNext(searchRef, &itemRef) != errSecItemNotFound) {
 			[_accounts addObject:[Account accountWithKeychainItemRef:itemRef]];
-            CFRelease(itemRef);
+            TBCFRelease(itemRef);
         }
         
-		CFRelease(searchRef);
+		TBCFRelease(searchRef);
     }
 }
 
@@ -89,7 +89,7 @@
 	NSInteger __block maxAccountId = -1;
 	[_accounts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		Account *account = (Account *)obj;
-		maxAccountId = MAX(account.id, maxAccountId);
+		maxAccountId = MAX(account.accountId, maxAccountId);
 	}];
 	NSInteger newAccountId = maxAccountId + 1;
 	
@@ -110,11 +110,11 @@
 
 - (Account *)accountWithId:(NSInteger)anId
 {
-	Account __block *result = nil;
+	__block Account *result = nil;
 	
 	[_accounts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		Account *account = (Account *)obj;
-		if (account.id == anId) {
+		if (account.accountId == anId) {
 			result = account;
 			*stop = YES;
 		}

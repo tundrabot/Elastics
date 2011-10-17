@@ -28,7 +28,7 @@ extern NSString *const kDataSourceErrorInfoKey;
 	NSMutableDictionary				*_instanceMonitoringRequests;
 }
 
-+ (DataSource *)sharedInstance;
++ (DataSource *)sharedDataSource;
 
 + (NSDictionary *)defaultRequestOptions;
 + (void)setDefaultRequestOptions:(NSDictionary *)options;

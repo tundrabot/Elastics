@@ -7,14 +7,14 @@
 //
 
 #import "DataSource.h"
+#import "TBMacros.h"
 
 #define MAX_STATISTICS_AGE	60.f
 
-NSString *const kDataSourceRefreshCompletedNotification = @"DataSourceRefreshCompletedNotification";
+NSString *const kDataSourceRefreshCompletedNotification	= @"DataSourceRefreshCompletedNotification";
 
-NSString *const kDataSourceInstanceIdInfoKey = @"DataSourceInstanceIdInfo";
-NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
-
+NSString *const kDataSourceInstanceIdInfoKey	= @"DataSourceInstanceIdInfo";
+NSString *const kDataSourceErrorInfoKey			= @"DataSourceErrorInfo";
 
 @implementation DataSource
 
@@ -25,7 +25,9 @@ NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 #pragma mark -
 #pragma mark Initialization
 
-- (DataSource *)init
+TB_SINGLETON(DataSource);
+
+- (id)init
 {
 	self = [super init];
 	if (self) {
@@ -47,56 +49,6 @@ NSString *const kDataSourceErrorInfoKey = @"DataSourceErrorInfo";
 //	TBRelease(_compositeMonitoringRequests);
 	TBRelease(_instanceMonitoringRequests);
 	[super dealloc];
-}
-
-
-#pragma mark -
-#pragma mark Singleton
-
-static DataSource * _sharedInstance = nil;
-
-+ (DataSource *)sharedInstance
-{
-	@synchronized(self) {
-		if (_sharedInstance == nil) {
-			[[self alloc] init];
-		}
-	}
-	return _sharedInstance;
-}
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-	@synchronized(self) {
-		if (_sharedInstance == nil) {
-			_sharedInstance = [super allocWithZone:zone];
-		}
-	}
-	return _sharedInstance;
-}
-
-- (id)copyWithZone:(NSZone *)data
-{
-	return self;
-}
-
-- (id)retain
-{
-	return self;
-}
-
-- (NSUInteger)retainCount
-{
-	return NSUIntegerMax;
-}
-
-- (oneway void)release
-{
-}
-
-- (id)autorelease
-{
-	return self;
 }
 
 

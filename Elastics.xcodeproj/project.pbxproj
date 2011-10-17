@@ -119,8 +119,6 @@
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
 		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
 		C32C28C912C0C09200F2C136 /* Elastics.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Elastics.xcconfig; sourceTree = "<group>"; };
-		C32C28E712C0C2F500F2C136 /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBDebug.h; sourceTree = "<group>"; };
-		C32C28E812C0C2F500F2C136 /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBMacros.h; sourceTree = "<group>"; };
 		C32C290A12C0C60900F2C136 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSConstants.h; sourceTree = "<group>"; };
 		C32C290B12C0C60900F2C136 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSConstants.m; sourceTree = "<group>"; };
 		C32C290C12C0C60900F2C136 /* AWSRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSRequest.h; sourceTree = "<group>"; };
@@ -224,11 +222,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */,
-				C32C30FA12C20F2F00F2C136 /* QuartzCore.framework in Frameworks */,
 				C379FD6612D89BB800D055EF /* Security.framework in Frameworks */,
-				C3D1DA8012DB33D8005E576A /* libcrypto.dylib in Frameworks */,
+				C32C30FA12C20F2F00F2C136 /* QuartzCore.framework in Frameworks */,
 				C3D1DA8412DB33E5005E576A /* IOKit.framework in Frameworks */,
+				C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */,
+				C3D1DA8012DB33D8005E576A /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,8 +289,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				C32C28E712C0C2F500F2C136 /* TBDebug.h */,
-				C32C28E812C0C2F500F2C136 /* TBMacros.h */,
 				C32C28C912C0C09200F2C136 /* Elastics.xcconfig */,
 			);
 			name = Elastics;
@@ -641,11 +637,8 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Dmitri Goutnik";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
@@ -658,10 +651,6 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Dmitri Goutnik";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -680,16 +669,15 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					TB_USE_SAMPLE_RECEIPT,
+					DEBUG,
 					TB_DEBUG,
+					TB_USE_SAMPLE_RECEIPT,
 				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
@@ -703,15 +691,51 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
+		};
+		C3511362144C26E4008F737C /* Beta */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C32C28C912C0C09200F2C136 /* Elastics.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					TB_DEBUG,
+					TB_SKIP_RECEIPT_VALIDATION,
+					TB_USE_EXPIRATION_DATE,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = $HOME/include;
+				VALID_ARCHS = "i386 x86_64";
+			};
+			name = Beta;
+		};
+		C3511363144C26E4008F737C /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Elastics;
+			};
+			name = Beta;
 		};
 		C3603AFB12DB93BA00B13219 /* Distribution */ = {
 			isa = XCBuildConfiguration;
@@ -722,12 +746,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Distribution;
@@ -735,10 +757,6 @@
 		C3603AFC12DB93BA00B13219 /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Dmitri Goutnik";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -754,6 +772,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
+				C3511363144C26E4008F737C /* Beta */,
 				C01FCF4C08A954540054247B /* Release */,
 				C3603AFC12DB93BA00B13219 /* Distribution */,
 			);
@@ -764,6 +783,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
+				C3511362144C26E4008F737C /* Beta */,
 				C01FCF5008A954540054247B /* Release */,
 				C3603AFB12DB93BA00B13219 /* Distribution */,
 			);

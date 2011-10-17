@@ -4,7 +4,6 @@
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+	#import "TBDebug.h"
+	#import "TBMacros.h"
 #endif
-
-#import "TBDebug.h"
-#import "TBMacros.h"

@@ -22,7 +22,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 
 @implementation Account
 
-@synthesize id = _id;
+@synthesize accountId = _accountId;
 @synthesize name = _name;
 @synthesize accessKeyID = _accessKeyID;
 @synthesize secretAccessKey = _secretAccessKey;
@@ -30,9 +30,9 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 @synthesize sshPrivateKeyFile = _sshPrivateKeyFile;
 @synthesize sshUserName = _sshUserName;
 
-+ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
++ (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
-	return [[[self alloc] initWithID:id
+	return [[[self alloc] initWithID:accountId
 								name:name
 						 accessKeyId:accessKeyId
 					 secretAccessKey:secretAccessKey
@@ -46,11 +46,11 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 	return [[[self alloc] initWithKeychainItemRef:itemRef] autorelease];
 }
 
-- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+- (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
     self = [super init];
     if (self) {
-		_id = id;
+		_accountId = accountId;
 		_name = [name copy];
 		_accessKeyID = [accessKeyId copy];
 		_secretAccessKey = [secretAccessKey copy];
@@ -112,9 +112,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 	[_sshPrivateKeyFile release];
 	[_sshUserName release];
 
-	if (_itemRef) {
-		CFRelease(_itemRef);
-	}
+	TBCFRelease(_itemRef);
 	
 	[super dealloc];
 }
@@ -176,7 +174,13 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 		NSString *mainAppBundlePath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:kElasticsBundleIdentifier];
 		
 		status = SecTrustedApplicationCreateFromPath(NULL, &preferencesApp);
+		if (status != noErr) {
+			// TODO: handle error
+		}
 		status = SecTrustedApplicationCreateFromPath([mainAppBundlePath UTF8String], &mainApp);
+		if (status != noErr) {
+			// TODO: handle error
+		}
 		trustedApplications = [NSArray arrayWithObjects:(id)preferencesApp, (id)mainApp, nil];
 		
 		// create an access object
@@ -190,7 +194,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 													  accessRef,
 													  &_itemRef);
 			CFRetain(_itemRef);
-			CFRelease(accessRef);
+			TBCFRelease(accessRef);
 			
 			if (status == noErr) {
 				// notify observers that Acoount info just changed
@@ -207,7 +211,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 		OSStatus status;
 
 		status = SecKeychainItemDelete(_itemRef);
-		CFRelease(_itemRef), _itemRef = NULL;
+		TBCFRelease(_itemRef);
 	
 		if (status == noErr) {
 			// notify observers that Acoount info just changed
@@ -315,7 +319,7 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 - (NSData *)_archiveGenericAttributes
 {
 	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-								[NSNumber numberWithInteger:_id], kAccountAttributeIDKey,
+								[NSNumber numberWithInteger:_accountId], kAccountAttributeIDKey,
 								_name, kAccountAttributeNameKey,
 								[NSNumber numberWithInteger:_defaultRegion], kAccountAttributeDefaultRegionKey,
 								_sshPrivateKeyFile, kAccountSshPrivateKeyFileKey,
@@ -329,7 +333,7 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 	if (data && [data length] > 0) {
 		NSDictionary *attributes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 
-		_id = [[attributes objectForKey:kAccountAttributeIDKey] integerValue];
+		_accountId = [[attributes objectForKey:kAccountAttributeIDKey] integerValue];
 		self.name = [attributes objectForKey:kAccountAttributeNameKey];
 		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
 		self.sshPrivateKeyFile = [attributes objectForKey:kAccountSshPrivateKeyFileKey];

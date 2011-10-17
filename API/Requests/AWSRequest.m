@@ -404,12 +404,13 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 				   nil]];
 	
 	// Prepare request
-	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 	[request setHTTPMethod:AWSApiDefaultMethod];
 	[request setCachePolicy:NSURLRequestReloadIgnoringCacheData];
 	
 	// Start connection thread
 	[NSThread detachNewThreadSelector:@selector(requestThread:) toTarget:self withObject:request];
+	[request release];
 	
 	// Notify delegate that request started
 	[_delegate requestDidStartLoading:self];

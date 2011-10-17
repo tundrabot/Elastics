@@ -14,7 +14,7 @@ extern NSString *const kAccountDidChangeNotification;
 
 @interface Account : NSObject {
 @private
-	NSInteger			_id;
+	NSInteger			_accountId;
 	NSString			*_name;
 	NSString			*_accessKeyID;
 	NSString			*_secretAccessKey;
@@ -24,16 +24,16 @@ extern NSString *const kAccountDidChangeNotification;
 	SecKeychainItemRef	_itemRef;
 }
 
-+ (id)accountWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
++ (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
-- (id)initWithID:(NSInteger)id name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
+- (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
 - (id)initWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
 - (void)save;
 - (void)remove;
 
-@property (nonatomic, readonly) NSInteger id;
+@property (nonatomic, readonly) NSInteger accountId;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *accessKeyID;
 @property (nonatomic, copy) NSString *secretAccessKey;

@@ -7,8 +7,5 @@
 //
 
 #import <Foundation/Foundation.h>
-#ifdef TB_USE_SAMPLE_RECEIPT
-#	import "Constants.h"
-#endif
 
 void validateReceiptAtPath(NSString *path);

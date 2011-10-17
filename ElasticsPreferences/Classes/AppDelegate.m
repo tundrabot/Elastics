@@ -418,7 +418,7 @@ enum {
 	[alert beginSheetModalForWindow:[NSApp mainWindow]
 					  modalDelegate:self
 					 didEndSelector:@selector(removeAccountAlertDidEnd:returnCode:contextInfo:)
-						contextInfo:nil];
+						contextInfo:NULL];
 }
 
 

@@ -12,6 +12,7 @@
 #import "Preferences.h"
 #import "AccountsManager.h"
 #import "ValidateReceipt.h"
+#import "Constants.h"
 
 #define INSTANCE_INFO_TABLE_WIDTH				220.f
 #define INSTANCE_INFO_LABEL_COLUMN_WIDTH		90.f
@@ -111,17 +112,9 @@ static NSImage *_jpImage;
 
 + (void)initialize
 {
-	NSString *receiptPath = nil;
+	TB_VALIDATE_EXPIRATION_DATE();
+	TB_VALIDATE_RECEIPT();
 	
-#ifdef TB_USE_SAMPLE_RECEIPT
-	receiptPath = kElasticsSampleReceiptPath;
-#else
-	receiptPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/_MASReceipt/receipt"];
-#endif
-	
-	validateReceiptAtPath(receiptPath);
-	NSLog(@"receipt validated successfully");
-
 	if (!_titleColor)               _titleColor = [[NSColor colorWithDeviceRed:(0.f/255.f) green:(112.f/255.f) blue:(180.f/255.f) alpha:1.f] retain];
 	if (!_taggedInstanceColor)      _taggedInstanceColor = [[NSColor blackColor] retain];
 	if (!_untaggedInstanceColor)	_untaggedInstanceColor = [[NSColor blackColor] retain];
@@ -230,7 +223,7 @@ static NSImage *_jpImage;
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(refreshCompleted:)
 												 name:kDataSourceRefreshCompletedNotification
-											   object:[DataSource sharedInstance]];
+											   object:[DataSource sharedDataSource]];
 
 	// subscribe to notifications from Preferences app
 	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
@@ -283,14 +276,15 @@ static NSImage *_jpImage;
 	[_refreshTimer invalidate];
 	TBRelease(_refreshTimer);
 	TBRelease(_accountsManager);
+
 	[super dealloc];
 }
 
 #pragma mark -
 #pragma mark Status menu
 
-- (void)resetMenu {
-	
+- (void)resetMenu
+{
 	[_statusMenu removeAllItems];
 	[_statusMenu addItem:[self progressMessageItemWithTitle:@"Querying instance info..."]];
 	[self addMenuActionItems];
@@ -311,8 +305,8 @@ static NSImage *_jpImage;
 		[_statusMenu addItem:[self titleItemWithTitle:@"AWS ACCOUNTS"]];
 		for (Account *account in [_accountsManager accounts]) {
 			NSMenuItem *item = [self actionItemWithLabel:account.title action:@selector(selectAccountAction:)];
-			[item setTag:account.id];
-			[item setState:account.id == currentAccountId ? NSOnState : NSOffState];
+			[item setTag:account.accountId];
+			[item setState:account.accountId == currentAccountId ? NSOnState : NSOffState];
 			[_statusMenu addItem:item];
 		}
 		
@@ -375,7 +369,6 @@ static NSImage *_jpImage;
 	[_statusMenu setMinimumWidth:0];
 
 	NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
-
 	if (error) {
 		// refresh finished with error
 		
@@ -398,7 +391,7 @@ static NSImage *_jpImage;
 	else {
 		// refresh finished successfully
 		
-		DataSource *dataSource = [DataSource sharedInstance];
+		DataSource *dataSource = [DataSource sharedDataSource];
 		NSUInteger instancesCount = [dataSource.instances count];
 
 		if (instancesCount > 0) {
@@ -693,20 +686,31 @@ static NSImage *_jpImage;
 
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance
 {
-	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
 	[menu setDelegate:self];
 	[menu setTitle:instance.instanceId];
 	[menu setShowsStateColumn:NO];
-
+ 
 	[self refreshSubmenu:menu forInstance:instance];
 
-	return menu;
+	return [menu autorelease];
 }
 
 - (void)refreshSubmenu:(NSMenu *)menu forInstance:(EC2Instance *)instance
 {
-	DataSource *dataSource = [DataSource sharedInstance];
+	DataSource *dataSource = [DataSource sharedDataSource];
 
+	// XXX: it seems that there's a bug in Cocoa menu system - when chart menu item gets removed,
+	// Cocoa will release submenu's window (NSCarbonMenuWindow) prematurely and the app will crash with zombie access.
+	// To work around this, find NSCarbonMenuWindow and send it retain/autorelease to keep it alive until next event loop.
+	for (NSInteger i = 0; i < [menu numberOfItems]; i++) {
+		NSView *view = [[menu itemAtIndex:i] view];
+		if (view) {
+			NSWindow *menuWindow = [view window];
+			[[menuWindow retain] autorelease];
+		}
+	}
+	
 	[menu removeAllItems];
 
 	[menu addItem:[self titleItemWithTitle:@"INSTANCE DETAILS"]];
@@ -760,12 +764,13 @@ static NSImage *_jpImage;
 //	[menu addItem:[self actionItemWithLabel:@"Terminate..." action:@selector(connectToInstanceAction:)]];
 }
 
+
 #pragma mark -
 #pragma mark DataSource operations and notifications
 
 - (void)refresh:(NSString *)instanceId
 {
-	DataSource *dataSource = [DataSource sharedInstance];
+	DataSource *dataSource = [DataSource sharedDataSource];
 	
 	if ([instanceId length] > 0)
 		[dataSource refreshInstance:instanceId];
@@ -775,13 +780,12 @@ static NSImage *_jpImage;
 
 - (void)refreshCompleted:(NSNotification *)notification
 {
-//	[_statusMenu insertItem:[self dummyItem] atIndex:0];
 	[_statusMenu addItem:[self dummyItem]];
 	
-	[self performSelector:@selector(refreshMenu:)
-			   withObject:notification
-			   afterDelay:0.
-				  inModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
+//	[self performSelector:@selector(refreshMenu:)
+//			   withObject:notification
+//			   afterDelay:0.
+//				  inModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 
 //	[self performSelectorOnMainThread:@selector(refreshMenu:)
 //						   withObject:notification
@@ -792,18 +796,20 @@ static NSImage *_jpImage;
 //						waitUntilDone:NO
 //								modes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 
-//	[self refreshMenu:notification];
+	[self refreshMenu:notification];
 }
 
 #pragma mark -
 #pragma mark Menu delegate
 
-//- (void)menuWillOpen:(NSMenu *)menu
 - (void)menuNeedsUpdate:(NSMenu *)menu
 {
 	NSString *instanceId = [menu title];
-	
 	if (![instanceId length]) {
+		// status menu
+		
+		[self disableRefreshTimer];
+
 		// refresh all instances only if "Refresh on menu open" is checked
 		if ([[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 			
@@ -814,13 +820,12 @@ static NSImage *_jpImage;
 				}
 			}
 			
-			// we're about to do manual refresh, disable background refresh timer
-			[self disableRefreshTimer];
 			[self refresh:nil];
 		}
 	}
 	else {
-		// refresh selected instance
+		// instance submenu
+		
 		[self refresh:instanceId];
 	}
 }
@@ -828,9 +833,10 @@ static NSImage *_jpImage;
 - (void)menuDidClose:(NSMenu *)menu
 {
 	NSString *instanceId = [menu title];
-	
 	if (![instanceId length]) {
-		// status menu closed, enable background refresh
+		// status menu
+		
+		// enable background refresh
 		[self enableRefreshTimer];
 	}
 }
@@ -866,7 +872,7 @@ static NSImage *_jpImage;
 	}
 	
 	if (account) {
-		[[NSUserDefaults standardUserDefaults] setAccountId:account.id];
+		[[NSUserDefaults standardUserDefaults] setAccountId:account.accountId];
 		[options setObject:account.accessKeyID forKey:kAWSAccessKeyIdOption];
 		[options setObject:account.secretAccessKey forKey:kAWSSecretAccessKeyOption];
 	}
@@ -902,14 +908,18 @@ static NSImage *_jpImage;
 	TBTrace("enabling background refresh");
 
 	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
-	
 	if (refreshInterval > 0) {
-		_refreshTimer = [NSTimer scheduledTimerWithTimeInterval:refreshInterval
+		
+		if (_refreshTimer) {
+			[_refreshTimer invalidate];
+			TBRelease(_refreshTimer);
+		}
+		
+		_refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:refreshInterval
 														 target:self
 													   selector:@selector(timerRefresh:)
 													   userInfo:nil
-														repeats:YES];
-		[_refreshTimer retain];
+														repeats:YES] retain];
 	}
 }
 
@@ -917,8 +927,10 @@ static NSImage *_jpImage;
 {
 	TBTrace("disabling background refresh");
 
-	[_refreshTimer invalidate];
-	TBRelease(_refreshTimer);
+	if (_refreshTimer) {
+		[_refreshTimer invalidate];
+		TBRelease(_refreshTimer);
+	}
 }
 
 - (void)timerRefresh:(NSTimer *)timer
@@ -1002,7 +1014,7 @@ static NSImage *_jpImage;
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
-	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
+	EC2Instance *instance = [[DataSource sharedDataSource] instance:instanceId];
 	NSInteger terminalApplication = [[NSUserDefaults standardUserDefaults] terminalApplication];
 	BOOL isOpenInTerminalTab = [[NSUserDefaults standardUserDefaults] isOpenInTerminalTab];
 	
@@ -1125,7 +1137,7 @@ static NSImage *_jpImage;
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSString *instanceId = [[menuItem menu] title];
-	EC2Instance *instance = [[DataSource sharedInstance] instance:instanceId];
+	EC2Instance *instance = [[DataSource sharedDataSource] instance:instanceId];
 	
 	if (instance) {
 		// NSInteger rdpApplication = [[NSUserDefaults standardUserDefaults] rdpApplication];

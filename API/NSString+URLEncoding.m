@@ -8,9 +8,7 @@
 
 #import "NSString+URLEncoding.h"
 
-
 static NSString *const kEscapes = @"!*'\"();:@&=+$,/?%#[]% ";
-
 
 @implementation NSString (URLEncoding)
 

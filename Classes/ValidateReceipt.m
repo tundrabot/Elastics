@@ -48,8 +48,7 @@ NSData* _appleRootCertData(void)
 	SecKeychainRef keychain = nil;
 	status = SecKeychainOpen("/System/Library/Keychains/SystemRootCertificates.keychain", &keychain);
 	if (status != noErr) {
-		if (keychain)
-			CFRelease(keychain);
+		TBCFRelease(keychain);
 		return nil;
 	}
 	
@@ -59,17 +58,14 @@ NSData* _appleRootCertData(void)
 //	// is on. Perhaps a bug in SecKeychainOpen where the keychain reference isn't actually retained
 //	// in GC?
 //#ifndef __OBJC_GC__
-	if (keychain)
-		CFRelease(keychain);
+	TBCFRelease(keychain);
 //#endif
 	
 	SecKeychainSearchRef searchRef = nil;
 	status = SecKeychainSearchCreateFromAttributes(searchList, kSecCertificateItemClass, NULL, &searchRef);
 	if (status != noErr) {
-		if (searchRef)
-			CFRelease(searchRef);
-		if (searchList)
-			CFRelease(searchList);
+		TBCFRelease(searchRef);
+		TBCFRelease(searchList);
 		return nil;
 	}
 	
@@ -97,27 +93,23 @@ NSData* _appleRootCertData(void)
 			
 			status = SecCertificateGetData((SecCertificateRef)itemRef, &certData);
 			if (status != noErr) {
-				if (itemRef)
-					CFRelease(itemRef);
-				[name release];
+				TBCFRelease(itemRef);
+				TBRelease(name);
 				break;
 			}
 			
 			resultData = [NSData dataWithBytes:certData.Data length:certData.Length];
 			
-			if (itemRef)
-				CFRelease(itemRef);
-			[name release];
+			TBCFRelease(itemRef);
+			TBRelease(name);
 			break;
 		}
 		
-		[name release];
+		TBRelease(name);
 	}
 
-	if (searchList)
-		CFRelease(searchList);
-	if (searchRef)
-		CFRelease(searchRef);
+	TBCFRelease(searchList);
+	TBCFRelease(searchRef);
 	
 	return resultData;
 }
@@ -347,8 +339,7 @@ CFDataRef _macAddress(void)
 		
 		kernResult = IORegistryEntryGetParentEntry(service, kIOServicePlane, &parentService);
 		if (kernResult == KERN_SUCCESS) {
-			if (macAddress)
-				CFRelease(macAddress);
+			TBCFRelease(macAddress);
 			
 			macAddress = IORegistryEntryCreateCFProperty(parentService, CFSTR("IOMACAddress"), kCFAllocatorDefault, 0);
 			IOObjectRelease(parentService);
@@ -357,11 +348,12 @@ CFDataRef _macAddress(void)
 			NSLog(@"IORegistryEntryGetParentEntry returned %d", kernResult);
 		}
 		
+		IOObjectRelease(iterator);
 		IOObjectRelease(service);
 	}
 	
 	if (macAddress)
-		CFMakeCollectable(macAddress);
+		[NSMakeCollectable(macAddress) autorelease];
 	
 	return macAddress;
 }
@@ -374,7 +366,7 @@ void validateReceiptAtPath(NSString *path)
 
 	NSDictionary *receipt = _dictionaryWithAppStoreReceipt(path);
 	if (!receipt) {
-		[pool drain];
+		[pool release];
 		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
 	
@@ -404,14 +396,9 @@ void validateReceiptAtPath(NSString *path)
 
 	guidData = (NSData *)_macAddress();
 	if (!guidData) {
-		[pool drain];
+		[pool release];
 		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
-	
-//	if ([NSGarbageCollector defaultCollector])
-//		[[NSGarbageCollector defaultCollector] enableCollectorForPointer:guidData];
-//	else 
-//		[guidData autorelease];
 	
 	// double-check that hardcoded values match
 	if (![bundleVersion isEqualToString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]) {
@@ -436,10 +423,9 @@ void validateReceiptAtPath(NSString *path)
 		|| [bundleVersion isEqualToString:[receipt objectForKey:kReceiptVersion]] == NO
 		|| [hash isEqualToData:[receipt objectForKey:kReceiptHash]] == NO)
 	{
-		[pool drain];
+		[pool release];
 		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
 	
-	[pool drain];
-//	exit(VALIDATION_FAIL_EXIT_STATUS);
+	[pool release];
 }
