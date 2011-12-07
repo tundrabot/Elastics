@@ -326,8 +326,14 @@ static NSImage *_jpImage;
 		
 		item = [self actionItemWithLabel:@"US West (North California)" action:@selector(selectRegionAction:)];
 		[item setImage:_usImage];
-		[item setTag:kPreferencesAWSUSWestRegion];
-		[item setState:kPreferencesAWSUSWestRegion == currentRegion ? NSOnState : NSOffState];
+		[item setTag:kPreferencesAWSUSWestNorthCaliforniaRegion];
+		[item setState:kPreferencesAWSUSWestNorthCaliforniaRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+		
+		item = [self actionItemWithLabel:@"US West (Oregon)" action:@selector(selectRegionAction:)];
+		[item setImage:_usImage];
+		[item setTag:kPreferencesAWSUSWestOregonRegion];
+		[item setState:kPreferencesAWSUSWestOregonRegion == currentRegion ? NSOnState : NSOffState];
 		[_statusMenu addItem:item];
 		
 		item = [self actionItemWithLabel:@"EU West (Ireland)" action:@selector(selectRegionAction:)];
@@ -402,7 +408,7 @@ static NSImage *_jpImage;
 			if ([instanceId length] > 0) {
 				// was refresh for selected instance
 
-				TBTrace("%@", instanceId);
+				TBTrace(@"%@", instanceId);
 				
 				EC2Instance *instance = [dataSource instance:instanceId];
 
@@ -419,7 +425,7 @@ static NSImage *_jpImage;
 			else {
 				// was refresh for all instances
 
-				TBTrace("all instances");
+				TBTrace(@"all instances");
 
 				[_statusMenu removeAllItems];
 
@@ -671,7 +677,7 @@ static NSImage *_jpImage;
 // to force menu redrawing
 - (NSMenuItem *)dummyItem
 {
-	NSView *dummyView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 0.01)] autorelease];
+	NSView *dummyView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 0.01f)] autorelease];
 	
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
@@ -846,7 +852,7 @@ static NSImage *_jpImage;
 
 - (void)loadPreferences
 {
-	TBTrace("reloading preferences");
+	TBTrace(@"reloading preferences");
 
 	[[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -894,7 +900,7 @@ static NSImage *_jpImage;
 
 - (void)preferencesDidChange:(NSNotification *)notification
 {
-	TBTrace("%@", notification);
+	TBTrace(@"%@", notification);
 
 	[self loadPreferences];
 	[self refresh:nil];
@@ -905,7 +911,7 @@ static NSImage *_jpImage;
 
 - (void)enableRefreshTimer
 {
-	TBTrace("enabling background refresh");
+	TBTrace(@"enabling background refresh");
 
 	NSTimeInterval refreshInterval = [[NSUserDefaults standardUserDefaults] refreshInterval];
 	if (refreshInterval > 0) {
@@ -925,7 +931,7 @@ static NSImage *_jpImage;
 
 - (void)disableRefreshTimer
 {
-	TBTrace("disabling background refresh");
+	TBTrace(@"disabling background refresh");
 
 	if (_refreshTimer) {
 		[_refreshTimer invalidate];
@@ -943,7 +949,7 @@ static NSImage *_jpImage;
 
 - (void)workspaceSessionDidBecomeActive:(NSNotification *)notification
 {
-	TBTrace("performing refresh and enabling background refresh timer");
+	TBTrace(@"performing refresh and enabling background refresh timer");
 	
 	[self refresh:nil];
 	[self enableRefreshTimer];
@@ -951,14 +957,14 @@ static NSImage *_jpImage;
 
 - (void)workspaceSessionDidResignActive:(NSNotification *)notification
 {
-	TBTrace("disabling background refresh timer");
+	TBTrace(@"disabling background refresh timer");
 	
 	[self disableRefreshTimer];
 }
 
 - (void)workspaceDidWake:(NSNotification *)notification
 {
-	TBTrace("scheduling refresh and enabling background refresh timer");
+	TBTrace(@"scheduling refresh and enabling background refresh timer");
 
 	[self enableRefreshTimer];
 	[self performSelector:@selector(refresh:) withObject:nil afterDelay:15.0];
@@ -1123,7 +1129,7 @@ static NSImage *_jpImage;
 				break;
 		}
 		
-		TBTrace("%@", cmd);
+		TBTrace(@"%@", cmd);
 
 		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
 		NSDictionary *errorInfo = nil;
@@ -1156,7 +1162,7 @@ static NSImage *_jpImage;
 			   @"end tell\n",
 			   instance.ipAddress];
 
-		TBTrace("%@", cmd);
+		TBTrace(@"%@", cmd);
 		
 		NSAppleScript *appleScript = [[[NSAppleScript alloc] initWithSource:cmd] autorelease];
 		NSDictionary *errorInfo = nil;

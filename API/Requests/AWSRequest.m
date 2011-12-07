@@ -11,7 +11,7 @@
 #import "NSString+URLEncoding.h"
 
 // Defaults
-#define                AWSApiDefaultRegion		kAWSUSWestRegion
+#define                AWSApiDefaultRegion		kAWSUSEastRegion
 static NSString *const AWSApiDefaultPath		= @"/";
 static NSString *const AWSApiDefaultMethod		= @"GET";
 static NSString *const AWSApiEC2Version			= @"2010-08-31";
@@ -27,7 +27,8 @@ NSString *const kAWSUseSSLOption				= @"AWSUseSSL";
 
 // Human region titles
 static NSString *const kAWSUSEastRegionTitle				= @"US East (Virginia)";
-static NSString *const kAWSUSWestRegionTitle				= @"US West (North California)";
+static NSString *const kAWSUSWestNorthCaliforniaRegionTitle	= @"US West (North California)";
+static NSString *const kAWSUSWestOregonRegionTitle			= @"US West (Oregon)";
 static NSString *const kAWSEURegionTitle					= @"EU West (Ireland)";
 static NSString *const kAWSAsiaPacificSingaporeRegionTitle	= @"Asia Pacific (Singapore)";
 static NSString *const kAWSAsiaPacificJapanRegionTitle		= @"Asia Pacific (Japan)";
@@ -93,8 +94,10 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 {
 	if ([region isEqualToString:kAWSUSEastRegion])
 		return kAWSUSEastRegionTitle;
-	else if ([region isEqualToString:kAWSUSWestRegion])
-		return kAWSUSWestRegionTitle;
+	else if ([region isEqualToString:kAWSUSWestNorthCaliforniaRegion])
+		return kAWSUSWestNorthCaliforniaRegionTitle;
+	else if ([region isEqualToString:kAWSUSWestOregonRegion])
+		return kAWSUSWestOregonRegionTitle;
 	else if ([region isEqualToString:kAWSEURegion])
 		return kAWSEURegionTitle;
 	else if ([region isEqualToString:kAWSAsiaPacificSingaporeRegion])
@@ -546,7 +549,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (void)currentConnectionDidFailWithError:(NSError *)error
 {
-	TBLog("%@", error);
+	TBLog(@"%@", error);
 	
 	self.completedAt = [NSDate date];
 

@@ -8,7 +8,8 @@
 
 // Regions
 extern NSString *const kAWSUSEastRegion;
-extern NSString *const kAWSUSWestRegion;
+extern NSString *const kAWSUSWestNorthCaliforniaRegion;
+extern NSString *const kAWSUSWestOregonRegion;
 extern NSString *const kAWSEURegion;
 extern NSString *const kAWSAsiaPacificSingaporeRegion;
 extern NSString *const kAWSAsiaPacificJapanRegion;

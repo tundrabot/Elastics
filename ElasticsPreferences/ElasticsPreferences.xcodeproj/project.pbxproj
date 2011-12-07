@@ -90,7 +90,6 @@
 				C34FAA97143C4C7C00F607DD /* Constants.m */,
 				C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */,
 				C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */,
-				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.m */,
 				C3F1A65312C7A77D001AB554 /* Preferences.h */,
@@ -99,6 +98,7 @@
 				C379FAFF12D881B600D055EF /* AccountsManager.m */,
 				C31FFAF313DECA2300F5D20B /* Account.h */,
 				C31FFAF413DECA2300F5D20B /* Account.m */,
+				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -331,6 +331,7 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -342,6 +343,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
@@ -353,12 +355,14 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
@@ -370,6 +374,7 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -381,6 +386,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
@@ -407,12 +413,14 @@
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";

@@ -87,8 +87,10 @@ static NSDictionary *_defaults;
 	switch ([self integerForKey:kPreferencesAWSRegionKey]) {
 		case kPreferencesAWSUSEastRegion:
 			return kAWSUSEastRegion;
-		case kPreferencesAWSUSWestRegion:
-			return kAWSUSWestRegion;
+		case kPreferencesAWSUSWestNorthCaliforniaRegion:
+			return kAWSUSWestNorthCaliforniaRegion;
+		case kPreferencesAWSUSWestOregonRegion:
+			return kAWSUSWestOregonRegion;
 		case kPreferencesAWSEURegion:
 			return kAWSEURegion;
 		case kPreferencesAWSAsiaPacificSingaporeRegion:

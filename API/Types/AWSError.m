@@ -42,7 +42,7 @@ NSString *const kAWSErrorMessageKey = @"AWSErrorMessage";
 			else if ([elementName isEqualToString:@"Message"])
 				self.message = [TBXML textForElement:element];
 			else
-				TBTrace("ignoring element %@", elementName);
+				TBTrace(@"ignoring element %@", elementName);
 			
 			element = element->nextSibling;
 		}

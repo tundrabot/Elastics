@@ -20,7 +20,7 @@
 		if ([elementName isEqualToString:@"Error"])
 			_errors = [[NSArray arrayWithObject:[AWSError typeFromXMLElement:element parent:self]] retain];
 		else
-			TBTrace("ignoring element %@", elementName);
+			TBTrace(@"ignoring element %@", elementName);
 		
 		element = element->nextSibling;
 	}

@@ -53,7 +53,7 @@
 		if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"member"] || [elementName isEqualToString:@"Error"])
 			[result addObject:[class typeFromXMLElement:element parent:self]];
 		else
-			TBTrace("ignoring element %@", elementName);
+			TBTrace(@"ignoring element %@", elementName);
 		
 		element = element->nextSibling;
 	}

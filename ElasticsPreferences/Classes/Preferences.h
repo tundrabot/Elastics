@@ -15,7 +15,8 @@ extern NSString *const kPreferencesShouldTerminateNotification;
 // AWS regions as stored in prefs and selected in combo
 enum {
 	kPreferencesAWSUSEastRegion,
-	kPreferencesAWSUSWestRegion,
+	kPreferencesAWSUSWestNorthCaliforniaRegion,
+	kPreferencesAWSUSWestOregonRegion,
 	kPreferencesAWSEURegion,
 	kPreferencesAWSAsiaPacificSingaporeRegion,
 	kPreferencesAWSAsiaPacificJapanRegion,

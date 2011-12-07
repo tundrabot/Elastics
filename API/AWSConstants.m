@@ -9,11 +9,12 @@
 #import "AWSConstants.h"
 
 // Regions
-NSString *const kAWSUSEastRegion				= @"amazonaws.com";
-NSString *const kAWSUSWestRegion				= @"us-west-1.amazonaws.com";
-NSString *const kAWSEURegion					= @"eu-west-1.amazonaws.com";
-NSString *const kAWSAsiaPacificSingaporeRegion	= @"ap-southeast-1.amazonaws.com";
-NSString *const kAWSAsiaPacificJapanRegion		= @"ap-northeast-1.amazonaws.com";
+NSString *const kAWSUSEastRegion                = @"amazonaws.com";
+NSString *const kAWSUSWestNorthCaliforniaRegion = @"us-west-1.amazonaws.com";
+NSString *const kAWSUSWestOregonRegion          = @"us-west-2.amazonaws.com";
+NSString *const kAWSEURegion                    = @"eu-west-1.amazonaws.com";
+NSString *const kAWSAsiaPacificSingaporeRegion  = @"ap-southeast-1.amazonaws.com";
+NSString *const kAWSAsiaPacificJapanRegion      = @"ap-northeast-1.amazonaws.com";
 
 // Services
 NSString *const kAWSEC2Service				= @"ec2";
