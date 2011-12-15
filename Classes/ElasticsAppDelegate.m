@@ -354,6 +354,12 @@ static NSImage *_jpImage;
 		[item setState:kPreferencesAWSAsiaPacificJapanRegion == currentRegion ? NSOnState : NSOffState];
 		[_statusMenu addItem:item];
 
+		item = [self actionItemWithLabel:@"South America (Sao Paulo)" action:@selector(selectRegionAction:)];
+		[item setImage:_jpImage];
+		[item setTag:kPreferencesAWSSouthAmericaSaoPauloRegion];
+		[item setState:kPreferencesAWSSouthAmericaSaoPauloRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+        
 		// Refresh
 		
 		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {

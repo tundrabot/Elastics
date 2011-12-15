@@ -20,6 +20,7 @@ enum {
 	kPreferencesAWSEURegion,
 	kPreferencesAWSAsiaPacificSingaporeRegion,
 	kPreferencesAWSAsiaPacificJapanRegion,
+	kPreferencesAWSSouthAmericaSaoPauloRegion,
 };
 
 enum {

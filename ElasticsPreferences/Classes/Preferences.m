@@ -97,6 +97,8 @@ static NSDictionary *_defaults;
 			return kAWSAsiaPacificSingaporeRegion;
 		case kPreferencesAWSAsiaPacificJapanRegion:
 			return kAWSAsiaPacificJapanRegion;
+		case kPreferencesAWSSouthAmericaSaoPauloRegion:
+			return kAWSSouthAmericaSaoPauloRegion;
 		default:
 			return nil;
 	}

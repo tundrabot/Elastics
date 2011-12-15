@@ -32,6 +32,7 @@ static NSString *const kAWSUSWestOregonRegionTitle			= @"US West (Oregon)";
 static NSString *const kAWSEURegionTitle					= @"EU West (Ireland)";
 static NSString *const kAWSAsiaPacificSingaporeRegionTitle	= @"Asia Pacific (Singapore)";
 static NSString *const kAWSAsiaPacificJapanRegionTitle		= @"Asia Pacific (Japan)";
+static NSString *const kAWSSouthAmericaSaoPauloRegionTitle	= @"South America (Sao Paulo)";
 
 // Static variables
 static NSMutableDictionary *_awsRequestDefaultOptions;
@@ -104,6 +105,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		return kAWSAsiaPacificSingaporeRegionTitle;
 	else if ([region isEqualToString:kAWSAsiaPacificJapanRegion])
 		return kAWSAsiaPacificJapanRegionTitle;
+	else if ([region isEqualToString:kAWSSouthAmericaSaoPauloRegion])
+		return kAWSSouthAmericaSaoPauloRegionTitle;
 	else
 		return nil;
 }
@@ -516,7 +519,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 #ifdef TB_DEBUG
 	{
 //		NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
-		//TBTrace(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
+//		//TBTrace(@"%@", [responseString substringToIndex:MIN([responseString length], 4096)]);
 //		TBTrace(@"%@", responseString);
 //		[responseString release];
 	}
