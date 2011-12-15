@@ -1013,7 +1013,8 @@ static NSImage *_jpImage;
 {
 	NSMenuItem *menuItem = (NSMenuItem *)sender;
 	NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
-	[pasteBoard setString:[menuItem representedObject] forType:NSStringPboardType];
+    [pasteBoard clearContents];
+	[pasteBoard setString:[menuItem representedObject] forType:NSPasteboardTypeString];
 }
 
 - (void)connectToInstanceWithSshAction:(id)sender
