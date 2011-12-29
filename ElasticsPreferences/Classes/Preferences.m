@@ -10,26 +10,25 @@
 #import "AWSConstants.h"
 
 // Distributed notification sent when preferences are changed
-NSString *const kPreferencesDidChangeNotification		= @"com.tundrabot.Elastics.PreferencesDidChangeNotification";
+NSString *const kPreferencesDidChangeNotification       = @"com.tundrabot.Elastics.PreferencesDidChangeNotification";
 
 // Distributed notification sent when main application terminates
-NSString *const kPreferencesShouldTerminateNotification	= @"com.tundrabot.Elastics.PreferencesShouldTerminateNotification";
+NSString *const kPreferencesShouldTerminateNotification = @"com.tundrabot.Elastics.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
-NSString *const kPreferencesAccountIdKey				= @"accountId";
-NSString *const kPreferencesAWSRegionKey				= @"awsRegion";
-NSString *const kPreferencesRefreshIntervalKey			= @"refreshInterval";
-NSString *const kPreferencesRefreshOnMenuOpenKey		= @"refreshOnMenuOpen";
-NSString *const kPreferencesSshPrivateKeyFileKey		= @"sshPrivateKeyFile";
-NSString *const kPreferencesSshUserNameKey				= @"sshUserName";
-NSString *const kPreferencesTerminalApplicationKey		= @"terminalApplication";
-NSString *const kPreferencesOpenInTerminalTabKey		= @"openInTerminalTab";
-NSString *const kPreferencesRdpApplicationKey			= @"rdpApplication";
-NSString *const kPreferencesSortInstancesByTitleKey		= @"sortInstancesByTitle";
+static NSString *const kPreferencesAccountIdKey                 = @"accountId";
+static NSString *const kPreferencesAWSRegionKey                 = @"awsRegion";
+static NSString *const kPreferencesRefreshIntervalKey           = @"refreshInterval";
+static NSString *const kPreferencesRefreshOnMenuOpenKey         = @"refreshOnMenuOpen";
+static NSString *const kPreferencesSortInstancesByTitleKey      = @"sortInstancesByTitle";
+static NSString *const kPreferencesHideTerminatedInstancesKey	= @"hideTerminatedInstances";
+static NSString *const kPreferencesSshPrivateKeyFileKey         = @"sshPrivateKeyFile";
+static NSString *const kPreferencesSshUserNameKey               = @"sshUserName";
+static NSString *const kPreferencesTerminalApplicationKey       = @"terminalApplication";
+static NSString *const kPreferencesOpenInTerminalTabKey         = @"openInTerminalTab";
+static NSString *const kPreferencesRdpApplicationKey            = @"rdpApplication";
 
-NSString *const kPreferencesFirstLaunchKey				= @"firstLaunch";
-
-static NSDictionary *_defaults;
+static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch";
 
 @implementation NSUserDefaults (ElasticsPreferences)
 
@@ -42,24 +41,21 @@ static NSDictionary *_defaults;
 
 - (NSDictionary *)defaultElasticsPreferences
 {
-	if (!_defaults) {
-		_defaults = [[NSDictionary alloc]
+    static NSDictionary *s_defaults;
+    
+	if (!s_defaults) {
+		s_defaults = [[NSDictionary alloc]
 					 initWithObjectsAndKeys:
-						// region is US East
 						[NSNumber numberWithInt:kPreferencesAWSUSEastRegion], kPreferencesAWSRegionKey,
-						// refresh every 3 minutes
 						[NSNumber numberWithFloat:180], kPreferencesRefreshIntervalKey,
-						// refresh on menu open
 						[NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
-						// sort instances alphabetically
 						[NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
-						// SSH user name
+                        [NSNumber numberWithBool:NO], kPreferencesHideTerminatedInstancesKey,
 						@"root", kPreferencesSshUserNameKey,
-						// first launch
 						[NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
 						nil];
 	}
-	return _defaults;
+	return s_defaults;
 }
 
 - (NSInteger)accountId
@@ -140,6 +136,26 @@ static NSDictionary *_defaults;
 	[self setBool:value forKey:kPreferencesRefreshOnMenuOpenKey];
 }
 
+- (BOOL)isSortInstancesByTitle
+{
+	return [self boolForKey:kPreferencesSortInstancesByTitleKey];
+}
+
+- (void)setSortInstancesByTitle:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesSortInstancesByTitleKey];
+}
+
+- (BOOL)isHideTerminatedInstances
+{
+	return [self boolForKey:kPreferencesHideTerminatedInstancesKey];
+}
+
+- (void)setHideTerminatedInstances:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesHideTerminatedInstancesKey];
+}
+
 - (NSString *)sshPrivateKeyFile
 {
 	return [self stringForKey:kPreferencesSshPrivateKeyFileKey];
@@ -188,16 +204,6 @@ static NSDictionary *_defaults;
 - (void)setRdpApplication:(NSInteger)value
 {
 	[self setInteger:value forKey:kPreferencesRdpApplicationKey];
-}
-
-- (BOOL)isSortInstancesByTitle
-{
-	return [self boolForKey:kPreferencesSortInstancesByTitleKey];
-}
-
-- (void)setSortInstancesByTitle:(BOOL)value
-{
-	[self setBool:value forKey:kPreferencesSortInstancesByTitleKey];
 }
 
 - (BOOL)isFirstLaunch

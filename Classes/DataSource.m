@@ -267,9 +267,7 @@ TB_SINGLETON(DataSource);
 	[finishedRequest release];
 }
 
-
-#pragma mark -
-#pragma mark Data accessors and helpers
+#pragma mark - Data accessors and helpers
 
 - (NSArray *)instances
 {
@@ -279,6 +277,20 @@ TB_SINGLETON(DataSource);
 - (NSArray *)sortedInstances
 {
 	return [_instancesRequest.response.instancesSet sortedArrayUsingSelector:@selector(title)];
+}
+
+- (NSArray *)runningInstances
+{
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        EC2Instance *instance = (EC2Instance *)evaluatedObject;
+        return (instance.instanceState.code != EC2_INSTANCE_STATE_TERMINATED && instance.instanceState.code != EC2_INSTANCE_STATE_STOPPED);
+    }];
+    return [[self instances] filteredArrayUsingPredicate:predicate];
+}
+
+- (NSArray *)sortedRunningInstances
+{
+    return [[self runningInstances] sortedArrayUsingSelector:@selector(title)];
 }
 
 - (EC2Instance *)instance:(NSString *)instanceId

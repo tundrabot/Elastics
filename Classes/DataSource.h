@@ -40,7 +40,9 @@ extern NSString *const kDataSourceErrorInfoKey;
 - (void)refreshInstance:(NSString *)instanceId;		// refresh instances info and monitoring stats for selected instance
 
 - (NSArray *)instances;								// all instances (array of EC2Instance)
-- (NSArray *)sortedInstances;						// all instances (array of EC2Instance), sorted by title
+- (NSArray *)sortedInstances;                       // all instances, sorted by title
+- (NSArray *)runningInstances;                      // all instances except terminated
+- (NSArray *)sortedRunningInstances;                // all instances except terminated, sorted by title
 - (EC2Instance *)instance:(NSString *)instanceId;	// instance with given id
 
 //- (NSArray *)statisticsForMetric:(NSString *)metric;										// composite statistics for metric (array of MonitoringDatapoint)

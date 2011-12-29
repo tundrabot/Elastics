@@ -404,7 +404,18 @@ static NSImage *_jpImage;
 		// refresh finished successfully
 		
 		DataSource *dataSource = [DataSource sharedDataSource];
-		NSUInteger instancesCount = [dataSource.instances count];
+        NSArray *instances = nil;
+        
+        BOOL hideTermonatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
+        BOOL sortInstancesByTitle = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle];
+        if (hideTermonatedInstances) {
+            instances = sortInstancesByTitle ? dataSource.sortedRunningInstances : dataSource.runningInstances;
+        }
+        else {
+            instances = sortInstancesByTitle ? dataSource.sortedInstances : dataSource.instances;
+        }
+
+		NSUInteger instancesCount = [instances count];
 
 		if (instancesCount > 0) {
 			// there are some instances
@@ -434,10 +445,8 @@ static NSImage *_jpImage;
 				TBTrace(@"all instances");
 
 				[_statusMenu removeAllItems];
-
 				[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
-				//for (EC2Instance *instance in dataSource.instances) {
-				NSArray *instances = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle] ? dataSource.sortedInstances : dataSource.instances;
+				
 				for (EC2Instance *instance in instances) {
 					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
 				}

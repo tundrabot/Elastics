@@ -23,11 +23,13 @@ enum {
 	kPreferencesAWSSouthAmericaSaoPauloRegion,
 };
 
+// Terminal application types
 enum {
 	kPreferencesTerminalApplicationTerminal,
 	kPreferencesTerminalApplicationiTerm,
 };
 
+// RDP application types
 enum {
 	kPreferencesRdpApplicationCoRD,
 };
@@ -36,17 +38,26 @@ enum {
 
 - (NSDictionary *)defaultElasticsPreferences;
 
+// Selected account ID
 @property (nonatomic, assign) NSInteger accountId;
+
+// Selected region
 @property (nonatomic, assign) NSInteger region;				// from the enum above
 @property (nonatomic, readonly) NSString *awsRegion;		// translated as expected by AWS API
+
 @property (nonatomic, assign) NSInteger refreshInterval;
 @property (nonatomic, assign, getter=isRefreshOnMenuOpen) BOOL refreshOnMenuOpen;
+
+@property (nonatomic, assign, getter=isSortInstancesByTitle) BOOL sortInstancesByTitle;
+@property (nonatomic, assign, getter=isHideTerminatedInstances) BOOL hideTerminatedInstances;
+
 @property (nonatomic, assign) NSString *sshPrivateKeyFile;
 @property (nonatomic, assign) NSString *sshUserName;
+
 @property (nonatomic, assign) NSInteger terminalApplication;
 @property (nonatomic, assign, getter=isOpenInTerminalTab) BOOL openInTerminalTab;
+
 @property (nonatomic, assign) NSInteger rdpApplication;
-@property (nonatomic, assign, getter=isSortInstancesByTitle) BOOL sortInstancesByTitle;
 
 @property (nonatomic, assign, getter=isFirstLaunch) BOOL firstLaunch;
 
