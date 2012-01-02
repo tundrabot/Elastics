@@ -297,15 +297,18 @@ enum {
 - (void)accountSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
 	[_accountPanel orderOut:self];
-	
+    
 	if (returnCode == ACCOUNT_SHEET_RETURNCODE_SAVE) {
+
+        OSStatus status = noErr;
+        
 		switch (_accountActionType) {
 			case kAccountActionAddAccount: {
-				[_accountsManager addAccountWithName:[self _accountPanelNameValue]
-										 accessKeyId:[self _accountPanelAccessKeyIDValue]
-									 secretAccessKey:[self _accountPanelSecretAccessKeyValue]
-								   sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
-										 sshUserName:[self _accountPanelSshUserNameValue]];
+				status = [_accountsManager addAccountWithName:[self _accountPanelNameValue]
+                                                  accessKeyId:[self _accountPanelAccessKeyIDValue]
+                                              secretAccessKey:[self _accountPanelSecretAccessKeyValue]
+                                            sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
+                                                  sshUserName:[self _accountPanelSshUserNameValue]];
 				break;
 			}
 				
@@ -313,17 +316,53 @@ enum {
 				NSUInteger selectionIndex = [_accountsController selectionIndex];
 
 				if (selectionIndex != NSNotFound) {
-					Account *account = [[_accountsManager accounts] objectAtIndex:selectionIndex];
-					account.name = [self _accountPanelNameValue];
-					account.accessKeyID = [self _accountPanelAccessKeyIDValue];
-					account.secretAccessKey = [self _accountPanelSecretAccessKeyValue];
-					account.sshPrivateKeyFile = [self _accountPanelSshPrivateKeyFileValue];
-					account.sshUserName = [self _accountPanelSshUserNameValue];
-					[account save];
+//					Account *account = [[_accountsManager accounts] objectAtIndex:selectionIndex];
+//
+//					account.name = [self _accountPanelNameValue];
+//					account.accessKeyID = [self _accountPanelAccessKeyIDValue];
+//					account.secretAccessKey = [self _accountPanelSecretAccessKeyValue];
+//					account.sshPrivateKeyFile = [self _accountPanelSshPrivateKeyFileValue];
+//					account.sshUserName = [self _accountPanelSshUserNameValue];
+//					
+//                    status = [account save];
+                    
+                    status = [_accountsManager updateAccountAtIndex:selectionIndex
+                                                           withName:[self _accountPanelNameValue]
+                                                        accessKeyId:[self _accountPanelAccessKeyIDValue]
+                                                    secretAccessKey:[self _accountPanelSecretAccessKeyValue]
+                                                  sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
+                                                        sshUserName:[self _accountPanelSshUserNameValue]];
 				}
 				break;
 			}
 		}
+        
+        if (status != noErr) {
+            NSString *errorTitle = nil;
+            NSString *errorText = nil;
+            
+            switch (_accountActionType) {
+                case kAccountActionAddAccount:
+                    errorTitle = @"Error adding account";
+                    break;
+                case kAccountActionEditAccount:
+                    errorTitle = @"Error editing account";
+                    break;
+            }
+            
+            errorText = [NSMakeCollectable(SecCopyErrorMessageString(status, NULL)) autorelease];
+
+            NSAlert *alert = [NSAlert alertWithMessageText:errorTitle
+                                             defaultButton:@"Dismiss"
+                                           alternateButton:nil
+                                               otherButton:nil
+                                 informativeTextWithFormat:errorText];
+            
+            [alert beginSheetModalForWindow:[NSApp mainWindow]
+                              modalDelegate:nil
+                             didEndSelector:nil
+                                contextInfo:NULL];
+        }
 	}
 }
 

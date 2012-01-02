@@ -18,7 +18,7 @@ extern NSString *const kAccountDidChangeNotification;
 	NSString			*_name;
 	NSString			*_accessKeyID;
 	NSString			*_secretAccessKey;
-	NSInteger			_defaultRegion;
+    NSInteger           _defaultRegion;
 	NSString			*_sshPrivateKeyFile;
 	NSString			*_sshUserName;
 	SecKeychainItemRef	_itemRef;
@@ -30,8 +30,8 @@ extern NSString *const kAccountDidChangeNotification;
 - (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName;
 - (id)initWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
-- (void)save;
-- (void)remove;
+- (OSStatus)save;
+- (OSStatus)remove;
 
 @property (nonatomic, readonly) NSInteger accountId;
 @property (nonatomic, copy) NSString *name;
@@ -40,6 +40,7 @@ extern NSString *const kAccountDidChangeNotification;
 @property (nonatomic, assign) NSInteger defaultRegion;
 @property (nonatomic, copy) NSString *sshPrivateKeyFile;
 @property (nonatomic, copy) NSString *sshUserName;
+@property (nonatomic, readonly) SecKeychainItemRef itemRef;
 
 @property (nonatomic, readonly) NSString *title;
 

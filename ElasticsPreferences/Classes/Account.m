@@ -9,16 +9,13 @@
 #import "Account.h"
 #import "Constants.h"
 
-
 NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification";
-
 
 @interface Account ()
 - (NSString *)_keychainItemTitle;
 - (NSData *)_archiveGenericAttributes;
 - (void)_unarchiveGenericAttributes:(NSData *)data;
 @end
-
 
 @implementation Account
 
@@ -29,6 +26,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 @synthesize defaultRegion = _defaultRegion;
 @synthesize sshPrivateKeyFile = _sshPrivateKeyFile;
 @synthesize sshUserName = _sshUserName;
+@synthesize itemRef = _itemRef;
 
 + (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
@@ -117,15 +115,13 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 	[super dealloc];
 }
 
+#pragma mark - Account operations
 
-#pragma mark -
-#pragma mark Account operations
-
-- (void)save
+- (OSStatus)save
 {
 	if (![_accessKeyID length] || ![_secretAccessKey length]) {
 		// we cannot save keychain item with blank account or password
-		return;
+		return errSecParam;
 	}
 
     const char *serviceNameUTF8		= [kElasticsSecServiceName UTF8String];
@@ -156,10 +152,11 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 														&attributes,
 														(UInt32)strlen(passwordUTF8),
 														passwordUTF8);
-		if (status == noErr) {
-			// notify observers that Acoount info just changed
-			[notificationCenter postNotificationName:kAccountDidChangeNotification object:self];
-		}
+		if (status != noErr)
+            return status;
+
+        // notify observers that Acoount info just changed
+		[notificationCenter postNotificationName:kAccountDidChangeNotification object:self];
 	}
 	else {
 		// create a new item
@@ -174,13 +171,13 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 		NSString *mainAppBundlePath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:kElasticsBundleIdentifier];
 		
 		status = SecTrustedApplicationCreateFromPath(NULL, &preferencesApp);
-		if (status != noErr) {
-			// TODO: handle error
-		}
+		if (status != noErr)
+            return status;
+
 		status = SecTrustedApplicationCreateFromPath([mainAppBundlePath UTF8String], &mainApp);
-		if (status != noErr) {
-			// TODO: handle error
-		}
+		if (status != noErr)
+            return status;
+
 		trustedApplications = [NSArray arrayWithObjects:(id)preferencesApp, (id)mainApp, nil];
 		
 		// create an access object
@@ -193,18 +190,22 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 													  NULL,
 													  accessRef,
 													  &_itemRef);
-			CFRetain(_itemRef);
-			TBCFRelease(accessRef);
-			
-			if (status == noErr) {
-				// notify observers that Acoount info just changed
-				[notificationCenter postNotificationName:kAccountDidChangeNotification object:self];
-			}
+            TBCFRelease(accessRef);
+
+            if (status != noErr)
+                return status;
+            
+            CFRetain(_itemRef);
+        
+            // notify observers that Acoount info just changed
+            [notificationCenter postNotificationName:kAccountDidChangeNotification object:self];
 		}
 	}
+    
+    return noErr;
 }
 
-- (void)remove
+- (OSStatus)remove
 {
 	// remove account keychain item
 	if (_itemRef) {
@@ -213,75 +214,77 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 		status = SecKeychainItemDelete(_itemRef);
 		TBCFRelease(_itemRef);
 	
-		if (status == noErr) {
-			// notify observers that Acoount info just changed
-			[[NSNotificationCenter defaultCenter] postNotificationName:kAccountDidChangeNotification object:self];
-		}
+		if (status != noErr)
+            return status;
+        
+        // notify observers that Acoount info just changed
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAccountDidChangeNotification object:self];
 	}
+    
+    return noErr;
 }
 
 
-#pragma mark -
-#pragma mark Properties
+#pragma mark - Properties
 
-- (void)setName:(NSString *)value
-{
-	if (_name != value) {
-		[_name release];
-		_name = [value copy];
-		
-		[self save];
-	}
-}
-
-- (void)setAccessKeyID:(NSString *)value
-{
-	if (_accessKeyID != value) {
-		[_accessKeyID release];
-		_accessKeyID = [value copy];
-		
-		[self save];
-	}
-}
-
-- (void)setSecretAccessKey:(NSString *)value
-{
-	if (_secretAccessKey != value) {
-		[_secretAccessKey release];
-		_secretAccessKey = [value copy];
-		
-		[self save];
-	}
-}
-
-- (void)setDefaultRegion:(NSInteger)value
-{
-	if (_defaultRegion != value) {
-		_defaultRegion = value;
-		
-		[self save];
-	}
-}
-
-- (void)setSshPrivateKeyFile:(NSString *)value
-{
-	if (_sshPrivateKeyFile != value) {
-		[_sshPrivateKeyFile release];
-		_sshPrivateKeyFile = [value copy];
-		
-		[self save];
-	}
-}
-
-- (void)setSshUserName:(NSString *)value
-{
-	if (_sshUserName != value) {
-		[_sshUserName release];
-		_sshUserName = [value copy];
-		
-		[self save];
-	}
-}
+//- (void)setName:(NSString *)value
+//{
+//	if (_name != value) {
+//		[_name release];
+//		_name = [value copy];
+//		
+//		[self save];
+//	}
+//}
+//
+//- (void)setAccessKeyID:(NSString *)value
+//{
+//	if (_accessKeyID != value) {
+//		[_accessKeyID release];
+//		_accessKeyID = [value copy];
+//		
+//		[self save];
+//	}
+//}
+//
+//- (void)setSecretAccessKey:(NSString *)value
+//{
+//	if (_secretAccessKey != value) {
+//		[_secretAccessKey release];
+//		_secretAccessKey = [value copy];
+//		
+//		[self save];
+//	}
+//}
+//
+//- (void)setDefaultRegion:(NSInteger)value
+//{
+//	if (_defaultRegion != value) {
+//		_defaultRegion = value;
+//		
+//		[self save];
+//	}
+//}
+//
+//- (void)setSshPrivateKeyFile:(NSString *)value
+//{
+//	if (_sshPrivateKeyFile != value) {
+//		[_sshPrivateKeyFile release];
+//		_sshPrivateKeyFile = [value copy];
+//		
+//		[self save];
+//	}
+//}
+//
+//- (void)setSshUserName:(NSString *)value
+//{
+//	if (_sshUserName != value) {
+//		[_sshUserName release];
+//		_sshUserName = [value copy];
+//		
+//		[self save];
+//	}
+//}
 
 - (NSString *)title
 {
@@ -299,6 +302,20 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 	}
 	else
 		return @"Untitled";		// should not happen
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"{\n"
+            "    _accountId = %d,\n"
+            "    _name = %@,\n"
+            "    _accessKeyID = %@,\n"
+            "    _itemRef = %p\n"
+            "}",
+            _accountId,
+            _name,
+            _accessKeyID,
+            _itemRef];
 }
 
 
@@ -325,6 +342,9 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 								_sshPrivateKeyFile, kAccountSshPrivateKeyFileKey,
 								_sshUserName, kAccountSshUserNameKey,
 								nil];
+    
+//    TBTrace(@"attributes: %@", attributes);
+
 	return [NSKeyedArchiver archivedDataWithRootObject:attributes];
 }
 
@@ -332,13 +352,18 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 {
 	if (data && [data length] > 0) {
 		NSDictionary *attributes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        
+//        TBTrace(@"attributes: %@", attributes);
 
 		_accountId = [[attributes objectForKey:kAccountAttributeIDKey] integerValue];
-		self.name = [attributes objectForKey:kAccountAttributeNameKey];
+		_name = [[attributes objectForKey:kAccountAttributeNameKey] copy];
 		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
-		self.sshPrivateKeyFile = [attributes objectForKey:kAccountSshPrivateKeyFileKey];
-		self.sshUserName = [attributes objectForKey:kAccountSshUserNameKey];
+		_sshPrivateKeyFile = [[attributes objectForKey:kAccountSshPrivateKeyFileKey] copy];
+		_sshUserName = [[attributes objectForKey:kAccountSshUserNameKey] copy];
 	}
+    else {
+        TBTrace(@"data dictionary is empty");
+    }
 }
 
 @end

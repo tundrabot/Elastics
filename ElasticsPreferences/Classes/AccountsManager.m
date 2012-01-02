@@ -13,8 +13,11 @@
 
 
 @interface AccountsManager ()
+
+- (Account *)findAccountWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 - (void)insertObject:(Account *)accont inAccountsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromAccountsAtIndex:(NSUInteger)idx;
+
 @end
 
 
@@ -65,11 +68,40 @@
                                                    &searchRef);
     
     if (status == noErr) {
+        TBTrace(@"loading accounts");
 		[_accounts removeAllObjects];
         
-        while (SecKeychainSearchCopyNext(searchRef, &itemRef) != errSecItemNotFound) {
-			[_accounts addObject:[Account accountWithKeychainItemRef:itemRef]];
-            TBCFRelease(itemRef);
+        while (1) {
+            status = SecKeychainSearchCopyNext(searchRef, &itemRef);
+            
+            if (status == noErr) {
+                
+                // NOTE: for some reason unknown, SecKeychainSearchCopyNext sometimes returns the same item multiple times
+                // HACK: to avoid adding duplicates, lets see if we already added account with the same itemRef
+                
+                Account *account = [self findAccountWithKeychainItemRef:itemRef];
+                
+                if (account) {
+                    TBTrace(@"found existing account item, skipping");
+                }
+                else {
+                    TBTrace(@"adding account item");
+                    account = [Account accountWithKeychainItemRef:itemRef];
+                    [_accounts addObject:account];
+                    TBTrace(@"account %p: %@", account, account);
+                }
+                
+                TBCFRelease(itemRef);
+            }
+            else if (status == errSecItemNotFound) {
+                TBTrace(@"done loading accounts");
+                break;
+            }
+            else {
+                NSString *errorMessage = [NSMakeCollectable(SecCopyErrorMessageString(status, NULL)) autorelease];
+                TBLog(@"error loading keychain item: %d, \"%@\"", status, errorMessage);
+                break;
+            }
         }
         
 		TBCFRelease(searchRef);
@@ -83,7 +115,7 @@
 	}
 }
 
-- (void)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+- (OSStatus)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
 {
 	// make new account id to be max(existing IDs) + 1
 	NSInteger __block maxAccountId = -1;
@@ -99,8 +131,50 @@
 								 secretAccessKey:secretAccessKey
 							   sshPrivateKeyFile:sshPrivateKeyFile
 									 sshUserName:sshUserName];
-	[self insertObject:newAccount inAccountsAtIndex:[_accounts count]];
-	[newAccount save];
+    
+    OSStatus status = [newAccount save];
+
+    if (status == noErr)
+        [self insertObject:newAccount inAccountsAtIndex:[_accounts count]];
+    
+    return status;
+}
+
+- (OSStatus)updateAccountAtIndex:(NSUInteger)idx withName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+{
+    Account *account = [_accounts objectAtIndex:idx];
+    
+    // keep old values for undo (TODO: is there a better way?)
+    NSString *nameCopy = [account.name copy];
+    NSString *accessKeyIDCopy = [account.accessKeyID copy];
+    NSString *secretAccessKeyCopy = [account.secretAccessKey copy];
+    NSString *sshPrivateKeyFileCopy = [account.sshPrivateKeyFile copy];
+    NSString *sshUserNameCopy = [account.sshUserName copy];
+
+    account.name = name;
+    account.accessKeyID = accessKeyId;
+    account.secretAccessKey = secretAccessKey;
+    account.sshPrivateKeyFile = sshPrivateKeyFile;
+    account.sshUserName = sshUserName;
+    
+    OSStatus status = [account save];
+    
+    if (status != noErr) {
+        // restore old values
+        account.name = nameCopy;
+        account.accessKeyID = accessKeyIDCopy;
+        account.secretAccessKey = secretAccessKeyCopy;
+        account.sshPrivateKeyFile = sshPrivateKeyFileCopy;
+        account.sshUserName = sshUserNameCopy;
+    }
+    
+    [nameCopy release];
+    [accessKeyIDCopy release];
+    [secretAccessKeyCopy release];
+    [sshPrivateKeyFileCopy release];
+    [sshUserNameCopy release];
+    
+    return status;
 }
 
 - (void)removeAccountAtIndex:(NSUInteger)idx
@@ -123,6 +197,21 @@
 	return result;
 }
 
+
+- (Account *)findAccountWithKeychainItemRef:(SecKeychainItemRef)itemRef
+{
+	__block Account *result = nil;
+	
+	[_accounts enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		Account *account = (Account *)obj;
+		if (account.itemRef == itemRef) {
+			result = account;
+			*stop = YES;
+		}
+	}];
+	
+	return result;
+}
 
 #pragma mark -
 #pragma mark KVC magic methods

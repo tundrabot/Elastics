@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "AWSType.h"
 #import "EC2InstanceState.h"
+#import "EC2Placement.h"
 #import "EC2Monitoring.h"
 
 @interface EC2Instance : AWSType {
@@ -19,6 +20,7 @@
 	NSString			*_instanceType;
 	NSString			*_dnsName;
 	NSDate				*_launchTime;
+	EC2Placement		*_placement;
 	NSString			*_platform;
 	EC2Monitoring		*_monitoring;
 	NSString			*_privateIpAddress;
@@ -32,6 +34,7 @@
 @property (nonatomic, retain, readonly) NSString *instanceType;
 @property (nonatomic, retain, readonly) NSString *dnsName;
 @property (nonatomic, retain, readonly) NSDate *launchTime;
+@property (nonatomic, retain, readonly) EC2Placement *placement;
 @property (nonatomic, retain, readonly) NSString *platform;
 @property (nonatomic, retain, readonly) EC2Monitoring *monitoring;
 @property (nonatomic, retain, readonly) NSString *privateIpAddress;

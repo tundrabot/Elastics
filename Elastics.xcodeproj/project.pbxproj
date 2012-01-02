@@ -12,6 +12,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		C311E2E014B1B177000CB004 /* EC2Placement.m in Sources */ = {isa = PBXBuildFile; fileRef = C311E2DF14B1B177000CB004 /* EC2Placement.m */; };
 		C32823E312C90E1900020D48 /* AWSError.m in Sources */ = {isa = PBXBuildFile; fileRef = C32823E212C90E1900020D48 /* AWSError.m */; };
 		C32C295D12C0C60900F2C136 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C290B12C0C60900F2C136 /* AWSConstants.m */; };
 		C32C295E12C0C60900F2C136 /* AWSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C290D12C0C60900F2C136 /* AWSRequest.m */; };
@@ -117,6 +118,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Elastics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elastics.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C311E2DE14B1B177000CB004 /* EC2Placement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Placement.h; sourceTree = "<group>"; };
+		C311E2DF14B1B177000CB004 /* EC2Placement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Placement.m; sourceTree = "<group>"; };
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
 		C32823E212C90E1900020D48 /* AWSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSError.m; sourceTree = "<group>"; };
 		C32C28C912C0C09200F2C136 /* Elastics.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Elastics.xcconfig; sourceTree = "<group>"; };
@@ -404,6 +407,8 @@
 				C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */,
 				C32C29BC12C0C93500F2C136 /* EC2Reservation.h */,
 				C32C29BD12C0C93500F2C136 /* EC2Reservation.m */,
+				C311E2DE14B1B177000CB004 /* EC2Placement.h */,
+				C311E2DF14B1B177000CB004 /* EC2Placement.m */,
 				C32C295512C0C60900F2C136 /* EC2Tag.h */,
 				C32C295612C0C60900F2C136 /* EC2Tag.m */,
 				C32C32F712C23FE000F2C136 /* MonitoringDatapoint.h */,
@@ -605,6 +610,7 @@
 				C3D1DB4112DB3471005E576A /* Constants.m in Sources */,
 				C3BC74DD13E13BFE0061D438 /* Account.m in Sources */,
 				C3BC74DE13E13BFE0061D438 /* AccountsManager.m in Sources */,
+				C311E2E014B1B177000CB004 /* EC2Placement.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

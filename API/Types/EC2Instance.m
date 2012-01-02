@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString *instanceType;
 @property (nonatomic, retain) NSString *dnsName;
 @property (nonatomic, retain) NSDate *launchTime;
+@property (nonatomic, retain) EC2Placement *placement;
 @property (nonatomic, retain) NSString *platform;
 @property (nonatomic, retain) EC2Monitoring *monitoring;
 @property (nonatomic, retain) NSString *privateIpAddress;
@@ -33,6 +34,7 @@
 @synthesize instanceType = _instanceType;
 @synthesize dnsName = _dnsName;
 @synthesize launchTime = _launchTime;
+@synthesize placement = _placement;
 @synthesize platform = _platform;
 @synthesize monitoring = _monitoring;
 @synthesize privateIpAddress = _privateIpAddress;
@@ -61,6 +63,8 @@
 				self.dnsName = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"launchTime"])
 				self.launchTime = [[TBXML textForElement:element] iso8601Date];
+			else if ([elementName isEqualToString:@"placement"])
+				self.placement = [EC2Placement typeFromXMLElement:element parent:self];
 			else if ([elementName isEqualToString:@"platform"])
 				self.platform = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"monitoring"])
