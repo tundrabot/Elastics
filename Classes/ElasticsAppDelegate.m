@@ -586,13 +586,13 @@ static NSImage *_jpImage;
 
 	// set item image according to instance state
 	NSImage *stateImage = nil;
-	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING_272) {
-		// special running state with 0x100 bit set to indicate problems with the host
-		stateImage = [NSImage imageNamed:@"InstanceStateRunning272.png"];
-	}
-	else {
-		// otherwise, according to API spec, high byte should be ignored
-		switch (instance.instanceState.code & 0xff) {
+//	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING_272) {
+//		// special running state with 0x100 bit set to indicate problems with the host
+//		stateImage = [NSImage imageNamed:@"InstanceStateRunning272.png"];
+//	}
+//	else {
+//		// otherwise, according to API spec, high byte should be ignored
+		switch (instance.instanceState.code & 0xFF) {
 			case EC2_INSTANCE_STATE_RUNNING:
 				stateImage = [NSImage imageNamed:@"InstanceStateRunning.png"];
 				break;
@@ -606,7 +606,7 @@ static NSImage *_jpImage;
 				stateImage = [NSImage imageNamed:@"InstanceStateOther.png"];
 				break;
 		}
-	}
+//	}
 	[menuItem setImage:stateImage];
 	
 	// set item submenu
@@ -772,7 +772,7 @@ static NSImage *_jpImage;
 		}
 	}
 
-	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING) {
+	if ((instance.instanceState.code & 0xFF) == EC2_INSTANCE_STATE_RUNNING) {
 		[menu addItem:[NSMenuItem separatorItem]];
 
 		if ([instance.platform isEqualToString:@"windows"])
