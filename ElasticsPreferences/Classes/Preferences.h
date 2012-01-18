@@ -21,6 +21,7 @@ enum {
 	kPreferencesAWSAsiaPacificSingaporeRegion,
 	kPreferencesAWSAsiaPacificJapanRegion,
 	kPreferencesAWSSouthAmericaSaoPauloRegion,
+	kPreferencesAWSUSGovCloudRegion,
 };
 
 // Terminal application types
@@ -53,6 +54,7 @@ enum {
 
 @property (nonatomic, assign) NSString *sshPrivateKeyFile;
 @property (nonatomic, assign) NSString *sshUserName;
+@property (nonatomic, assign) NSUInteger sshPort;
 
 @property (nonatomic, assign) NSInteger terminalApplication;
 @property (nonatomic, assign, getter=isOpenInTerminalTab) BOOL openInTerminalTab;

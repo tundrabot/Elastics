@@ -285,7 +285,6 @@
 		29B97314FDCFA39411CA2CEA /* Elastics */ = {
 			isa = PBXGroup;
 			children = (
-				C3E2048514A39CEA00AE23A6 /* TODO */,
 				C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */,
 				C32C290912C0C60900F2C136 /* API */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -296,6 +295,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				C32C28C912C0C09200F2C136 /* Elastics.xcconfig */,
+				C3E2048514A39CEA00AE23A6 /* TODO */,
 			);
 			name = Elastics;
 			sourceTree = "<group>";

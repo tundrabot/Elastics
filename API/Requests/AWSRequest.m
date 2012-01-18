@@ -33,6 +33,7 @@ static NSString *const kAWSEURegionTitle					= @"EU West (Ireland)";
 static NSString *const kAWSAsiaPacificSingaporeRegionTitle	= @"Asia Pacific (Singapore)";
 static NSString *const kAWSAsiaPacificJapanRegionTitle		= @"Asia Pacific (Japan)";
 static NSString *const kAWSSouthAmericaSaoPauloRegionTitle	= @"South America (Sao Paulo)";
+static NSString *const kAWSUSGovCloudRegionTitle			= @"US GovCloud";
 
 // Static variables
 static NSMutableDictionary *_awsRequestDefaultOptions;
@@ -107,6 +108,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 		return kAWSAsiaPacificJapanRegionTitle;
 	else if ([region isEqualToString:kAWSSouthAmericaSaoPauloRegion])
 		return kAWSSouthAmericaSaoPauloRegionTitle;
+	else if ([region isEqualToString:kAWSUSGovCloudRegion])
+		return kAWSUSGovCloudRegionTitle;
 	else
 		return nil;
 }

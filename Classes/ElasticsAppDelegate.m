@@ -336,6 +336,12 @@ static NSImage *_jpImage;
 		[item setState:kPreferencesAWSUSWestOregonRegion == currentRegion ? NSOnState : NSOffState];
 		[_statusMenu addItem:item];
 		
+		item = [self actionItemWithLabel:@"US GovCloud" action:@selector(selectRegionAction:)];
+		[item setImage:_usImage];
+		[item setTag:kPreferencesAWSUSGovCloudRegion];
+		[item setState:kPreferencesAWSUSGovCloudRegion == currentRegion ? NSOnState : NSOffState];
+		[_statusMenu addItem:item];
+        
 		item = [self actionItemWithLabel:@"EU West (Ireland)" action:@selector(selectRegionAction:)];
 		[item setImage:_euImage];
 		[item setTag:kPreferencesAWSEURegion];
@@ -406,9 +412,9 @@ static NSImage *_jpImage;
 		DataSource *dataSource = [DataSource sharedDataSource];
         NSArray *instances = nil;
         
-        BOOL hideTermonatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
+        BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
         BOOL sortInstancesByTitle = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle];
-        if (hideTermonatedInstances) {
+        if (hideTerminatedInstances) {
             instances = sortInstancesByTitle ? dataSource.sortedRunningInstances : dataSource.runningInstances;
         }
         else {
@@ -1055,16 +1061,25 @@ static NSImage *_jpImage;
 			sshUserName = account.sshUserName;
 		else
 			sshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+        
+        NSUInteger sshPort = 0;
+		if (account.sshPort > 0)
+			sshPort = account.sshPort;
+		else
+			sshPort = [[NSUserDefaults standardUserDefaults] sshPort];
 		
 		NSString *cmd = @"ssh";
 
+		if (sshPort > 0)
+			cmd = [cmd stringByAppendingFormat:@" -p %d", sshPort];
+        
 		if ([sshPrivateKeyFile length] > 0)
 			cmd = [cmd stringByAppendingFormat:@" -i \'%@\'", sshPrivateKeyFile];
 		
 		if ([sshUserName length] > 0)
 			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instance.ipAddress];
 		else
-			cmd = [cmd stringByAppendingFormat:@"%@", instance.ipAddress];
+			cmd = [cmd stringByAppendingFormat:@" %@", instance.ipAddress];
 
 		switch (terminalApplication) {
 			// use iTerm terminal

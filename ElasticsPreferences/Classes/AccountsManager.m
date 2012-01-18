@@ -68,7 +68,7 @@
                                                    &searchRef);
     
     if (status == noErr) {
-        TBTrace(@"loading accounts");
+//        TBTrace(@"loading accounts");
 		[_accounts removeAllObjects];
         
         while (1) {
@@ -82,19 +82,19 @@
                 Account *account = [self findAccountWithKeychainItemRef:itemRef];
                 
                 if (account) {
-                    TBTrace(@"found existing account item, skipping");
+//                    TBTrace(@"found existing account item, skipping");
                 }
                 else {
-                    TBTrace(@"adding account item");
+//                    TBTrace(@"adding account item");
                     account = [Account accountWithKeychainItemRef:itemRef];
                     [_accounts addObject:account];
-                    TBTrace(@"account %p: %@", account, account);
+//                    TBTrace(@"account %p: %@", account, account);
                 }
                 
                 TBCFRelease(itemRef);
             }
             else if (status == errSecItemNotFound) {
-                TBTrace(@"done loading accounts");
+//                TBTrace(@"done loading accounts");
                 break;
             }
             else {
@@ -115,7 +115,7 @@
 	}
 }
 
-- (OSStatus)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+- (OSStatus)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
 {
 	// make new account id to be max(existing IDs) + 1
 	NSInteger __block maxAccountId = -1;
@@ -130,7 +130,8 @@
 									 accessKeyId:accessKeyId
 								 secretAccessKey:secretAccessKey
 							   sshPrivateKeyFile:sshPrivateKeyFile
-									 sshUserName:sshUserName];
+									 sshUserName:sshUserName
+                                         sshPort:sshPort];
     
     OSStatus status = [newAccount save];
 
@@ -140,7 +141,7 @@
     return status;
 }
 
-- (OSStatus)updateAccountAtIndex:(NSUInteger)idx withName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+- (OSStatus)updateAccountAtIndex:(NSUInteger)idx withName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
 {
     Account *account = [_accounts objectAtIndex:idx];
     
@@ -150,22 +151,25 @@
     NSString *secretAccessKeyCopy = [account.secretAccessKey copy];
     NSString *sshPrivateKeyFileCopy = [account.sshPrivateKeyFile copy];
     NSString *sshUserNameCopy = [account.sshUserName copy];
+    NSUInteger sshPortCopy = account.sshPort;
 
     account.name = name;
     account.accessKeyID = accessKeyId;
     account.secretAccessKey = secretAccessKey;
     account.sshPrivateKeyFile = sshPrivateKeyFile;
     account.sshUserName = sshUserName;
+    account.sshPort = sshPort;
     
     OSStatus status = [account save];
     
     if (status != noErr) {
-        // restore old values
+        // save failed, restore old values
         account.name = nameCopy;
         account.accessKeyID = accessKeyIDCopy;
         account.secretAccessKey = secretAccessKeyCopy;
         account.sshPrivateKeyFile = sshPrivateKeyFileCopy;
         account.sshUserName = sshUserNameCopy;
+        account.sshPort = sshPortCopy;
     }
     
     [nameCopy release];

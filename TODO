@@ -1,1 +1,5 @@
-- add option to hide terminated instances
++ add support for GovtCloud
++ add Support link to the help menu
++ add option to set custom SSH port
+
+- show instance count in all regions (?)

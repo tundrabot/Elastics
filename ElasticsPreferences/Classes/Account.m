@@ -26,16 +26,18 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 @synthesize defaultRegion = _defaultRegion;
 @synthesize sshPrivateKeyFile = _sshPrivateKeyFile;
 @synthesize sshUserName = _sshUserName;
+@synthesize sshPort = _sshPort;
 @synthesize itemRef = _itemRef;
 
-+ (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
++ (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
 {
 	return [[[self alloc] initWithID:accountId
 								name:name
 						 accessKeyId:accessKeyId
 					 secretAccessKey:secretAccessKey
 				   sshPrivateKeyFile:sshPrivateKeyFile
-						 sshUserName:sshUserName]
+						 sshUserName:sshUserName
+                             sshPort:sshPort]
 			autorelease];
 }
 
@@ -44,7 +46,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 	return [[[self alloc] initWithKeychainItemRef:itemRef] autorelease];
 }
 
-- (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName
+- (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
 {
     self = [super init];
     if (self) {
@@ -55,6 +57,7 @@ NSString *const kAccountDidChangeNotification	= @"kAccountsDidChangeNotification
 		_defaultRegion = 0;
 		_sshPrivateKeyFile = [sshPrivateKeyFile copy];
 		_sshUserName = [_sshUserName copy];
+        _sshPort = sshPort;
 		_itemRef = NULL;
     }
     
@@ -332,6 +335,7 @@ static NSString *const kAccountAttributeNameKey				= @"name";
 static NSString *const kAccountAttributeDefaultRegionKey	= @"defaultRegion";
 static NSString *const kAccountSshPrivateKeyFileKey			= @"sshPrivateKeyFile";
 static NSString *const kAccountSshUserNameKey				= @"sshUserName";
+static NSString *const kAccountSshPortKey                   = @"sshPort";
 
 - (NSData *)_archiveGenericAttributes
 {
@@ -341,6 +345,7 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 								[NSNumber numberWithInteger:_defaultRegion], kAccountAttributeDefaultRegionKey,
 								_sshPrivateKeyFile, kAccountSshPrivateKeyFileKey,
 								_sshUserName, kAccountSshUserNameKey,
+                                [NSNumber numberWithInteger:_sshPort], kAccountSshPortKey,
 								nil];
     
 //    TBTrace(@"attributes: %@", attributes);
@@ -360,6 +365,7 @@ static NSString *const kAccountSshUserNameKey				= @"sshUserName";
 		_defaultRegion = [[attributes objectForKey:kAccountAttributeDefaultRegionKey] integerValue];
 		_sshPrivateKeyFile = [[attributes objectForKey:kAccountSshPrivateKeyFileKey] copy];
 		_sshUserName = [[attributes objectForKey:kAccountSshUserNameKey] copy];
+		_sshPort = [[attributes objectForKey:kAccountSshPortKey] integerValue];
 	}
     else {
         TBTrace(@"data dictionary is empty");

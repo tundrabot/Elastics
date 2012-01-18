@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "AccountsManager.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSTextFieldDelegate> {
 @private
     NSWindow			*_window;
 	NSView				*_generalPane;
@@ -17,7 +17,7 @@
 	AccountsManager		*_accountsManager;
 	NSArrayController	*_accountsController;
 	NSTableView			*_accountsTableView;
-	NSTextField			*_keypairFileField;
+	NSTextField			*_sshPortField;
 	NSPanel				*_aboutPanel;
 	NSTextField			*_aboutVersionLabel;
 	NSTextField			*_aboutCopyrightLabel;
@@ -27,8 +27,10 @@
 	NSTextField			*_accountPanelSecretAccessKeyField;
 	NSTextField			*_accountPanelSshPrivateKeyFileField;
 	NSTextField			*_accountPanelSshUserNameField;
+	NSTextField			*_accountPanelSshPortField;
 	NSButton			*_accountPanelSaveButton;
 	NSInteger			_accountActionType;
+    NSString            *_lastValidSshPortValue;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -37,7 +39,7 @@
 @property (assign) IBOutlet AccountsManager *accountsManager;
 @property (assign) IBOutlet NSArrayController *accountsController;
 @property (assign) IBOutlet NSTableView *accountsTableView;
-@property (assign) IBOutlet NSTextField *keypairFileField;
+@property (assign) IBOutlet NSTextField *sshPortField;
 @property (assign) IBOutlet NSPanel *aboutPanel;
 @property (assign) IBOutlet NSTextField *aboutVersionLabel;
 @property (assign) IBOutlet NSTextField *aboutCopyrightLabel;
@@ -48,6 +50,7 @@
 @property (assign) IBOutlet NSTextField *accountPanelSecretAccessKeyField;
 @property (assign) IBOutlet NSTextField *accountPanelSshPrivateKeyFileField;
 @property (assign) IBOutlet NSTextField *accountPanelSshUserNameField;
+@property (assign) IBOutlet NSTextField *accountPanelSshPortField;
 
 - (IBAction)showGeneralPaneAction:(id)sender;
 - (IBAction)showAdvancedPaneAction:(id)sender;
@@ -59,5 +62,7 @@
 - (IBAction)chooseDefaultKeypairAction:(id)sender;
 - (IBAction)chooseAccountKeypairAction:(id)sender;
 - (IBAction)aboutAction:(id)sender;
+- (IBAction)elasticsWebsiteAction:(id)sender;
+- (IBAction)sendFeeedbackAction:(id)sender;
 
 @end

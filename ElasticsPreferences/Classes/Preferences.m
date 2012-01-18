@@ -24,6 +24,7 @@ static NSString *const kPreferencesSortInstancesByTitleKey      = @"sortInstance
 static NSString *const kPreferencesHideTerminatedInstancesKey	= @"hideTerminatedInstances";
 static NSString *const kPreferencesSshPrivateKeyFileKey         = @"sshPrivateKeyFile";
 static NSString *const kPreferencesSshUserNameKey               = @"sshUserName";
+static NSString *const kPreferencesSshPortKey                   = @"sshPort";
 static NSString *const kPreferencesTerminalApplicationKey       = @"terminalApplication";
 static NSString *const kPreferencesOpenInTerminalTabKey         = @"openInTerminalTab";
 static NSString *const kPreferencesRdpApplicationKey            = @"rdpApplication";
@@ -31,13 +32,6 @@ static NSString *const kPreferencesRdpApplicationKey            = @"rdpApplicati
 static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch";
 
 @implementation NSUserDefaults (ElasticsPreferences)
-
-@dynamic awsRegion;
-@dynamic refreshInterval;
-@dynamic refreshOnMenuOpen;
-@dynamic sshPrivateKeyFile;
-@dynamic sshUserName;
-@dynamic firstLaunch;
 
 - (NSDictionary *)defaultElasticsPreferences
 {
@@ -51,7 +45,7 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 						[NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
 						[NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
                         [NSNumber numberWithBool:NO], kPreferencesHideTerminatedInstancesKey,
-						@"root", kPreferencesSshUserNameKey,
+//						@"root", kPreferencesSshUserNameKey,
 						[NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
 						nil];
 	}
@@ -95,6 +89,8 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 			return kAWSAsiaPacificJapanRegion;
 		case kPreferencesAWSSouthAmericaSaoPauloRegion:
 			return kAWSSouthAmericaSaoPauloRegion;
+		case kPreferencesAWSUSGovCloudRegion:
+			return kAWSUSGovCloudRegion;
 		default:
 			return nil;
 	}
@@ -174,6 +170,16 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 - (void)setSshUserName:(NSString *)value
 {
 	[self setObject:value forKey:kPreferencesSshUserNameKey];
+}
+
+- (NSUInteger)sshPort
+{
+    return [self integerForKey:kPreferencesSshPortKey];
+}
+
+- (void)setSshPort:(NSUInteger)value
+{
+    [self setInteger:value forKey:kPreferencesSshPortKey];
 }
 
 - (NSInteger)terminalApplication

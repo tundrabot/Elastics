@@ -16,6 +16,9 @@
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
 		C31FFAF513DECA2300F5D20B /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C31FFAF413DECA2300F5D20B /* Account.m */; };
+		C33E1F0B14C6C51B0071C50D /* SshPortValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E1F0A14C6C51B0071C50D /* SshPortValueTransformer.m */; };
+		C33E1F0F14C6D1660071C50D /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E1F0E14C6D1660071C50D /* RegexKitLite.m */; };
+		C33E1F1114C6D26E0071C50D /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33E1F1014C6D26E0071C50D /* libicucore.dylib */; };
 		C34FAA98143C4C7C00F607DD /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = C34FAA97143C4C7C00F607DD /* Constants.m */; };
 		C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3603DCA12DC6D0B00B13219 /* Credits.html */; };
 		C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3603F8D12DC87C200B13219 /* ElasticsIcon.icns */; };
@@ -49,6 +52,11 @@
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
 		C31FFAF313DECA2300F5D20B /* Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Account.h; sourceTree = "<group>"; };
 		C31FFAF413DECA2300F5D20B /* Account.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Account.m; sourceTree = "<group>"; };
+		C33E1F0914C6C51B0071C50D /* SshPortValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SshPortValueTransformer.h; sourceTree = "<group>"; };
+		C33E1F0A14C6C51B0071C50D /* SshPortValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SshPortValueTransformer.m; sourceTree = "<group>"; };
+		C33E1F0D14C6D1660071C50D /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = ../RegexKitLite/RegexKitLite.h; sourceTree = "<group>"; };
+		C33E1F0E14C6D1660071C50D /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = ../RegexKitLite/RegexKitLite.m; sourceTree = "<group>"; };
+		C33E1F1014C6D26E0071C50D /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		C34FAA96143C4C7C00F607DD /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../../Classes/Constants.h; sourceTree = "<group>"; };
 		C34FAA97143C4C7C00F607DD /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = ../../Classes/Constants.m; sourceTree = "<group>"; };
 		C3603DCA12DC6D0B00B13219 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
@@ -75,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C33E1F1114C6D26E0071C50D /* libicucore.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				C3CE00A112D739C4006E87EF /* Security.framework in Frameworks */,
 			);
@@ -106,6 +115,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C33E1F1014C6D26E0071C50D /* libicucore.dylib */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -127,6 +137,7 @@
 			children = (
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				C33E1F0C14C6D1430071C50D /* RegexKitLite */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -166,6 +177,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C33E1F0C14C6D1430071C50D /* RegexKitLite */ = {
+			isa = PBXGroup;
+			children = (
+				C33E1F0D14C6D1660071C50D /* RegexKitLite.h */,
+				C33E1F0E14C6D1660071C50D /* RegexKitLite.m */,
+			);
+			name = RegexKitLite;
+			sourceTree = "<group>";
+		};
 		C3CEFE7312D72EA1006E87EF /* Value Transformers */ = {
 			isa = PBXGroup;
 			children = (
@@ -173,6 +193,8 @@
 				C3F1A7DC12C8BCB7001AB554 /* RefreshIntervalValueTransformer.m */,
 				C3F1A78B12C8B514001AB554 /* RefreshIntervalLabelValueTransformer.h */,
 				C3F1A78C12C8B514001AB554 /* RefreshIntervalLabelValueTransformer.m */,
+				C33E1F0914C6C51B0071C50D /* SshPortValueTransformer.h */,
+				C33E1F0A14C6C51B0071C50D /* SshPortValueTransformer.m */,
 			);
 			name = "Value Transformers";
 			sourceTree = "<group>";
@@ -273,6 +295,8 @@
 				C379FB0012D881B600D055EF /* AccountsManager.m in Sources */,
 				C31FFAF513DECA2300F5D20B /* Account.m in Sources */,
 				C34FAA98143C4C7C00F607DD /* Constants.m in Sources */,
+				C33E1F0B14C6C51B0071C50D /* SshPortValueTransformer.m in Sources */,
+				C33E1F0F14C6D1660071C50D /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

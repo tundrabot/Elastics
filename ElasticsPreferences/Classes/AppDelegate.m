@@ -11,14 +11,20 @@
 #import "RefreshIntervalValueTransformer.h"
 #import "RefreshIntervalLabelValueTransformer.h"
 #import "Account.h"
+#import "RegexKitLite.h"
 
 #define GENERAL_PANE_INDEX				0
 #define ADVANCED_PANE_INDEX				1
 
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
+static NSString *const kElasticsWebsiteURL      = @"http://tundrabot.com";
+static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com";
 
 @interface AppDelegate ()
+
+@property (nonatomic, copy) NSString *lastValidSshPortValue;
+
 - (void)schedulePreferenceChangeNotification;
 - (void)postPreferenceChangeNotification;
 - (void)userDefaultsDidChange:(NSNotification *)notification;
@@ -26,6 +32,14 @@
 - (void)showPreferencePane:(NSUInteger)paneIndex animated:(BOOL)animated;
 - (void)addContentSubview:(NSView *)view;
 - (void)preferencesShouldTerminate:(NSNotification *)notification;
+
+- (NSString *)_accountPanelNameValue;
+- (NSString *)_accountPanelAccessKeyIDValue;
+- (NSString *)_accountPanelSecretAccessKeyValue;
+- (NSString *)_accountPanelSshPrivateKeyFileValue;
+- (NSString *)_accountPanelSshUserNameValue;
+- (NSUInteger)_accountPanelSshPortValue;
+
 @end
 
 
@@ -37,7 +51,7 @@
 @synthesize accountsManager = _accountsManager;
 @synthesize accountsController = _accountsController;
 @synthesize accountsTableView = _accountsTableView;
-@synthesize keypairFileField = _keypairFileField;
+@synthesize sshPortField = _sshPortField;
 @synthesize aboutPanel = _aboutPanel;
 @synthesize aboutVersionLabel = _aboutVersionLabel;
 @synthesize aboutCopyrightLabel = _aboutCopyrightLabel;
@@ -48,6 +62,10 @@
 @synthesize accountPanelSecretAccessKeyField = _accountPanelSecretAccessKeyField;
 @synthesize accountPanelSshPrivateKeyFileField = _accountPanelSshPrivateKeyFileField;
 @synthesize accountPanelSshUserNameField = _accountPanelSshUserNameField;
+@synthesize accountPanelSshPortField = _accountPanelSshPortField;
+@synthesize lastValidSshPortValue = _lastValidSshPortValue;
+
+#pragma mark - Initialization
 
 + (void)initialize
 {
@@ -62,6 +80,12 @@
 	// register default preference values
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	[userDefaults registerDefaults:[userDefaults defaultElasticsPreferences]];
+}
+
+- (void)dealloc
+{
+    [_lastValidSshPortValue release];
+    [super dealloc];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -98,6 +122,10 @@
 														  object:nil];
 
 	userDefaults.firstLaunch = NO;
+    
+    // set last valid SSH port value for validation
+    if (userDefaults.sshPort > 0)
+        self.lastValidSshPortValue = [NSString stringWithFormat:@"%d", userDefaults.sshPort];
 
 	// show main window
 	[_window makeKeyAndOrderFront:nil];
@@ -201,6 +229,30 @@
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+#pragma mark - NSTextField notifications
+
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+    if ([[notification object] isKindOfClass:[NSTextField class]]) {
+        NSTextField *obj = [notification object];
+        
+        if (obj == _accountPanelAccessKeyIdField || obj == _accountPanelSecretAccessKeyField) {
+            BOOL canSave = [[self _accountPanelAccessKeyIDValue] length] > 0 && [[self _accountPanelSecretAccessKeyValue] length] > 0;
+            [_accountPanelSaveButton setEnabled:canSave];
+        }
+        else if (obj == _sshPortField || obj == _accountPanelSshPortField) {
+            NSString *value = obj.stringValue;
+            if (![value isMatchedByRegex:@"^[\\d]{0,5}$"]) {
+                obj.stringValue = _lastValidSshPortValue ? _lastValidSshPortValue : @"";
+                NSBeep();
+            }
+            else {
+                self.lastValidSshPortValue = [obj.stringValue copy];
+            }
+        }
+    }
+}
+
 
 #pragma mark -
 #pragma mark Preference data changes notifications
@@ -284,6 +336,11 @@ enum {
 	return [[_accountPanelSshUserNameField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
+- (NSUInteger)_accountPanelSshPortValue
+{
+    return [_accountPanelSshPortField integerValue];
+}
+
 - (IBAction)accountSheetSaveAction:(id)sender
 {
 	[NSApp endSheet:_accountPanel returnCode:ACCOUNT_SHEET_RETURNCODE_SAVE];
@@ -308,7 +365,8 @@ enum {
                                                   accessKeyId:[self _accountPanelAccessKeyIDValue]
                                               secretAccessKey:[self _accountPanelSecretAccessKeyValue]
                                             sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
-                                                  sshUserName:[self _accountPanelSshUserNameValue]];
+                                                  sshUserName:[self _accountPanelSshUserNameValue]
+                                                      sshPort:[self _accountPanelSshPortValue]];
 				break;
 			}
 				
@@ -331,7 +389,8 @@ enum {
                                                         accessKeyId:[self _accountPanelAccessKeyIDValue]
                                                     secretAccessKey:[self _accountPanelSecretAccessKeyValue]
                                                   sshPrivateKeyFile:[self _accountPanelSshPrivateKeyFileValue]
-                                                        sshUserName:[self _accountPanelSshUserNameValue]];
+                                                        sshUserName:[self _accountPanelSshUserNameValue]
+                                                            sshPort:[self _accountPanelSshPortValue]];
 				}
 				break;
 			}
@@ -363,16 +422,6 @@ enum {
                              didEndSelector:nil
                                 contextInfo:NULL];
         }
-	}
-}
-
-- (void)controlTextDidChange:(NSNotification *)notification
-{
-	id obj = [notification object];
-	
-	if (obj == _accountPanelAccessKeyIdField || obj == _accountPanelSecretAccessKeyField) {
-		BOOL canSave = [[self _accountPanelAccessKeyIDValue] length] > 0 && [[self _accountPanelSecretAccessKeyValue] length] > 0;
-		[_accountPanelSaveButton setEnabled:canSave];
 	}
 }
 
@@ -414,15 +463,18 @@ enum {
 		
 		NSString *defaultSshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
 		NSString *defaultSshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+		NSUInteger defaultSshPort = [[NSUserDefaults standardUserDefaults] sshPort];
 
 		[_accountPanelNameField setStringValue:account.name ? account.name : @""];
 		[_accountPanelAccessKeyIdField setStringValue:account.accessKeyID ? account.accessKeyID : @""];
 		[_accountPanelSecretAccessKeyField setStringValue:account.secretAccessKey ? account.secretAccessKey : @""];
 		[_accountPanelSshPrivateKeyFileField setStringValue:account.sshPrivateKeyFile ? account.sshPrivateKeyFile : @""];
 		[_accountPanelSshUserNameField setStringValue:account.sshUserName ? account.sshUserName : @""];
+		[_accountPanelSshPortField setStringValue:account.sshPort > 0 ? [NSString stringWithFormat:@"%d", account.sshPort] : @""];
 
 		[_accountPanelSshPrivateKeyFileField.cell setPlaceholderString:defaultSshPrivateKeyFile ? defaultSshPrivateKeyFile : @""];
-		[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @""];
+		[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @"root"];
+		[_accountPanelSshPortField.cell setPlaceholderString:defaultSshPort > 0 ? [NSString stringWithFormat:@"%d", defaultSshPort] : @"22"];
 
 		[_accountPanelSaveButton setEnabled:YES];
 		[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
@@ -522,6 +574,16 @@ enum {
 	[copyright release];
 	
 	[_aboutPanel makeKeyAndOrderFront:self];
+}
+
+- (IBAction)elasticsWebsiteAction:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:kElasticsWebsiteURL]];
+}
+
+- (IBAction)sendFeeedbackAction:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:kElasticsSendFeedbackURL]];
 }
 
 @end
