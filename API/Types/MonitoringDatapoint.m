@@ -24,13 +24,13 @@
 - (id)initFromXMLElement:(TBXMLElement *)element parent:(AWSType *)parent
 {
 	self = [super initFromXMLElement:element parent:parent];
-	
+
 	if (self) {
 		element = element->firstChild;
-		
+
 		while (element) {
 			NSString *elementName = [TBXML elementName:element];
-			
+
 			if ([elementName isEqualToString:@"Timestamp"])
 				_timestamp = [[[TBXML textForElement:element] iso8601Date] timeIntervalSinceReferenceDate];
 			else if ([elementName isEqualToString:@"Unit"])
@@ -41,11 +41,11 @@
 				_maximum = [[TBXML textForElement:element] floatValue];
 			else if ([elementName isEqualToString:@"Average"])
 				_average = [[TBXML textForElement:element] floatValue];
-			
+
 			element = element->nextSibling;
 		}
 	}
-	
+
 	return self;
 }
 
@@ -61,7 +61,7 @@
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"%@: min:%.2f max:%.2f avg:%.2f", _timestamp, _minimum, _maximum, _average];
+	return [NSString stringWithFormat:@"%.2f: min:%.2f max:%.2f avg:%.2f", _timestamp, _minimum, _maximum, _average];
 }
 
 - (void)dealloc

@@ -78,14 +78,14 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
                          kAWSUSGovCloudRegion,
                          nil];
     }
-    
+
 	if (!_s_awsRequestDefaultOptions) {
 		_s_awsRequestDefaultOptions = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                                        AWSApiDefaultRegion, kAWSRegionOption,
                                        AWSApiDefaultPath, kAWSPathOption,
                                        [NSNumber numberWithBool:YES], kAWSUseSSLOption,
                                        nil];
-		
+
 	}
 }
 
@@ -219,7 +219,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 {
 	NSAssert([self.service length] > 0, @"Empty service.");
 	NSAssert([self.region length] > 0, @"Empty region.");
-	
+
 	return [NSString stringWithFormat:@"%@.%@.%@", self.service, self.region, kAWSDomain];
 }
 
@@ -263,12 +263,12 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
-		
+
 	for (id value in array) {
 		NSString *awsKey = [NSString stringWithFormat:@"%@.%d", key, idx];
 		[parameters setObject:value forKey:awsKey];
 	}
-	
+
 	return parameters;
 }
 
@@ -280,12 +280,12 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
-	
+
 	for (NSString *key in [dictionary allKeys]) {
 		id value = [dictionary objectForKey:key];
 		NSArray *valuesArray = nil;
 		NSUInteger valueIdx = 1;
-		
+
 		if ([value isKindOfClass:[NSArray class]]) {
 			valuesArray = value;
 		}
@@ -295,7 +295,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 
 		NSString *awsNameKey = [NSString stringWithFormat:@"Filter.%d.Name", idx];
 		[parameters setObject:key forKey:awsNameKey];
-		
+
 		for (id valueItem in valuesArray) {
 			NSString *awsValueKey = [NSString stringWithFormat:@"Filter.%d.Value.%d", idx, valueIdx];
 			[parameters setObject:valueItem forKey:awsValueKey];
@@ -303,7 +303,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 		}
 		idx++;
 	}
-	
+
 	return parameters;
 }
 
@@ -311,18 +311,18 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 {
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
 	NSUInteger idx = 1;
-	
+
 	for (NSString *key in [dictionary allKeys]) {
 		id value = [dictionary objectForKey:key];
 		NSArray *valuesArray = nil;
-		
+
 		if ([value isKindOfClass:[NSArray class]]) {
 			valuesArray = value;
 		}
 		else {
 			valuesArray = [NSArray arrayWithObject:value];
 		}
-		
+
 		for (NSString *valueItem in valuesArray) {
 			NSString *awsNameKey = [NSString stringWithFormat:@"Dimensions.member.%d.Name", idx];
 			[parameters setObject:key forKey:awsNameKey];
@@ -331,7 +331,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 			idx++;
 		}
 	}
-	
+
 	return parameters;
 }
 
@@ -342,13 +342,13 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 {
 	NSArray *queryKeys = [[parameters allKeys] sortedArrayUsingSelector:@selector(compare:)];
 	NSMutableArray *queryArray = [NSMutableArray array];
-	
+
 	for (NSString *key in queryKeys) {
 		[queryArray addObject:
 		 [NSString stringWithFormat:@"%@=%@",
 		  [key stringByURLEncoding], [[parameters valueForKey:key] stringByURLEncoding]]];
 	}
-	
+
 	return [queryArray componentsJoinedByString:@"&"];
 }
 
@@ -365,7 +365,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 								 nil];
 	NSString *signatureString = [signatureObjects componentsJoinedByString:@"\n"];
 	NSString *signature = [signatureString stringBySigningWithSecret:self.secretAccessKey];
-	
+
 	return signature;
 }
 
@@ -375,7 +375,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 - (NSDictionary *)parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters
 {
 	NSMutableDictionary *requestParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
-	
+
 	// add common parameters
 	[requestParameters setObject:action forKey:@"Action"];
 	[requestParameters setObject:self.accessKeyId forKey:@"AWSAccessKeyId"];
@@ -383,11 +383,11 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 	[requestParameters setObject:@"2" forKey:@"SignatureVersion"];
 	[requestParameters setObject:self.apiVersion forKey:@"Version"];
 	[requestParameters setObject:[_startedAt iso8601String] forKey:@"Timestamp"];
-	
+
 	// sign query and add signature parameter
 	NSString *signature = [self signatureForParameters:requestParameters method:method];
 	[requestParameters setObject:signature forKey:@"Signature"];
-	
+
 	return requestParameters;
 }
 
@@ -417,37 +417,36 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 		else
 			return FALSE;
 	}
-    
+
 //    TBTrace(@"++ %@", self.region);
-	
+
 	self.responseData = [NSMutableData data];
 	self.startedAt = [NSDate date];
 	self.finishedAt = nil;
 
 	// prepare parameters
 	NSDictionary *requestParameters = [self parametersForAction:action method:AWSApiDefaultMethod parameters:parameters];
-	
+
 	// prepare request URL
 	NSURL *url = [NSURL URLWithString:
 				  [NSString stringWithFormat:@"%@://%@%@?%@",
 				   self.useSSL ? @"https" : @"http",
 				   self.host,
 				   self.path,
-				   [self queryFromParameters:requestParameters],
-				   nil]];
-	
+				   [self queryFromParameters:requestParameters]]];
+
 	// prepare request
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 	[request setHTTPMethod:AWSApiDefaultMethod];
 	[request setCachePolicy:NSURLRequestReloadIgnoringCacheData];
-	
+
 	// start connection thread
 	[NSThread detachNewThreadSelector:@selector(requestThread:) toTarget:self withObject:request];
 	[request release];
-	
+
 	// notify delegate that request started
 	[_delegate requestDidStartLoading:self];
-	
+
 	return TRUE;
 }
 
@@ -465,18 +464,18 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 
 #pragma mark - Connection thread
 
-#define WAITING_FOR_CONNECTION			0                                                                                                            
-#define DONE_WAITING_FOR_CONNECTION		1                                                                                                            
+#define WAITING_FOR_CONNECTION			0
+#define DONE_WAITING_FOR_CONNECTION		1
 
 - (void)requestThread:(id)object
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+
 	@try {
-		_connectionLock = [[NSConditionLock alloc] initWithCondition:WAITING_FOR_CONNECTION];	
+		_connectionLock = [[NSConditionLock alloc] initWithCondition:WAITING_FOR_CONNECTION];
         NSURLConnection *connection = [NSURLConnection connectionWithRequest:(NSURLRequest *)object delegate:self];
         [connection start];
-		
+
 		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
 		while ([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]) {
 			if ([_connectionLock tryLockWhenCondition:DONE_WAITING_FOR_CONNECTION]) {
@@ -549,10 +548,10 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 #endif
 
 //    TBTrace(@"== %@", self.region);
-	
+
 	self.finishedAt = [NSDate date];
 	self.responseParser = [TBXML tbxmlWithXMLData:self.responseData];
-	
+
 	if ([_responseInfo statusCode] >= 400) {
 #ifdef TB_DEBUG
         {
@@ -568,7 +567,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 		self.response = [self parseResponse];
 		self.errorResponse = nil;
 	}
-	
+
 	if (_errorResponse) {
 		NSDictionary *errorInfo = [[[_errorResponse errors] objectAtIndex:0] dictionaryRepresentation];
 		[_delegate request:self didFailWithError:[NSError errorWithDomain:kAWSErrorDomain code:0 userInfo:errorInfo]];
@@ -576,7 +575,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 	else {
 		[_delegate requestDidFinishLoading:self];
 	}
-	
+
 	@synchronized(self) {
 		_isRunning = NO;
 	}
@@ -585,12 +584,12 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 - (void)currentConnectionDidFailWithError:(NSError *)error
 {
 	TBLog(@"%@", error);
-	
+
 	self.finishedAt = [NSDate date];
 
 	self.response = nil;
 	[_delegate request:self didFailWithError:error];
-	
+
 	@synchronized(self) {
 		_isRunning = NO;
 	}

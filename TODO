@@ -3,3 +3,5 @@
 + add option to set custom SSH port
 + show instance count in all regions
 + added Open AWS Console command
+
+- get rid of RegexKitLite, use NSRegularExpression (available in 10.7+)

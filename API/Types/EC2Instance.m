@@ -47,10 +47,10 @@
 
 	if (self) {
 		element = element->firstChild;
-		
+
 		while (element) {
 			NSString *elementName = [TBXML elementName:element];
-			
+
 			if ([elementName isEqualToString:@"instanceId"])
 				self.instanceId = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"imageId"])
@@ -75,7 +75,7 @@
 				self.ipAddress = [TBXML textForElement:element];
 			else if ([elementName isEqualToString:@"tagSet"])
 				self.tagSet = [self parseElement:element asArrayOf:[EC2Tag class]];
-			
+
 			element = element->nextSibling;
 		}
 	}
@@ -91,6 +91,7 @@
 	TBRelease(_instanceType);
 	TBRelease(_dnsName);
 	TBRelease(_launchTime);
+    TBRelease(_placement);
 	TBRelease(_platform);
 	TBRelease(_monitoring);
 	TBRelease(_privateIpAddress);
@@ -103,7 +104,7 @@
 {
 	static NSString *const kNameTagKey = @"Name";
 	__block NSString *nameTagValue = nil;
-	
+
 	[_tagSet enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		if ([[obj key] compare:kNameTagKey options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 			nameTagValue = [obj value];

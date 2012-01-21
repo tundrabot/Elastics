@@ -46,18 +46,18 @@
 {
 	NSMutableArray *result = [NSMutableArray array];
 	element = element->firstChild;
-	
+
 	while (element) {
 		NSString *elementName = [TBXML elementName:element];
-		
+
 		if ([elementName isEqualToString:@"item"] || [elementName isEqualToString:@"member"] || [elementName isEqualToString:@"Error"])
 			[result addObject:[class typeFromXMLElement:element parent:self]];
 		else
 			TBTrace(@"ignoring element %@", elementName);
-		
+
 		element = element->nextSibling;
 	}
-	
+
 	return result;
 }
 
