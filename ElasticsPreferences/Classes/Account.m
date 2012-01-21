@@ -367,9 +367,8 @@ static NSString *const kAccountSshPortKey                   = @"sshPort";
 		_sshUserName = [[attributes objectForKey:kAccountSshUserNameKey] copy];
 		_sshPort = [[attributes objectForKey:kAccountSshPortKey] integerValue];
 	}
-    else {
+    else
         TBTrace(@"data dictionary is empty");
-    }
 }
 
 @end

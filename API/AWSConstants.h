@@ -6,6 +6,9 @@
 //  Copyright 2010 Tundra Bot. All rights reserved.
 //
 
+// AWS domain
+extern NSString *const kAWSDomain;
+
 // Regions
 extern NSString *const kAWSUSEastRegion;
 extern NSString *const kAWSUSWestNorthCaliforniaRegion;
@@ -15,6 +18,16 @@ extern NSString *const kAWSAsiaPacificSingaporeRegion;
 extern NSString *const kAWSAsiaPacificJapanRegion;
 extern NSString *const kAWSSouthAmericaSaoPauloRegion;
 extern NSString *const kAWSUSGovCloudRegion;
+
+// Region titles
+extern NSString *const kAWSUSEastRegionTitle;
+extern NSString *const kAWSUSWestNorthCaliforniaRegionTitle;
+extern NSString *const kAWSUSWestOregonRegionTitle;
+extern NSString *const kAWSEURegionTitle;
+extern NSString *const kAWSAsiaPacificSingaporeRegionTitle;
+extern NSString *const kAWSAsiaPacificJapanRegionTitle;
+extern NSString *const kAWSSouthAmericaSaoPauloRegionTitle;
+extern NSString *const kAWSUSGovCloudRegionTitle;
 
 // Services
 extern NSString *const kAWSEC2Service;

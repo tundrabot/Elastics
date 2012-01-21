@@ -123,10 +123,6 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 
 	userDefaults.firstLaunch = NO;
     
-    // set last valid SSH port value for validation
-    if (userDefaults.sshPort > 0)
-        self.lastValidSshPortValue = [NSString stringWithFormat:@"%d", userDefaults.sshPort];
-
 	// show main window
 	[_window makeKeyAndOrderFront:nil];
 }
@@ -231,6 +227,17 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 
 #pragma mark - NSTextField notifications
 
+- (void)controlTextDidBeginEditing:(NSNotification *)notification
+{
+    if ([[notification object] isKindOfClass:[NSTextField class]]) {
+        NSTextField *obj = [notification object];
+        
+        if (obj == _sshPortField || obj == _accountPanelSshPortField) {
+            self.lastValidSshPortValue = [obj stringValue];
+        }
+    }
+}
+
 - (void)controlTextDidChange:(NSNotification *)notification
 {
     if ([[notification object] isKindOfClass:[NSTextField class]]) {
@@ -243,11 +250,11 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
         else if (obj == _sshPortField || obj == _accountPanelSshPortField) {
             NSString *value = obj.stringValue;
             if (![value isMatchedByRegex:@"^[\\d]{0,5}$"]) {
-                obj.stringValue = _lastValidSshPortValue ? _lastValidSshPortValue : @"";
+                [obj setStringValue:_lastValidSshPortValue ? _lastValidSshPortValue : @""];
                 NSBeep();
             }
             else {
-                self.lastValidSshPortValue = [obj.stringValue copy];
+                self.lastValidSshPortValue = obj.stringValue;
             }
         }
     }
@@ -431,19 +438,22 @@ enum {
 	
 	NSString *defaultSshPrivateKeyFile = [[NSUserDefaults standardUserDefaults] sshPrivateKeyFile];
 	NSString *defaultSshUserName = [[NSUserDefaults standardUserDefaults] sshUserName];
+    NSUInteger defaultSshPort = [[NSUserDefaults standardUserDefaults] sshPort];
 	
 	[_accountPanelNameField setStringValue:@""];
 	[_accountPanelAccessKeyIdField setStringValue:@""];
 	[_accountPanelSecretAccessKeyField setStringValue:@""];
 	[_accountPanelSshPrivateKeyFileField setStringValue:@""];
 	[_accountPanelSshUserNameField setStringValue:@""];
+	[_accountPanelSshPortField setStringValue:@""];
 	
 	[_accountPanelSshPrivateKeyFileField.cell setPlaceholderString:defaultSshPrivateKeyFile ? defaultSshPrivateKeyFile : @""];
-	[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @""];
+	[_accountPanelSshUserNameField.cell setPlaceholderString:defaultSshUserName ? defaultSshUserName : @"root"];
+    [_accountPanelSshPortField.cell setPlaceholderString:defaultSshPort > 0 ? [NSString stringWithFormat:@"%d", defaultSshPort] : @"22"];
 
 	[_accountPanelSaveButton setEnabled:NO];
 	[_accountPanel makeFirstResponder:_accountPanelAccessKeyIdField];
-	
+    
 	[NSApp beginSheet:_accountPanel
 	   modalForWindow:[NSApp mainWindow]
 		modalDelegate:self

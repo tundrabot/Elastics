@@ -25,20 +25,12 @@ NSString *const kAWSServiceOption				= @"AWSService";
 NSString *const kAWSPathOption					= @"AWSPath";
 NSString *const kAWSUseSSLOption				= @"AWSUseSSL";
 
-// Human region titles
-static NSString *const kAWSUSEastRegionTitle				= @"US East (Virginia)";
-static NSString *const kAWSUSWestNorthCaliforniaRegionTitle	= @"US West (North California)";
-static NSString *const kAWSUSWestOregonRegionTitle			= @"US West (Oregon)";
-static NSString *const kAWSEURegionTitle					= @"EU West (Ireland)";
-static NSString *const kAWSAsiaPacificSingaporeRegionTitle	= @"Asia Pacific (Singapore)";
-static NSString *const kAWSAsiaPacificJapanRegionTitle		= @"Asia Pacific (Japan)";
-static NSString *const kAWSSouthAmericaSaoPauloRegionTitle	= @"South America (Sao Paulo)";
-static NSString *const kAWSUSGovCloudRegionTitle			= @"US GovCloud";
-
 // Static variables
-static NSMutableDictionary *_awsRequestDefaultOptions;
+static NSArray *_s_awsRegions;
+static NSMutableDictionary *_s_awsRequestDefaultOptions;
 
 @interface AWSRequest ()
+
 @property (nonatomic, retain, readonly) NSString *host;
 @property (nonatomic, retain, readonly) NSString *apiVersion;
 @property (nonatomic, retain) NSHTTPURLResponse *responseInfo;
@@ -47,7 +39,8 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 @property (nonatomic, retain) AWSResponse *response;
 @property (nonatomic, retain) AWSErrorResponse *errorResponse;
 @property (nonatomic, retain) NSDate *startedAt;
-@property (nonatomic, retain) NSDate *completedAt;
+@property (nonatomic, retain) NSDate *finishedAt;
+
 - (NSString *)queryFromParameters:(NSDictionary *)parameters;
 - (NSString *)signatureForParameters:(NSDictionary *)parameters method:(NSString *)method;
 - (NSDictionary *)parametersForAction:(NSString *)action method:(NSString *)method parameters:(NSDictionary *)parameters;
@@ -55,41 +48,60 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 - (AWSResponse *)parseResponse;
 - (void)currentConnectionDidFinishLoading;
 - (void)currentConnectionDidFailWithError:(NSError *)error;
+
 @end
 
 @implementation AWSRequest
 
+@synthesize delegate = _delegate;
 @synthesize responseInfo = _responseInfo;
 @synthesize responseData = _responseData;
 @synthesize responseParser = _responseParser;
 @synthesize response = _response;
 @synthesize errorResponse = _errorResponse;
 @synthesize startedAt = _startedAt;
-@synthesize completedAt = _completedAt;
+@synthesize finishedAt = _finishedAt;
 
-#pragma mark -
-#pragma mark Initialization
+#pragma mark - Initialization
 
 + (void)initialize
 {
-	if (!_awsRequestDefaultOptions) {
-		_awsRequestDefaultOptions = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-									 AWSApiDefaultRegion, kAWSRegionOption,
-									 AWSApiDefaultPath, kAWSPathOption,
-									 [NSNumber numberWithBool:YES], kAWSUseSSLOption,
-									 nil];
+    if (!_s_awsRegions) {
+        _s_awsRegions = [[NSArray alloc] initWithObjects:
+                         kAWSUSEastRegion,
+                         kAWSUSWestNorthCaliforniaRegion,
+                         kAWSUSWestOregonRegion,
+                         kAWSEURegion,
+                         kAWSAsiaPacificSingaporeRegion,
+                         kAWSAsiaPacificJapanRegion,
+                         kAWSSouthAmericaSaoPauloRegion,
+                         kAWSUSGovCloudRegion,
+                         nil];
+    }
+    
+	if (!_s_awsRequestDefaultOptions) {
+		_s_awsRequestDefaultOptions = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                       AWSApiDefaultRegion, kAWSRegionOption,
+                                       AWSApiDefaultPath, kAWSPathOption,
+                                       [NSNumber numberWithBool:YES], kAWSUseSSLOption,
+                                       nil];
 		
 	}
 }
 
 + (NSDictionary *)defaultOptions
 {
-	return _awsRequestDefaultOptions;
+	return _s_awsRequestDefaultOptions;
 }
 
 + (void)setDefaultOptions:(NSDictionary *)options
 {
-	[_awsRequestDefaultOptions addEntriesFromDictionary:options];
+	[_s_awsRequestDefaultOptions addEntriesFromDictionary:options];
+}
+
++ (NSArray *)regions
+{
+    return _s_awsRegions;
 }
 
 + (NSString *)regionTitleForRegion:(NSString *)region
@@ -135,16 +147,15 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	TBRelease(_response);
 	TBRelease(_errorResponse);
 	TBRelease(_startedAt);
-	TBRelease(_completedAt);
+	TBRelease(_finishedAt);
 	[super dealloc];
 }
 
-#pragma mark -
-#pragma mark Properties
+#pragma mark - Properties
 
 - (NSString *)accessKeyId
 {
-	NSString *result = [_options objectForKey:kAWSAccessKeyIdOption] ? [_options objectForKey:kAWSAccessKeyIdOption] : [_awsRequestDefaultOptions objectForKey:kAWSAccessKeyIdOption];
+	NSString *result = [_options objectForKey:kAWSAccessKeyIdOption] ? [_options objectForKey:kAWSAccessKeyIdOption] : [_s_awsRequestDefaultOptions objectForKey:kAWSAccessKeyIdOption];
 	return result ? result : @"";
 }
 
@@ -155,7 +166,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)secretAccessKey
 {
-	NSString *result = [_options objectForKey:kAWSSecretAccessKeyOption] ? [_options objectForKey:kAWSSecretAccessKeyOption] : [_awsRequestDefaultOptions objectForKey:kAWSSecretAccessKeyOption];
+	NSString *result = [_options objectForKey:kAWSSecretAccessKeyOption] ? [_options objectForKey:kAWSSecretAccessKeyOption] : [_s_awsRequestDefaultOptions objectForKey:kAWSSecretAccessKeyOption];
 	return result ? result : @"";
 }
 
@@ -166,7 +177,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)region
 {
-	return [_options objectForKey:kAWSRegionOption] ? [_options objectForKey:kAWSRegionOption] : [_awsRequestDefaultOptions objectForKey:kAWSRegionOption];
+	return [_options objectForKey:kAWSRegionOption] ? [_options objectForKey:kAWSRegionOption] : [_s_awsRequestDefaultOptions objectForKey:kAWSRegionOption];
 }
 
 - (void)setRegion:(NSString *)value
@@ -176,7 +187,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)service
 {
-	return [_options objectForKey:kAWSServiceOption] ? [_options objectForKey:kAWSServiceOption] : [_awsRequestDefaultOptions objectForKey:kAWSServiceOption];
+	return [_options objectForKey:kAWSServiceOption] ? [_options objectForKey:kAWSServiceOption] : [_s_awsRequestDefaultOptions objectForKey:kAWSServiceOption];
 }
 
 - (void)setService:(NSString *)value
@@ -186,7 +197,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (NSString *)path
 {
-	return [_options objectForKey:kAWSPathOption] ? [_options objectForKey:kAWSPathOption] : [_awsRequestDefaultOptions objectForKey:kAWSPathOption];
+	return [_options objectForKey:kAWSPathOption] ? [_options objectForKey:kAWSPathOption] : [_s_awsRequestDefaultOptions objectForKey:kAWSPathOption];
 }
 
 - (void)setPath:(NSString *)value
@@ -196,7 +207,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 
 - (BOOL)useSSL
 {
-	return [_options objectForKey:kAWSUseSSLOption] ? [[_options objectForKey:kAWSUseSSLOption] boolValue] : [[_awsRequestDefaultOptions objectForKey:kAWSUseSSLOption] boolValue];
+	return [_options objectForKey:kAWSUseSSLOption] ? [[_options objectForKey:kAWSUseSSLOption] boolValue] : [[_s_awsRequestDefaultOptions objectForKey:kAWSUseSSLOption] boolValue];
 }
 
 - (void)setUseSSL:(BOOL)value
@@ -209,7 +220,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	NSAssert([self.service length] > 0, @"Empty service.");
 	NSAssert([self.region length] > 0, @"Empty region.");
 	
-	return [NSString stringWithFormat:@"%@.%@", self.service, self.region];
+	return [NSString stringWithFormat:@"%@.%@.%@", self.service, self.region, kAWSDomain];
 }
 
 - (NSString *)apiVersion
@@ -234,8 +245,15 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	}
 }
 
-#pragma mark -
-#pragma mark Parameter handling
+- (NSTimeInterval)age
+{
+    if (_isRunning)
+        return 0;
+    else
+        return _finishedAt ? [[NSDate date] timeIntervalSinceDate:_finishedAt] : NSTimeIntervalSince1970;
+}
+
+#pragma mark - Parameter handling
 
 //
 // Given an array ["a", "b", "c"] and key "Value", produces
@@ -373,8 +391,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return requestParameters;
 }
 
-#pragma mark -
-#pragma mark Request handling
+#pragma mark - Request handling
 
 - (BOOL)start
 {
@@ -387,23 +404,30 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return FALSE;
 }
 
+- (BOOL)isRunning
+{
+    return _isRunning;
+}
+
 - (BOOL)startRequestWithAction:(NSString *)action parameters:(NSDictionary *)parameters
 {
 	@synchronized(self) {
-		if (_isRunning == NO)
+		if (!_isRunning)
 			_isRunning = YES;
 		else
 			return FALSE;
 	}
+    
+//    TBTrace(@"++ %@", self.region);
 	
 	self.responseData = [NSMutableData data];
 	self.startedAt = [NSDate date];
-	self.completedAt = nil;
+	self.finishedAt = nil;
 
-	// Prepare parameters
+	// prepare parameters
 	NSDictionary *requestParameters = [self parametersForAction:action method:AWSApiDefaultMethod parameters:parameters];
 	
-	// Prepare request URL
+	// prepare request URL
 	NSURL *url = [NSURL URLWithString:
 				  [NSString stringWithFormat:@"%@://%@%@?%@",
 				   self.useSSL ? @"https" : @"http",
@@ -412,16 +436,16 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 				   [self queryFromParameters:requestParameters],
 				   nil]];
 	
-	// Prepare request
+	// prepare request
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 	[request setHTTPMethod:AWSApiDefaultMethod];
 	[request setCachePolicy:NSURLRequestReloadIgnoringCacheData];
 	
-	// Start connection thread
+	// start connection thread
 	[NSThread detachNewThreadSelector:@selector(requestThread:) toTarget:self withObject:request];
 	[request release];
 	
-	// Notify delegate that request started
+	// notify delegate that request started
 	[_delegate requestDidStartLoading:self];
 	
 	return TRUE;
@@ -439,8 +463,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	return nil;
 }
 
-#pragma mark -
-#pragma mark Connection thread
+#pragma mark - Connection thread
 
 #define WAITING_FOR_CONNECTION			0                                                                                                            
 #define DONE_WAITING_FOR_CONNECTION		1                                                                                                            
@@ -451,15 +474,12 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 	
 	@try {
 		_connectionLock = [[NSConditionLock alloc] initWithCondition:WAITING_FOR_CONNECTION];	
-		
-		NSURLConnection *connection = [NSURLConnection connectionWithRequest:(NSURLRequest *)object delegate:self];
-		[connection start];
+        NSURLConnection *connection = [NSURLConnection connectionWithRequest:(NSURLRequest *)object delegate:self];
+        [connection start];
 		
 		NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
 		while ([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]) {
 			if ([_connectionLock tryLockWhenCondition:DONE_WAITING_FOR_CONNECTION]) {
-				[_connectionLock unlock];
-				TBRelease(_connectionLock);
 				break;
 			}
 		}
@@ -527,11 +547,20 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 //		[responseString release];
 	}
 #endif
+
+//    TBTrace(@"== %@", self.region);
 	
-	self.completedAt = [NSDate date];
+	self.finishedAt = [NSDate date];
 	self.responseParser = [TBXML tbxmlWithXMLData:self.responseData];
 	
 	if ([_responseInfo statusCode] >= 400) {
+#ifdef TB_DEBUG
+        {
+            NSString *responseString = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
+            TBTrace(@"%@", responseString);
+            [responseString release];
+        }
+#endif
 		self.response = nil;
 		self.errorResponse = [self parseErrorResponse];
 	}
@@ -557,7 +586,7 @@ static NSMutableDictionary *_awsRequestDefaultOptions;
 {
 	TBLog(@"%@", error);
 	
-	self.completedAt = [NSDate date];
+	self.finishedAt = [NSDate date];
 
 	self.response = nil;
 	[_delegate request:self didFailWithError:error];

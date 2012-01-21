@@ -1,5 +1,5 @@
 + add support for GovtCloud
 + add Support link to the help menu
 + add option to set custom SSH port
-
-- show instance count in all regions (?)
++ show instance count in all regions
++ added Open AWS Console command

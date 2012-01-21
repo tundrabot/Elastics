@@ -33,17 +33,18 @@ extern NSString *const kAWSUseSSLOption;
 	AWSErrorResponse		*_errorResponse;
 	BOOL					_isRunning;
 	NSDate					*_startedAt;
-	NSDate					*_completedAt;
+	NSDate					*_finishedAt;
 }
 
 + (NSDictionary *)defaultOptions;
 + (void)setDefaultOptions:(NSDictionary *)options;
 
++ (NSArray *)regions;
 + (NSString *)regionTitleForRegion:(NSString *)region;
 
 - (id)initWithOptions:(NSDictionary *)options delegate:(id<AWSRequestDelegate>)delegate;
 
-// Options
+@property (nonatomic, assign) id<AWSRequestDelegate> delegate;
 @property (nonatomic, copy) NSString *accessKeyId;
 @property (nonatomic, copy) NSString *secretAccessKey;
 @property (nonatomic, copy) NSString *region;
@@ -54,10 +55,12 @@ extern NSString *const kAWSUseSSLOption;
 // Start async request
 - (BOOL)start;
 - (BOOL)startWithParameters:(NSDictionary *)parameters;
+- (BOOL)isRunning;
 
-// Request timestamps
+// Request timestamps and request age
 - (NSDate *)startedAt;
-- (NSDate *)completedAt;
+- (NSDate *)finishedAt;
+- (NSTimeInterval)age;
 
 // Responses
 - (NSHTTPURLResponse *)responseInfo;

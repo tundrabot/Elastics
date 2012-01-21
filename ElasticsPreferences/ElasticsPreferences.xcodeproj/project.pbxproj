@@ -63,6 +63,8 @@
 		C3603F8D12DC87C200B13219 /* ElasticsIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ElasticsIcon.icns; sourceTree = SOURCE_ROOT; };
 		C379FAFE12D881B600D055EF /* AccountsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountsManager.h; sourceTree = "<group>"; };
 		C379FAFF12D881B600D055EF /* AccountsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountsManager.m; sourceTree = "<group>"; };
+		C3C8A1C814C9AE2B00DF4E0E /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../../TBDebug.h; sourceTree = "<group>"; };
+		C3C8A1C914C9AE2B00DF4E0E /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../../TBMacros.h; sourceTree = "<group>"; };
 		C3CE00A012D739C4006E87EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C3EA80F313E1A04C00FFFF7F /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Edit.png; sourceTree = "<group>"; };
 		C3F1A54012C78EA5001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = ../Icon.icns; sourceTree = "<group>"; };
@@ -107,6 +109,8 @@
 				C379FAFF12D881B600D055EF /* AccountsManager.m */,
 				C31FFAF313DECA2300F5D20B /* Account.h */,
 				C31FFAF413DECA2300F5D20B /* Account.m */,
+				C3C8A1C814C9AE2B00DF4E0E /* TBDebug.h */,
+				C3C8A1C914C9AE2B00DF4E0E /* TBMacros.h */,
 				C3CEFE7312D72EA1006E87EF /* Value Transformers */,
 			);
 			path = Classes;
@@ -369,7 +373,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
@@ -388,7 +391,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
@@ -412,7 +414,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Beta;
@@ -446,7 +447,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Distribution;

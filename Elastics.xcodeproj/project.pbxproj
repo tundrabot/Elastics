@@ -54,6 +54,7 @@
 		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
 		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
 		C39E88D3136A952C00397C30 /* InstanceStateRunning272.png in Resources */ = {isa = PBXBuildFile; fileRef = C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */; };
+		C3A3F3BF14C85F3100397B2D /* BR.png in Resources */ = {isa = PBXBuildFile; fileRef = C3A3F3BE14C85F3100397B2D /* BR.png */; };
 		C3B3741C12D4B36200A1E47E /* Notification.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741A12D4B36200A1E47E /* Notification.png */; };
 		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
 		C3BC74DD13E13BFE0061D438 /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC74DA13E13BFE0061D438 /* Account.m */; };
@@ -191,12 +192,15 @@
 		C391BB1012CBA10A00BD929A /* MonitoringErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringErrorResponse.h; sourceTree = "<group>"; };
 		C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringErrorResponse.m; sourceTree = "<group>"; };
 		C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRunning272.png; sourceTree = "<group>"; };
+		C3A3F3BE14C85F3100397B2D /* BR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BR.png; sourceTree = "<group>"; };
 		C3B3741A12D4B36200A1E47E /* Notification.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification.png; sourceTree = "<group>"; };
 		C3B3741B12D4B36200A1E47E /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Error.png; sourceTree = "<group>"; };
 		C3BC74D913E13BFE0061D438 /* Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Account.h; path = ElasticsPreferences/Classes/Account.h; sourceTree = SOURCE_ROOT; };
 		C3BC74DA13E13BFE0061D438 /* Account.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Account.m; path = ElasticsPreferences/Classes/Account.m; sourceTree = SOURCE_ROOT; };
 		C3BC74DB13E13BFE0061D438 /* AccountsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountsManager.h; path = ElasticsPreferences/Classes/AccountsManager.h; sourceTree = SOURCE_ROOT; };
 		C3BC74DC13E13BFE0061D438 /* AccountsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountsManager.m; path = ElasticsPreferences/Classes/AccountsManager.m; sourceTree = SOURCE_ROOT; };
+		C3C8A1C614C9AE0F00DF4E0E /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../TBDebug.h; sourceTree = "<group>"; };
+		C3C8A1C714C9AE0F00DF4E0E /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../TBMacros.h; sourceTree = "<group>"; };
 		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
 		C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRefreshing.png; sourceTree = "<group>"; };
 		C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ValidateReceipt.h; path = Classes/ValidateReceipt.h; sourceTree = "<group>"; };
@@ -255,6 +259,8 @@
 				C3BC74DA13E13BFE0061D438 /* Account.m */,
 				C3BC74DB13E13BFE0061D438 /* AccountsManager.h */,
 				C3BC74DC13E13BFE0061D438 /* AccountsManager.m */,
+				C3C8A1C614C9AE0F00DF4E0E /* TBDebug.h */,
+				C3C8A1C714C9AE0F00DF4E0E /* TBMacros.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -433,10 +439,11 @@
 		C32C29EA12C0CB7200F2C136 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				C3EA80EB13E1702A00FFFF7F /* EU.png */,
-				C3EA80EC13E1702A00FFFF7F /* JP.png */,
-				C3EA80ED13E1702A00FFFF7F /* SG.png */,
 				C3EA80EE13E1702A00FFFF7F /* US.png */,
+				C3EA80EB13E1702A00FFFF7F /* EU.png */,
+				C3EA80ED13E1702A00FFFF7F /* SG.png */,
+				C3EA80EC13E1702A00FFFF7F /* JP.png */,
+				C3A3F3BE14C85F3100397B2D /* BR.png */,
 				C3603E5912DC7AA100B13219 /* Progress.png */,
 				C3B3741A12D4B36200A1E47E /* Notification.png */,
 				C3B3741B12D4B36200A1E47E /* Error.png */,
@@ -561,6 +568,7 @@
 				C3EA80F113E1702A00FFFF7F /* SG.png in Resources */,
 				C3EA80F213E1702A00FFFF7F /* US.png in Resources */,
 				C3E2048614A39CEA00AE23A6 /* TODO in Resources */,
+				C3A3F3BF14C85F3100397B2D /* BR.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,7 +694,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
@@ -703,7 +710,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
@@ -727,7 +733,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Beta;
@@ -758,7 +763,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = $HOME/include;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Distribution;

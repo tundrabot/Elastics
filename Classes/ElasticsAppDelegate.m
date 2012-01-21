@@ -14,15 +14,19 @@
 #import "ValidateReceipt.h"
 #import "Constants.h"
 
-#define INSTANCE_INFO_TABLE_WIDTH				220.f
-#define INSTANCE_INFO_LABEL_COLUMN_WIDTH		90.f
+//const CGFloat kActionItemTableWidth             = 180.;
+const CGFloat kActionItemLabelColumnWidth       = 170.;
 
-#define MESSAGE_TABLE_WIDTH						180.f
+const CGFloat kInstanceInfoTableWidth           = 220.;
+const CGFloat kInstanceInfoLabelColumnWidth     = 90.;
+
+const CGFloat kMessageTableWidth                = 180.;
 
 static NSString *const kElasticsPreferencesApplicationPath	= @"Contents/Helpers/Elastics Preferences.app";
 static NSString *const kElasticsPreferencesSuite			= @"com.tundrabot.Elastics-Preferences";
 
 @interface ElasticsAppDelegate ()
+
 - (void)resetMenu;
 - (void)addMenuActionItems;
 - (void)refreshMenu:(NSNotification *)notification;
@@ -33,14 +37,18 @@ static NSString *const kElasticsPreferencesSuite			= @"com.tundrabot.Elastics-Pr
 - (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)notificationMessageItemWithTitle:(NSString *)title;
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance;
+- (NSMenuItem *)regionItemWithRegion:(NSString *)awsRegion info:(NSString *)info;
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints;
 - (NSMenuItem *)infoItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action tooltip:(NSString *)tooltip;
-- (NSMenuItem *)actionItemWithLabel:(NSString *)label action:(SEL)action;
+- (NSMenuItem *)actionItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action;
+- (NSMenuItem *)dummyItem;
 
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance;
 - (void)refreshSubmenu:(NSMenu *)menu forInstance:(EC2Instance *)instance;
 
-- (void)refresh:(NSString *)instanceId;
+- (BOOL)refresh;
+- (BOOL)refreshIgnoringAge;
+- (BOOL)refresh:(NSString *)instanceId;
 - (void)refreshCompleted:(NSNotification *)notification;
 
 - (void)loadPreferences;
@@ -65,6 +73,8 @@ static NSString *const kElasticsPreferencesSuite			= @"com.tundrabot.Elastics-Pr
 - (void)connectToInstanceWithSshAction:(id)sender;
 - (void)connectToInstanceWithRdpAction:(id)sender;
 - (void)aboutAction:(id)sender;
+- (void)openAWSManagementConsoleAction:(id)sender;
+
 @end
 
 @implementation ElasticsAppDelegate
@@ -108,7 +118,9 @@ static NSImage *_usImage;
 static NSImage *_euImage;
 static NSImage *_sgImage;
 static NSImage *_jpImage;
+static NSImage *_brImage;
 
+#pragma mark - Initialization
 
 + (void)initialize
 {
@@ -188,6 +200,7 @@ static NSImage *_jpImage;
 	if (!_euImage)	                _euImage = [NSImage imageNamed:@"EU.png"];
 	if (!_sgImage)	                _sgImage = [NSImage imageNamed:@"SG.png"];
 	if (!_jpImage)	                _jpImage = [NSImage imageNamed:@"JP.png"];
+	if (!_brImage)	                _brImage = [NSImage imageNamed:@"BR.png"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -251,7 +264,7 @@ static NSImage *_jpImage;
 									  object:nil];
 	
 	// perform initial refresh
-	[self refresh:nil];
+	[self refresh];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
@@ -271,17 +284,16 @@ static NSImage *_jpImage;
 
 - (void)dealloc
 {
-	TBRelease(_statusItem);
-	TBRelease(_statusMenu);
+	[_statusItem release];
+	[_statusMenu release];
 	[_refreshTimer invalidate];
-	TBRelease(_refreshTimer);
-	TBRelease(_accountsManager);
+	[_refreshTimer release];
+	[_accountsManager release];
 
 	[super dealloc];
 }
 
-#pragma mark -
-#pragma mark Status menu
+#pragma mark - Status menu
 
 - (void)resetMenu
 {
@@ -295,16 +307,17 @@ static NSImage *_jpImage;
 	if ([[_accountsManager accounts] count]) {
 		// if there are configured accounts, show accounts and region selection
 		
+        DataSource *dataSource = [DataSource sharedDataSource];
 		NSInteger currentAccountId = [[NSUserDefaults standardUserDefaults] accountId];
-		NSInteger currentRegion = [[NSUserDefaults standardUserDefaults] region];
+        BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
 		
 		// Accounts
 		
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
-		
 		[_statusMenu addItem:[self titleItemWithTitle:@"AWS ACCOUNTS"]];
+        
 		for (Account *account in [_accountsManager accounts]) {
-			NSMenuItem *item = [self actionItemWithLabel:account.title action:@selector(selectAccountAction:)];
+			NSMenuItem *item = [self actionItemWithLabel:account.title info:nil action:@selector(selectAccountAction:)];
 			[item setTag:account.accountId];
 			[item setState:account.accountId == currentAccountId ? NSOnState : NSOffState];
 			[_statusMenu addItem:item];
@@ -313,189 +326,162 @@ static NSImage *_jpImage;
 		// Regions
 		
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
-		
 		[_statusMenu addItem:[self titleItemWithTitle:@"AWS REGIONS"]];
-		NSMenuItem *item;
-		
-		// TODO: ugly
-		item = [self actionItemWithLabel:@"US East (Virginia)" action:@selector(selectRegionAction:)];
-		[item setImage:_usImage];
-		[item setTag:kPreferencesAWSUSEastRegion];
-		[item setState:kPreferencesAWSUSEastRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-		
-		item = [self actionItemWithLabel:@"US West (North California)" action:@selector(selectRegionAction:)];
-		[item setImage:_usImage];
-		[item setTag:kPreferencesAWSUSWestNorthCaliforniaRegion];
-		[item setState:kPreferencesAWSUSWestNorthCaliforniaRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-		
-		item = [self actionItemWithLabel:@"US West (Oregon)" action:@selector(selectRegionAction:)];
-		[item setImage:_usImage];
-		[item setTag:kPreferencesAWSUSWestOregonRegion];
-		[item setState:kPreferencesAWSUSWestOregonRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-		
-		item = [self actionItemWithLabel:@"US GovCloud" action:@selector(selectRegionAction:)];
-		[item setImage:_usImage];
-		[item setTag:kPreferencesAWSUSGovCloudRegion];
-		[item setState:kPreferencesAWSUSGovCloudRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
         
-		item = [self actionItemWithLabel:@"EU West (Ireland)" action:@selector(selectRegionAction:)];
-		[item setImage:_euImage];
-		[item setTag:kPreferencesAWSEURegion];
-		[item setState:kPreferencesAWSEURegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-		
-		item = [self actionItemWithLabel:@"Asia Pacific (Singapore)" action:@selector(selectRegionAction:)];
-		[item setImage:_sgImage];
-		[item setTag:kPreferencesAWSAsiaPacificSingaporeRegion];
-		[item setState:kPreferencesAWSAsiaPacificSingaporeRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-		
-		item = [self actionItemWithLabel:@"Asia Pacific (Japan)" action:@selector(selectRegionAction:)];
-		[item setImage:_jpImage];
-		[item setTag:kPreferencesAWSAsiaPacificJapanRegion];
-		[item setState:kPreferencesAWSAsiaPacificJapanRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSEastRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSEastRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestNorthCaliforniaRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestNorthCaliforniaRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestOregonRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestOregonRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSGovCloudRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSGovCloudRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSEURegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSEURegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificSingaporeRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificSingaporeRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificJapanRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificJapanRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        [_statusMenu addItem:[self regionItemWithRegion:kAWSSouthAmericaSaoPauloRegion
+                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSSouthAmericaSaoPauloRegion hideTerminatedInstances:hideTerminatedInstances]]];
 
-		item = [self actionItemWithLabel:@"South America (Sao Paulo)" action:@selector(selectRegionAction:)];
-		[item setImage:_jpImage];
-		[item setTag:kPreferencesAWSSouthAmericaSaoPauloRegion];
-		[item setState:kPreferencesAWSSouthAmericaSaoPauloRegion == currentRegion ? NSOnState : NSOffState];
-		[_statusMenu addItem:item];
-        
 		// Refresh
 		
 		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
-			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" action:@selector(refreshAction:)]];
+			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" info:nil action:@selector(refreshAction:)]];
 		}
 	}
 	
 	// Preferences and Quit
 
 	[_statusMenu addItem:[NSMenuItem separatorItem]];
-	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." action:@selector(editPreferencesAction:)]];
-//	[_statusMenu addItem:[self actionItemWithLabel:@"About..." action:@selector(aboutAction:)]];
-	[_statusMenu addItem:[self actionItemWithLabel:@"Quit" action:@selector(quitAction:)]];
+	[_statusMenu addItem:[self actionItemWithLabel:@"Open AWS Management Console" info:nil action:@selector(openAWSManagementConsoleAction:)]];
+	[_statusMenu addItem:[self actionItemWithLabel:@"Preferences..." info:nil action:@selector(editPreferencesAction:)]];
+	[_statusMenu addItem:[self actionItemWithLabel:@"Quit" info:nil action:@selector(quitAction:)]];
 }
 
 - (void)refreshMenu:(NSNotification *)notification
 {
-	[_statusMenu setMinimumWidth:0];
+    NSDictionary *userInfo = [notification userInfo];
+    NSString *refreshType = [userInfo objectForKey:kDataSourceRefreshTypeInfoKey];
+    DataSource *dataSource = [DataSource sharedDataSource];
+    
+    if ([refreshType isEqualToString:kDataSourceCurrentRegionRefreshType]) {
+        // current region refresh
 
-	NSError *error = [[notification userInfo] objectForKey:kDataSourceErrorInfoKey];
-	if (error) {
-		// refresh finished with error
-		
-		[_statusMenu removeAllItems];
-
-		NSString *errorMessage = nil;
-
-		if ([error domain] == kAWSErrorDomain)
-			errorMessage = [[error userInfo] objectForKey:kAWSErrorMessageKey];
-		else
-			errorMessage = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
-
-		[_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
-
-		[self addMenuActionItems];
-		
-		[_statusItem setImage:_statusItemAlertImage];
-		[_statusItem setTitle:nil];
-	}
-	else {
-		// refresh finished successfully
-		
-		DataSource *dataSource = [DataSource sharedDataSource];
-        NSArray *instances = nil;
+        TBTrace(@"current region refresh");
         
-        BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
-        BOOL sortInstancesByTitle = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle];
-        if (hideTerminatedInstances) {
-            instances = sortInstancesByTitle ? dataSource.sortedRunningInstances : dataSource.runningInstances;
+        [_statusMenu setMinimumWidth:0];
+        [_statusMenu removeAllItems];
+
+        NSError *error = [userInfo objectForKey:kDataSourceErrorInfoKey];
+        if (error) {
+            // refresh finished with error
+            
+            NSString *errorMessage = nil;
+            if ([error domain] == kAWSErrorDomain)
+                errorMessage = [[error userInfo] objectForKey:kAWSErrorMessageKey];
+            else
+                errorMessage = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
+            
+            [_statusMenu addItem:[self errorMessageItemWithTitle:errorMessage]];
+            
+            [self addMenuActionItems];
+            
+            [_statusItem setImage:_statusItemAlertImage];
+            [_statusItem setTitle:nil];
         }
         else {
-            instances = sortInstancesByTitle ? dataSource.sortedInstances : dataSource.instances;
+            // refresh finished successfully
+            
+            NSArray *instances = nil;
+            
+            BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
+            BOOL sortInstancesByTitle = [[NSUserDefaults standardUserDefaults] isSortInstancesByTitle];
+            if (hideTerminatedInstances) {
+                instances = sortInstancesByTitle ? dataSource.sortedRunningInstances : dataSource.runningInstances;
+            }
+            else {
+                instances = sortInstancesByTitle ? dataSource.sortedInstances : dataSource.instances;
+            }
+            NSUInteger instancesCount = [instances count];
+            
+            if (instancesCount > 0) {
+                // there are instances
+                
+                [_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
+                
+                for (EC2Instance *instance in instances) {
+                    [_statusMenu addItem:[self instanceItemWithInstance:instance]];
+                }
+                
+                [self addMenuActionItems];
+            }
+            else {
+                // there are no instances
+                
+                NSString *awsRegionName = [AWSRequest regionTitleForRegion:[[NSUserDefaults standardUserDefaults] awsRegion]];
+                [_statusMenu addItem:[self notificationMessageItemWithTitle:
+                                      [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
+                
+                [self addMenuActionItems];
+            }
+
+            [_statusItem setImage:_statusItemImage];
+            
+            NSAttributedString *statusItemTitle = [[NSAttributedString alloc]
+                                                   initWithString:[NSString stringWithFormat:@"%d", instancesCount]
+                                                   attributes:_statusItemAttributes];
+            [_statusItem setAttributedTitle:statusItemTitle];
+            [statusItemTitle release];
+        
+            [_statusMenu setMinimumWidth:100];
         }
+    }
+    else if ([refreshType isEqualToString:kDataSourceAllRegionsRefreshType]) {
+        // all regions refresh
 
-		NSUInteger instancesCount = [instances count];
+        TBTrace(@"all regions refresh");
 
-		if (instancesCount > 0) {
-			// there are some instances
-			
-			NSString *instanceId = [[notification userInfo] objectForKey:kDataSourceInstanceIdInfoKey];
+        BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
 
-			if ([instanceId length] > 0) {
-				// was refresh for selected instance
+        for (NSString *awsRegion in [AWSRequest regions]) {
+            NSUInteger menuItemIdx = [[_statusMenu itemArray] indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+                *stop = [[obj representedObject] isEqualToString:awsRegion];
+                return *stop;
+            }];
+            
+            if (menuItemIdx != NSNotFound) {
+                NSMenuItem *regionItem = [self regionItemWithRegion:awsRegion
+                                                               info:[dataSource instanceCountInRegionStringRepresentation:awsRegion hideTerminatedInstances:hideTerminatedInstances]]; 
+                [_statusMenu removeItemAtIndex:menuItemIdx];
+                [_statusMenu insertItem: regionItem atIndex:menuItemIdx];
+            }
+        }
+    }
+    else {
+        // instance refresh
 
-				TBTrace(@"%@", instanceId);
-				
-				EC2Instance *instance = [dataSource instance:instanceId];
-
-				NSUInteger menuItemIdx = [[_statusMenu itemArray] indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
-					*stop = [[obj representedObject] isEqualToString:instanceId];
-					return *stop;
-				}];
-
-				if (instance && menuItemIdx != NSNotFound) {
-					NSMenu *instanceSubmenu = [[[_statusMenu itemArray] objectAtIndex:menuItemIdx] submenu];
-					[self refreshSubmenu:instanceSubmenu forInstance:instance];
-				}
-			}
-			else {
-				// was refresh for all instances
-
-				TBTrace(@"all instances");
-
-				[_statusMenu removeAllItems];
-				[_statusMenu addItem:[self titleItemWithTitle:@"INSTANCES"]];
-				
-				for (EC2Instance *instance in instances) {
-					[_statusMenu addItem:[self instanceItemWithInstance:instance]];
-				}
-
-//				// Add chart
-//				[_statusMenu addItem:[NSMenuItem separatorItem]];
-//				[_statusMenu addItem:[self titleItemWithTitle:@"CPU UTILIZATION"]];
-//				[_statusMenu addItem:[self chartItemWithRange:kAWSLastHourRange datapoints:[dataSource statisticsForMetric:kAWSCPUUtilizationMetric]]];
-//
-//				CGFloat maxCPUUtilization = [dataSource maximumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-//				CGFloat minCPUUtilization = [dataSource minimumValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-//				CGFloat avgCPUUtilization = [dataSource averageValueForMetric:kAWSCPUUtilizationMetric forRange:kAWSLastHourRange];
-//
-//				[_statusMenu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
-//				[_statusMenu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
-//				[_statusMenu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
-
-				[self addMenuActionItems];
-			}
-		}
-		else {
-			// there are no instances
-
-			[_statusMenu removeAllItems];
-
-			NSString *awsRegionName = [AWSRequest regionTitleForRegion:[[NSUserDefaults standardUserDefaults] awsRegion]];
-			[_statusMenu addItem:[self notificationMessageItemWithTitle:
-								  [NSString stringWithFormat:@"No instances in\n%@ region.", awsRegionName]]];
-
-			[self addMenuActionItems];
-		}
-		
-		[_statusItem setImage:_statusItemImage];
-
-		NSAttributedString *statusItemTitle = [[NSAttributedString alloc]
-											   initWithString:[NSString stringWithFormat:@"%d", instancesCount]
-											   attributes:_statusItemAttributes];
-		[_statusItem setAttributedTitle:statusItemTitle];
-		[statusItemTitle release];
-	}
-
-	[_statusMenu setMinimumWidth:100];
+        TBTrace(@"%@", refreshType);
+        
+        EC2Instance *instance = [dataSource instance:refreshType];
+        
+        NSUInteger menuItemIdx = [[_statusMenu itemArray] indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+            *stop = [[obj representedObject] isEqualToString:refreshType];
+            return *stop;
+        }];
+        
+        if (instance && menuItemIdx != NSNotFound) {
+            NSMenu *instanceSubmenu = [[[_statusMenu itemArray] objectAtIndex:menuItemIdx] submenu];
+            [self refreshSubmenu:instanceSubmenu forInstance:instance];
+        }
+        else
+            TBTrace(@"instance not found: %@ %d", instance, menuItemIdx);
+    }
 }
+
+#pragma mark - Menu item helpers
 
 - (NSMenuItem *)titleItemWithTitle:(NSString *)title
 {
@@ -522,7 +508,7 @@ static NSImage *_jpImage;
 	[table setHidesEmptyCells:NO];
 
 	NSTextTableBlock *titleBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1] autorelease];
-	[titleBlock setContentWidth:MESSAGE_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
+	[titleBlock setContentWidth:kMessageTableWidth type:NSTextBlockAbsoluteValueType];
 	[titleBlock setWidth:10.0f type:NSTextBlockAbsoluteValueType forLayer:NSTextBlockPadding edge:NSMinXEdge];
 
 	NSMutableParagraphStyle *titleParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -620,8 +606,99 @@ static NSImage *_jpImage;
 	
 	// set item represented object to instance id
 	[menuItem setRepresentedObject:instance.instanceId];
+    // set tag to mark instance items
+    [menuItem setTag:-100];
 
 	return menuItem;
+}
+
+- (NSMenuItem *)regionItemWithRegion:(NSString *)awsRegion info:(NSString *)info
+{
+    NSInteger currentRegion = [[NSUserDefaults standardUserDefaults] region];
+    NSMenuItem *item = nil;
+    
+    if ([awsRegion isEqualToString:kAWSUSEastRegion]) {
+        // US East (Virginia)
+        item = [self actionItemWithLabel:kAWSUSEastRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_usImage];
+        [item setTag:kPreferencesAWSUSEastRegion];
+        [item setRepresentedObject:kAWSUSEastRegion];
+        [item setState:kPreferencesAWSUSEastRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSUSWestNorthCaliforniaRegion]) {
+        // US West (North California)
+        item = [self actionItemWithLabel:kAWSUSWestNorthCaliforniaRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_usImage];
+        [item setTag:kPreferencesAWSUSWestNorthCaliforniaRegion];
+        [item setRepresentedObject:kAWSUSWestNorthCaliforniaRegion];
+        [item setState:kPreferencesAWSUSWestNorthCaliforniaRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSUSWestOregonRegion]) {
+        // US West (Oregon)
+        item = [self actionItemWithLabel:kAWSUSWestOregonRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_usImage];
+        [item setTag:kPreferencesAWSUSWestOregonRegion];
+        [item setRepresentedObject:kAWSUSWestOregonRegion];
+        [item setState:kPreferencesAWSUSWestOregonRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSEURegion]) {
+        // EU West (Ireland)
+        item = [self actionItemWithLabel:kAWSEURegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_euImage];
+        [item setTag:kPreferencesAWSEURegion];
+        [item setRepresentedObject:kAWSEURegion];
+        [item setState:kPreferencesAWSEURegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSAsiaPacificSingaporeRegion]) {
+        // Asia Pacific (Singapore)
+        item = [self actionItemWithLabel:kAWSAsiaPacificSingaporeRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_sgImage];
+        [item setTag:kPreferencesAWSAsiaPacificSingaporeRegion];
+        [item setRepresentedObject:kAWSAsiaPacificSingaporeRegion];
+        [item setState:kPreferencesAWSAsiaPacificSingaporeRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSAsiaPacificJapanRegion]) {
+        // Asia Pacific (Japan)
+        item = [self actionItemWithLabel:kAWSAsiaPacificJapanRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_jpImage];
+        [item setTag:kPreferencesAWSAsiaPacificJapanRegion];
+        [item setRepresentedObject:kAWSAsiaPacificJapanRegion];
+        [item setState:kPreferencesAWSAsiaPacificJapanRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSSouthAmericaSaoPauloRegion]) {
+        // South America (Sao Paulo)
+        item = [self actionItemWithLabel:kAWSSouthAmericaSaoPauloRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_brImage];
+        [item setTag:kPreferencesAWSSouthAmericaSaoPauloRegion];
+        [item setRepresentedObject:kAWSSouthAmericaSaoPauloRegion];
+        [item setState:kPreferencesAWSSouthAmericaSaoPauloRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    else if ([awsRegion isEqualToString:kAWSUSGovCloudRegion]) {
+        // US GovCloud
+        item = [self actionItemWithLabel:kAWSUSGovCloudRegionTitle
+                                    info:info
+                                  action:@selector(selectRegionAction:)];
+        [item setImage:_usImage];
+        [item setTag:kPreferencesAWSUSGovCloudRegion];
+        [item setRepresentedObject:kAWSUSGovCloudRegion];
+        [item setState:kPreferencesAWSUSGovCloudRegion == currentRegion ? NSOnState : NSOffState];
+    }
+    
+    return item;
 }
 
 - (NSMenuItem *)chartItemWithRange:(NSUInteger)range datapoints:(NSArray *)datapoints
@@ -640,11 +717,11 @@ static NSImage *_jpImage;
 	NSTextTable *table = [[[NSTextTable alloc] init] autorelease];
 	[table setNumberOfColumns:2];
 	[table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
-	[table setContentWidth:INSTANCE_INFO_TABLE_WIDTH type:NSTextBlockAbsoluteValueType];
+	[table setContentWidth:kInstanceInfoTableWidth type:NSTextBlockAbsoluteValueType];
 	[table setHidesEmptyCells:NO];
 
 	NSTextTableBlock *labelBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1] autorelease];
-	[labelBlock setContentWidth:INSTANCE_INFO_LABEL_COLUMN_WIDTH type:NSTextBlockAbsoluteValueType];
+	[labelBlock setContentWidth:kInstanceInfoLabelColumnWidth type:NSTextBlockAbsoluteValueType];
 
 	NSTextTableBlock *infoBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1] autorelease];
 
@@ -680,22 +757,62 @@ static NSImage *_jpImage;
 	return menuItem;
 }
 
-- (NSMenuItem *)actionItemWithLabel:(NSString *)label action:(SEL)action
+- (NSMenuItem *)actionItemWithLabel:(NSString *)label info:(NSString *)info action:(SEL)action
 {
-	NSMutableAttributedString *attributedTitle = [[[NSMutableAttributedString alloc]
-												   initWithString:label
-												   attributes:_actionItemAttributes] autorelease];
+    NSMutableAttributedString *attributedTitle = nil;
+    
+    if ([info length]) {
+        // action item with additional info on the right
+        
+        NSTextTable *table = [[[NSTextTable alloc] init] autorelease];
+        [table setNumberOfColumns:2];
+        [table setLayoutAlgorithm:NSTextTableAutomaticLayoutAlgorithm];
+//        [table setContentWidth:kActionItemTableWidth type:NSTextBlockAbsoluteValueType];
+        [table setHidesEmptyCells:NO];
 
-	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:action keyEquivalent:@""] autorelease];
-	[menuItem setIndentationLevel:1];
-	[menuItem setAttributedTitle:attributedTitle];
-	[menuItem setTarget:self];
+        NSTextTableBlock *labelBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:0 columnSpan:1] autorelease];
+        [labelBlock setContentWidth:kActionItemLabelColumnWidth type:NSTextBlockAbsoluteValueType];
+        
+        NSTextTableBlock *infoBlock = [[[NSTextTableBlock alloc] initWithTable:table startingRow:0 rowSpan:1 startingColumn:1 columnSpan:1] autorelease];
+        
+        NSMutableParagraphStyle *labelParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+        [labelParagraphStyle setAlignment:NSLeftTextAlignment];
+        [labelParagraphStyle setLineBreakMode:NSLineBreakByClipping];
+        [labelParagraphStyle setTextBlocks:[NSArray arrayWithObject:labelBlock]];
+        
+        NSMutableParagraphStyle *infoParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+        [infoParagraphStyle setAlignment:NSRightTextAlignment];
+        [infoParagraphStyle setTextBlocks:[NSArray arrayWithObject:infoBlock]];
+        
+        attributedTitle = [[[NSMutableAttributedString alloc] initWithString:@""] autorelease];
+        
+        NSUInteger textLength = [attributedTitle length];
+        [attributedTitle replaceCharactersInRange:NSMakeRange(textLength, 0) withString:[NSString stringWithFormat:@"%@\n", ([label length] ? label : @" ")]];
+        [attributedTitle setAttributes:_actionItemAttributes range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
+        [attributedTitle addAttribute:NSParagraphStyleAttributeName value:labelParagraphStyle range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
+        
+        textLength = [attributedTitle length];
+        [attributedTitle replaceCharactersInRange:NSMakeRange(textLength, 0) withString:[NSString stringWithFormat:@"%@", ([info length] ? info : @" ")]];
+        [attributedTitle setAttributes:_infoColumnAttributes range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
+        [attributedTitle addAttribute:NSParagraphStyleAttributeName value:infoParagraphStyle range:NSMakeRange(textLength, [attributedTitle length] - textLength)];
+    }
+    else {
+        // simple action item
 
-	return menuItem;
+        attributedTitle = [[[NSMutableAttributedString alloc] initWithString:label attributes:_actionItemAttributes] autorelease];
+    }
+    
+    NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:action keyEquivalent:@""] autorelease];
+
+    [menuItem setIndentationLevel:1];
+    [menuItem setAttributedTitle:attributedTitle];
+    [menuItem setTarget:self];
+    
+    return menuItem;
 }
 
-// HACK HACK HACK: this item is added at the beginning of the refresh and removed at the completion
-// to force menu redrawing
+// HACK HACK HACK
+// to force menu redrawing, this item is added at the beginning of the refresh and removed at the completion
 - (NSMenuItem *)dummyItem
 {
 	NSView *dummyView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 0.01f)] autorelease];
@@ -707,15 +824,13 @@ static NSImage *_jpImage;
 	return menuItem;
 }
 
-
-#pragma mark -
-#pragma mark Submenu
+#pragma mark - Submenu
 
 - (NSMenu *)submenuForInstance:(EC2Instance *)instance
 {
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
+    [menu setTitle:instance.instanceId];
 	[menu setDelegate:self];
-	[menu setTitle:instance.instanceId];
 	[menu setShowsStateColumn:NO];
  
 	[self refreshSubmenu:menu forInstance:instance];
@@ -771,10 +886,6 @@ static NSImage *_jpImage;
 				[menu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
 				[menu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 			}
-
-//			[menu addItem:[self infoItemWithLabel:@"Maximum" info:[NSString stringWithFormat:@"%.1f%%", maxCPUUtilization] action:NULL tooltip:nil]];
-//			[menu addItem:[self infoItemWithLabel:@"Minimum" info:[NSString stringWithFormat:@"%.1f%%", minCPUUtilization] action:NULL tooltip:nil]];
-//			[menu addItem:[self infoItemWithLabel:@"Average" info:[NSString stringWithFormat:@"%.1f%%", avgCPUUtilization] action:NULL tooltip:nil]];
 		}
 	}
 
@@ -782,9 +893,9 @@ static NSImage *_jpImage;
 		[menu addItem:[NSMenuItem separatorItem]];
 
 		if ([instance.platform isEqualToString:@"windows"])
-			[menu addItem:[self actionItemWithLabel:@"Connect (RDP)..." action:@selector(connectToInstanceWithRdpAction:)]];
+			[menu addItem:[self actionItemWithLabel:@"Connect (RDP)..." info:nil action:@selector(connectToInstanceWithRdpAction:)]];
 		else
-			[menu addItem:[self actionItemWithLabel:@"Connect (SSH)..." action:@selector(connectToInstanceWithSshAction:)]];
+			[menu addItem:[self actionItemWithLabel:@"Connect (SSH)..." info:nil action:@selector(connectToInstanceWithSshAction:)]];
 	}
 	
 //	[menu addItem:[NSMenuItem separatorItem]];
@@ -792,28 +903,45 @@ static NSImage *_jpImage;
 //	[menu addItem:[self actionItemWithLabel:@"Terminate..." action:@selector(connectToInstanceAction:)]];
 }
 
+#pragma mark - DataSource operations and notifications
 
-#pragma mark -
-#pragma mark DataSource operations and notifications
-
-- (void)refresh:(NSString *)instanceId
+- (BOOL)refresh
 {
 	DataSource *dataSource = [DataSource sharedDataSource];
-	
-	if ([instanceId length] > 0)
-		[dataSource refreshInstance:instanceId];
-	else
-		[dataSource refresh];
+    BOOL result = [dataSource refreshCurrentRegionIgnoringAge:NO];
+    [dataSource refreshAllRegionsIgnoringAge:NO];
+    
+    return result;
+}
+
+- (BOOL)refreshIgnoringAge
+{
+	DataSource *dataSource = [DataSource sharedDataSource];
+	BOOL result = [dataSource refreshCurrentRegionIgnoringAge:YES];
+    [dataSource refreshAllRegionsIgnoringAge:YES];
+    
+    return result;
+}
+
+- (BOOL)refresh:(NSString *)instanceId
+{
+	DataSource *dataSource = [DataSource sharedDataSource];
+	return [dataSource refreshInstance:instanceId ignoringAge:NO];
 }
 
 - (void)refreshCompleted:(NSNotification *)notification
 {
-	[_statusMenu addItem:[self dummyItem]];
-	
-//	[self performSelector:@selector(refreshMenu:)
-//			   withObject:notification
-//			   afterDelay:0.
-//				  inModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
+    NSDictionary *userInfo = [notification userInfo];
+    NSString *refreshType = [userInfo objectForKey:kDataSourceRefreshTypeInfoKey];
+    
+    if ([refreshType isEqualToString:kDataSourceCurrentRegionRefreshType]) {
+        [_statusMenu addItem:[self dummyItem]];
+    }
+    
+	[self performSelector:@selector(refreshMenu:)
+			   withObject:notification
+			   afterDelay:0.
+				  inModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 
 //	[self performSelectorOnMainThread:@selector(refreshMenu:)
 //						   withObject:notification
@@ -824,11 +952,10 @@ static NSImage *_jpImage;
 //						waitUntilDone:NO
 //								modes:[NSArray arrayWithObjects:NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
 
-	[self refreshMenu:notification];
+//	[self refreshMenu:notification];
 }
 
-#pragma mark -
-#pragma mark Menu delegate
+#pragma mark - Menu delegate
 
 - (void)menuNeedsUpdate:(NSMenu *)menu
 {
@@ -840,15 +967,16 @@ static NSImage *_jpImage;
 
 		// refresh all instances only if "Refresh on menu open" is checked
 		if ([[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
-			
-			for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
-				if ([menuItem representedObject]) {
-					[menuItem setImage:[NSImage imageNamed:@"InstanceStateRefreshing.png"]];
-					[menuItem setSubmenu:nil];
-				}
-			}
-			
-			[self refresh:nil];
+			if ([self refresh]) {
+                // data source did start refresh
+                for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
+                    // instanse items have negative tag
+                    if ([menuItem tag] < 0) {
+                        [menuItem setImage:[NSImage imageNamed:@"InstanceStateRefreshing.png"]];
+                        [menuItem setSubmenu:nil];
+                    }
+                }
+            }
 		}
 	}
 	else {
@@ -869,8 +997,7 @@ static NSImage *_jpImage;
 	}
 }
 
-#pragma mark -
-#pragma mark User Defaults
+#pragma mark - User Defaults
 
 - (void)loadPreferences
 {
@@ -912,7 +1039,6 @@ static NSImage *_jpImage;
 	
 	// setup AWS region from user defaults
 	NSString *awsRegion = [[NSUserDefaults standardUserDefaults] awsRegion];
-
 	if (awsRegion) {
 		[options setObject:awsRegion forKey:kAWSRegionOption];
 	}
@@ -925,11 +1051,10 @@ static NSImage *_jpImage;
 	TBTrace(@"%@", notification);
 
 	[self loadPreferences];
-	[self refresh:nil];
+	[self refreshIgnoringAge];
 }
 
-#pragma mark -
-#pragma mark Background refresh timer
+#pragma mark - Background refresh timer
 
 - (void)enableRefreshTimer
 {
@@ -963,17 +1088,16 @@ static NSImage *_jpImage;
 
 - (void)timerRefresh:(NSTimer *)timer
 {
-	[self refresh:nil];
+	[self refresh];
 }
 
-#pragma mark -
-#pragma mark Workspace notifications
+#pragma mark - Workspace notifications
 
 - (void)workspaceSessionDidBecomeActive:(NSNotification *)notification
 {
 	TBTrace(@"performing refresh and enabling background refresh timer");
 	
-	[self refresh:nil];
+	[self refresh];
 	[self enableRefreshTimer];
 }
 
@@ -989,11 +1113,10 @@ static NSImage *_jpImage;
 	TBTrace(@"scheduling refresh and enabling background refresh timer");
 
 	[self enableRefreshTimer];
-	[self performSelector:@selector(refresh:) withObject:nil afterDelay:15.0];
+	[self performSelector:@selector(refresh) withObject:nil afterDelay:15.0];
 }
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (void)nopAction:(id)sender
 {
@@ -1004,6 +1127,7 @@ static NSImage *_jpImage;
 	NSInteger accountId = [sender tag];
 	[[NSUserDefaults standardUserDefaults] setAccountId:accountId];
 	
+    [[DataSource sharedDataSource] reset];
 	[self preferencesDidChange:nil];
 }
 
@@ -1017,7 +1141,7 @@ static NSImage *_jpImage;
 
 - (void)refreshAction:(id)sender
 {
-	[self refresh:nil];
+	[self refreshIgnoringAge];
 }
 
 - (void)quitAction:(id)sender
@@ -1220,6 +1344,14 @@ static NSImage *_jpImage;
 	[copyright release];
 	
 	[_aboutPanel makeKeyAndOrderFront:self];
+}
+
+- (void)openAWSManagementConsoleAction:(id)sender
+{
+    NSString *awsRegion = [[NSUserDefaults standardUserDefaults] awsRegion];
+    NSString *urlString = [NSString stringWithFormat:@"https://console.aws.amazon.com/ec2/home?region=%@", awsRegion];
+
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
 }
 
 @end
