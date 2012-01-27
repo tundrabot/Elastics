@@ -50,6 +50,7 @@
 		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
 		C379FA7612D7F90300D055EF /* Elastics Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
+		C38ACE2714D29F7900A7C1E0 /* EC2Group.m in Sources */ = {isa = PBXBuildFile; fileRef = C38ACE2614D29F7900A7C1E0 /* EC2Group.m */; };
 		C391BB0C12CB9F3E00BD929A /* AWSErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */; };
 		C391BB0F12CBA0C600BD929A /* EC2ErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB0E12CBA0C600BD929A /* EC2ErrorResponse.m */; };
 		C391BB1212CBA10A00BD929A /* MonitoringErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C391BB1112CBA10A00BD929A /* MonitoringErrorResponse.m */; };
@@ -185,6 +186,8 @@
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
 		C3603E5912DC7AA100B13219 /* Progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Progress.png; sourceTree = "<group>"; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C38ACE2514D29F7900A7C1E0 /* EC2Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Group.h; sourceTree = "<group>"; };
+		C38ACE2614D29F7900A7C1E0 /* EC2Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Group.m; sourceTree = "<group>"; };
 		C391BB0A12CB9F3E00BD929A /* AWSErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSErrorResponse.h; sourceTree = "<group>"; };
 		C391BB0B12CB9F3E00BD929A /* AWSErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSErrorResponse.m; sourceTree = "<group>"; };
 		C391BB0D12CBA0C600BD929A /* EC2ErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2ErrorResponse.h; sourceTree = "<group>"; };
@@ -409,6 +412,8 @@
 				C32C293C12C0C60900F2C136 /* EC2Instance.m */,
 				C32C294112C0C60900F2C136 /* EC2InstanceState.h */,
 				C32C294212C0C60900F2C136 /* EC2InstanceState.m */,
+				C38ACE2514D29F7900A7C1E0 /* EC2Group.h */,
+				C38ACE2614D29F7900A7C1E0 /* EC2Group.m */,
 				C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */,
 				C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */,
 				C32C29BC12C0C93500F2C136 /* EC2Reservation.h */,
@@ -619,6 +624,7 @@
 				C3BC74DD13E13BFE0061D438 /* Account.m in Sources */,
 				C3BC74DE13E13BFE0061D438 /* AccountsManager.m in Sources */,
 				C311E2E014B1B177000CB004 /* EC2Placement.m in Sources */,
+				C38ACE2714D29F7900A7C1E0 /* EC2Group.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

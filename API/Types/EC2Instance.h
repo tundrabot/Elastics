@@ -10,6 +10,7 @@
 #import "AWSType.h"
 #import "EC2InstanceState.h"
 #import "EC2Placement.h"
+#import "EC2Group.h"
 #import "EC2Monitoring.h"
 
 @interface EC2Instance : AWSType {
@@ -25,7 +26,7 @@
 	EC2Monitoring		*_monitoring;
 	NSString			*_privateIpAddress;
 	NSString			*_ipAddress;
-	NSArray				*_tagSet;					// EC2Tag
+	NSArray				*_tagSet;   // EC2Tag
 }
 
 @property (nonatomic, retain, readonly) NSString *instanceId;
@@ -40,6 +41,12 @@
 @property (nonatomic, retain, readonly) NSString *privateIpAddress;
 @property (nonatomic, retain, readonly) NSString *ipAddress;
 @property (nonatomic, retain, readonly) NSArray *tagSet;
+
+// List of Security Groups from owning reservation
+- (NSArray *)groupSet;
+
+// The groupId of first security group from the security groups list
+- (NSString *)securityGroup;
 
 // Returns value of "Name" tag if present, nil otherwise
 - (NSString *)nameTag;

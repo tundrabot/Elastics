@@ -418,8 +418,6 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 			return FALSE;
 	}
 
-//    TBTrace(@"++ %@", self.region);
-
 	self.responseData = [NSMutableData data];
 	self.startedAt = [NSDate date];
 	self.finishedAt = nil;
@@ -546,8 +544,6 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 //		[responseString release];
 	}
 #endif
-
-//    TBTrace(@"== %@", self.region);
 
 	self.finishedAt = [NSDate date];
 	self.responseParser = [TBXML tbxmlWithXMLData:self.responseData];

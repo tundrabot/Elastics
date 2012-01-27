@@ -10,6 +10,7 @@
 #import "EC2Instance.h"
 #import "EC2InstanceState.h"
 #import "EC2Tag.h"
+#import "EC2Reservation.h"
 
 @interface EC2Instance ()
 @property (nonatomic, retain) NSString *instanceId;
@@ -98,6 +99,16 @@
 	TBRelease(_ipAddress);
 	TBRelease(_tagSet);
 	[super dealloc];
+}
+
+- (NSArray *)groupSet
+{
+	return ((EC2Reservation *)self.parent).groupSet;
+}
+
+- (NSString *)securityGroup
+{
+    return [[[self groupSet] objectAtIndex:0] groupId];
 }
 
 - (NSString *)nameTag

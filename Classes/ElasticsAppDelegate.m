@@ -370,7 +370,7 @@ static NSImage *_brImage;
     if ([refreshType isEqualToString:kDataSourceCurrentRegionRefreshType]) {
         // current region refresh
 
-        TBTrace(@"current region refresh");
+//        TBTrace(@"current region refresh");
         
         [_statusMenu setMinimumWidth:0];
         [_statusMenu removeAllItems];
@@ -442,7 +442,7 @@ static NSImage *_brImage;
     else if ([refreshType isEqualToString:kDataSourceAllRegionsRefreshType]) {
         // all regions refresh
 
-        TBTrace(@"all regions refresh");
+//        TBTrace(@"all regions refresh");
 
         BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
 
@@ -463,7 +463,7 @@ static NSImage *_brImage;
     else {
         // instance refresh
 
-        TBTrace(@"%@", refreshType);
+//        TBTrace(@"%@", refreshType);
         
         EC2Instance *instance = [dataSource instance:refreshType];
         
@@ -862,6 +862,7 @@ static NSImage *_brImage;
 	[menu addItem:[self infoItemWithLabel:@"Monitoring" info:instance.monitoring.monitoringType action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Availability Zone" info:instance.placement.availabilityZone action:NULL tooltip:nil]];
+	[menu addItem:[self infoItemWithLabel:@"Security Group" info:instance.securityGroup action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];
 
 	if ([instance.ipAddress length] > 0) {

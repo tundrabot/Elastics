@@ -122,7 +122,7 @@ TB_SINGLETON(DataSource);
         if (![instanceRequest isRunning] && (ignoreAge || [instanceRequest age] > kMaxRefreshAge))
             [requestSet addObject:instanceRequest];
 //        else
-//            TBTrace(@"-- age %.2f", [instanceRequest age]);
+//            TBTrace(@"skipping request with age %.2f", [instanceRequest age]);
 
 		// do we have anything scheduled?
 		if (![requestSet count])
@@ -168,7 +168,7 @@ TB_SINGLETON(DataSource);
             if (![instanceRequest isRunning] && (ignoreAge || [instanceRequest age] > kMaxOtherRegionsRefreshAge))
                 [requestSet addObject:instanceRequest];
 //            else
-//                TBTrace(@"-- %@ age: %.2f", awsRegion, [instanceRequest age]);
+//                TBTrace(@"skipping %@ request with age %.2f", awsRegion, [instanceRequest age]);
         }
         
 		// do we have anything scheduled?
@@ -224,7 +224,7 @@ TB_SINGLETON(DataSource);
 			if (![monitoringRequest isRunning] && (ignoreAge || [monitoringRequest age] > kMaxStatisticsAge || ![monitoringRequest.response.result.datapoints count]))
 				[requestSet addObject:monitoringRequest];
 //			else
-//				TBTrace(@"skipping instance %@ stats request with age: %.2f", instanceId, [monitoringRequest age]);
+//				TBTrace(@"skipping instance %@ stats request with age %.2f", instanceId, [monitoringRequest age]);
 		}
 	
 		// do we have anything scheduled?
