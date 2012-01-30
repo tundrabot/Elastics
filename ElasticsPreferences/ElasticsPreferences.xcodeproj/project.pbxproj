@@ -330,7 +330,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -422,7 +421,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
