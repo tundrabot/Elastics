@@ -155,7 +155,7 @@ TB_SINGLETON(DataSource);
 		NSMutableSet *requestSet = [NSMutableSet set];
 		[refreshInfo setObject:requestSet forKey:kRefreshInfoRequestSetKey];
         
-        for (NSString *awsRegion in [AWSRequest regions]) {
+        for (NSString *awsRegion in [[NSUserDefaults standardUserDefaults] activeAWSRegions]) {
             EC2DescribeInstancesRequest *instanceRequest = [_instanceRequests objectForKey:awsRegion];
             if (!instanceRequest) {
                 instanceRequest = [[EC2DescribeInstancesRequest alloc] initWithOptions:nil delegate:self];

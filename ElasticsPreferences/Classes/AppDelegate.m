@@ -10,11 +10,18 @@
 #import "Preferences.h"
 #import "RefreshIntervalValueTransformer.h"
 #import "RefreshIntervalLabelValueTransformer.h"
+#import "SshPortValueTransformer.h"
 #import "Account.h"
 #import "RegexKitLite.h"
 
-#define GENERAL_PANE_INDEX				0
-#define ADVANCED_PANE_INDEX				1
+enum {
+    kGeneralPaneIndex,
+    kRegionsPaneIndex,
+    kConnectionsPaneIndex,
+};
+
+//#define GENERAL_PANE_INDEX				0
+//#define ADVANCED_PANE_INDEX				1
 
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
@@ -47,7 +54,8 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 
 @synthesize window = _window;
 @synthesize generalPane = _generalPane;
-@synthesize advancedPane = _advancedPane;
+@synthesize regionsPane = _regionsPane;
+@synthesize connectionsPane = _connectionsPane;
 @synthesize accountsManager = _accountsManager;
 @synthesize accountsController = _accountsController;
 @synthesize accountsTableView = _accountsTableView;
@@ -65,17 +73,30 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 @synthesize accountPanelSshPortField = _accountPanelSshPortField;
 @synthesize lastValidSshPortValue = _lastValidSshPortValue;
 
+@synthesize regionUSEastEnabled = _regionUSEastEnabled;
+@synthesize regionUSWestNorthCaliforniaEnabled = _regionUSWestNorthCaliforniaEnabled;
+@synthesize regionUSWestOregonEnabled = _regionUSWestOregonEnabled;
+@synthesize regionEUEnabled = _regionEUEnabled;
+@synthesize regionAsiaPacificSingaporeEnabled = _regionAsiaPacificSingaporeEnabled;
+@synthesize regionAsiaPacificJapanEnabled = _regionAsiaPacificJapanEnabled;
+@synthesize regionSouthAmericaSaoPauloEnabled = _regionSouthAmericaSaoPauloEnabled;
+@synthesize regionUSGovCloudEnabled = _regionUSGovCloudEnabled;
+
 #pragma mark - Initialization
 
 + (void)initialize
 {
+    // register value transformers
 	RefreshIntervalValueTransformer *valueTransformer = [[[RefreshIntervalValueTransformer alloc] init] autorelease];
 	RefreshIntervalLabelValueTransformer *labelValueTransformer = [[[RefreshIntervalLabelValueTransformer alloc] init] autorelease];
+    SshPortValueTransformer *sshPortTransformer = [[[SshPortValueTransformer alloc] init] autorelease];
 	
 	[NSValueTransformer setValueTransformer:valueTransformer
 									forName:@"RefreshIntervalValueTransformer"];
 	[NSValueTransformer setValueTransformer:labelValueTransformer
 									forName:@"RefreshIntervalLabelValueTransformer"];
+	[NSValueTransformer setValueTransformer:sshPortTransformer
+									forName:@"SshPortValueTransformer"];
 	
 	// register default preference values
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -99,7 +120,7 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 	// show General pane on launch
 	[_accountsTableView setTarget:self];
 	[_accountsTableView	setDoubleAction:@selector(editAccountAction:)];
-	[self showPreferencePane:GENERAL_PANE_INDEX animated:NO];
+	[self showPreferencePane:kGeneralPaneIndex animated:NO];
 	
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
@@ -146,11 +167,14 @@ static NSString *const kElasticsSendFeedbackURL = @"mailto:support@tundrabot.com
 	NSView *pane = nil;
 
 	switch (paneIndex) {
-		case GENERAL_PANE_INDEX:
+		case kGeneralPaneIndex:
 			pane = _generalPane;
 			break;
-		case ADVANCED_PANE_INDEX:
-			pane = _advancedPane;
+		case kRegionsPaneIndex:
+			pane = _regionsPane;
+			break;
+		case kConnectionsPaneIndex:
+			pane = _connectionsPane;
 			break;
 	}
 	
@@ -522,18 +546,71 @@ enum {
 						contextInfo:NULL];
 }
 
+#pragma mark - Binding helpers for regions
 
-#pragma mark -
-#pragma mark Actions
+- (BOOL)isRegionUSEastEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionUSEastActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionUSWestNorthCaliforniaEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionUSWestNorthCaliforniaActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionUSWestOregonEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionUSWestOregonActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionEUEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionEUActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionAsiaPacificSingaporeEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionAsiaPacificSingaporeActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionAsiaPacificJapanEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionAsiaPacificJapanActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionSouthAmericaSaoPauloEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionSouthAmericaSaoPauloActive || [userDefaults.activeRegions count] > 1;
+}
+
+- (BOOL)isRegionUSGovCloudEnabled
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return !userDefaults.isRegionUSGovCloudActive || [userDefaults.activeRegions count] > 1;
+}
+
+#pragma mark - Actions
 
 - (IBAction)showGeneralPaneAction:(id)sender
 {
-	[self showPreferencePane:GENERAL_PANE_INDEX animated:YES];
+	[self showPreferencePane:kGeneralPaneIndex animated:YES];
 }
 
-- (IBAction)showAdvancedPaneAction:(id)sender
+- (IBAction)showRegionsPaneAction:(id)sender
 {
-	[self showPreferencePane:ADVANCED_PANE_INDEX animated:YES];
+	[self showPreferencePane:kRegionsPaneIndex animated:YES];
+}
+
+- (IBAction)showConnectionsPaneAction:(id)sender
+{
+	[self showPreferencePane:kConnectionsPaneIndex animated:YES];
 }
 
 - (IBAction)chooseDefaultKeypairAction:(id)sender
@@ -554,6 +631,21 @@ enum {
 		NSString *filename = [[[panel URLs] objectAtIndex:0] path];
 		[[NSUserDefaults standardUserDefaults] setSshPrivateKeyFile:filename];
 	}
+}
+
+- (IBAction)toggleRegionEnabledAction:(id)sender
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    BOOL moreThanOneActiveRegion = [[userDefaults activeRegions] count] > 1;
+
+    self.regionUSEastEnabled = !userDefaults.regionUSEastActive || moreThanOneActiveRegion;
+    self.regionUSWestNorthCaliforniaEnabled = !userDefaults.regionUSWestNorthCaliforniaActive || moreThanOneActiveRegion;
+    self.regionUSWestOregonEnabled = !userDefaults.regionUSWestOregonActive || moreThanOneActiveRegion;
+    self.regionEUEnabled = !userDefaults.regionEUActive || moreThanOneActiveRegion;
+    self.regionAsiaPacificSingaporeEnabled = !userDefaults.regionAsiaPacificSingaporeActive || moreThanOneActiveRegion;
+    self.regionAsiaPacificJapanEnabled = !userDefaults.regionAsiaPacificJapanActive || moreThanOneActiveRegion;
+    self.regionSouthAmericaSaoPauloEnabled = !userDefaults.regionSouthAmericaSaoPauloActive || moreThanOneActiveRegion;
+    self.regionUSGovCloudEnabled = !userDefaults.regionUSGovCloudActive || moreThanOneActiveRegion;
 }
 
 - (IBAction)chooseAccountKeypairAction:(id)sender

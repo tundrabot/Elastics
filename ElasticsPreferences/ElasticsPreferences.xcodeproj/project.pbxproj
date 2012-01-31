@@ -16,6 +16,7 @@
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
 		C31FFAF513DECA2300F5D20B /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C31FFAF413DECA2300F5D20B /* Account.m */; };
+		C332439C14D818BF00A21AB1 /* PreferencesRegions.png in Resources */ = {isa = PBXBuildFile; fileRef = C332439B14D818BF00A21AB1 /* PreferencesRegions.png */; };
 		C33E1F0B14C6C51B0071C50D /* SshPortValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E1F0A14C6C51B0071C50D /* SshPortValueTransformer.m */; };
 		C33E1F0F14C6D1660071C50D /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E1F0E14C6D1660071C50D /* RegexKitLite.m */; };
 		C33E1F1114C6D26E0071C50D /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33E1F1014C6D26E0071C50D /* libicucore.dylib */; };
@@ -52,6 +53,7 @@
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
 		C31FFAF313DECA2300F5D20B /* Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Account.h; sourceTree = "<group>"; };
 		C31FFAF413DECA2300F5D20B /* Account.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Account.m; sourceTree = "<group>"; };
+		C332439B14D818BF00A21AB1 /* PreferencesRegions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesRegions.png; sourceTree = "<group>"; };
 		C33E1F0914C6C51B0071C50D /* SshPortValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SshPortValueTransformer.h; sourceTree = "<group>"; };
 		C33E1F0A14C6C51B0071C50D /* SshPortValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SshPortValueTransformer.m; sourceTree = "<group>"; };
 		C33E1F0D14C6D1660071C50D /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = ../RegexKitLite/RegexKitLite.h; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 		C3F1A5FB12C79B5B001AB554 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C332439B14D818BF00A21AB1 /* PreferencesRegions.png */,
 				C3EA80F313E1A04C00FFFF7F /* Edit.png */,
 				C30A507E13615BF200998D56 /* JP.png */,
 				C313CFA412DA0115007CB52D /* PreferencesConsole.png */,
@@ -280,6 +283,7 @@
 				C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */,
 				C30A507F13615BF200998D56 /* JP.png in Resources */,
 				C3EA80F513E1A04C00FFFF7F /* Edit.png in Resources */,
+				C332439C14D818BF00A21AB1 /* PreferencesRegions.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -306,10 +306,11 @@ static NSImage *_brImage;
 {
 	if ([[_accountsManager accounts] count]) {
 		// if there are configured accounts, show accounts and region selection
-		
+
+		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         DataSource *dataSource = [DataSource sharedDataSource];
-		NSInteger currentAccountId = [[NSUserDefaults standardUserDefaults] accountId];
-        BOOL hideTerminatedInstances = [[NSUserDefaults standardUserDefaults] isHideTerminatedInstances];
+		NSInteger currentAccountId = userDefaults.accountId;
+        BOOL hideTerminatedInstances = userDefaults.isHideTerminatedInstances;
 		
 		// Accounts
 		
@@ -327,27 +328,35 @@ static NSImage *_brImage;
 		
 		[_statusMenu addItem:[NSMenuItem separatorItem]];
 		[_statusMenu addItem:[self titleItemWithTitle:@"AWS REGIONS"]];
-        
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSEastRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSEastRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestNorthCaliforniaRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestNorthCaliforniaRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestOregonRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestOregonRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSUSGovCloudRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSGovCloudRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSEURegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSEURegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificSingaporeRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificSingaporeRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificJapanRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificJapanRegion hideTerminatedInstances:hideTerminatedInstances]]];
-        [_statusMenu addItem:[self regionItemWithRegion:kAWSSouthAmericaSaoPauloRegion
-                                                   info:[dataSource instanceCountInRegionStringRepresentation:kAWSSouthAmericaSaoPauloRegion hideTerminatedInstances:hideTerminatedInstances]]];
+
+        if (userDefaults.isRegionUSEastActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSUSEastRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSEastRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionUSWestNorthCaliforniaActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestNorthCaliforniaRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestNorthCaliforniaRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionUSWestOregonActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSUSWestOregonRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSWestOregonRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionUSGovCloudActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSUSGovCloudRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSUSGovCloudRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionEUActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSEURegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSEURegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionAsiaPacificSingaporeActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificSingaporeRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificSingaporeRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionAsiaPacificJapanActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSAsiaPacificJapanRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSAsiaPacificJapanRegion hideTerminatedInstances:hideTerminatedInstances]]];
+        if (userDefaults.isRegionSouthAmericaSaoPauloActive)
+            [_statusMenu addItem:[self regionItemWithRegion:kAWSSouthAmericaSaoPauloRegion
+                                                       info:[dataSource instanceCountInRegionStringRepresentation:kAWSSouthAmericaSaoPauloRegion hideTerminatedInstances:hideTerminatedInstances]]];
 
 		// Refresh
 		
-		if (![[NSUserDefaults standardUserDefaults] isRefreshOnMenuOpen]) {
+		if (!userDefaults.isRefreshOnMenuOpen) {
 			[_statusMenu addItem:[NSMenuItem separatorItem]];
 			[_statusMenu addItem:[self actionItemWithLabel:@"Refresh" info:nil action:@selector(refreshAction:)]];
 		}

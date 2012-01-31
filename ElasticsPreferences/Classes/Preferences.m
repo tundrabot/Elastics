@@ -16,20 +16,27 @@ NSString *const kPreferencesDidChangeNotification       = @"com.tundrabot.Elasti
 NSString *const kPreferencesShouldTerminateNotification = @"com.tundrabot.Elastics.PreferencesShouldTerminateNotification";
 
 // Preference dictionary keys
-static NSString *const kPreferencesAccountIdKey                 = @"accountId";
-static NSString *const kPreferencesAWSRegionKey                 = @"awsRegion";
-static NSString *const kPreferencesRefreshIntervalKey           = @"refreshInterval";
-static NSString *const kPreferencesRefreshOnMenuOpenKey         = @"refreshOnMenuOpen";
-static NSString *const kPreferencesSortInstancesByTitleKey      = @"sortInstancesByTitle";
-static NSString *const kPreferencesHideTerminatedInstancesKey	= @"hideTerminatedInstances";
-static NSString *const kPreferencesSshPrivateKeyFileKey         = @"sshPrivateKeyFile";
-static NSString *const kPreferencesSshUserNameKey               = @"sshUserName";
-static NSString *const kPreferencesSshPortKey                   = @"sshPort";
-static NSString *const kPreferencesTerminalApplicationKey       = @"terminalApplication";
-static NSString *const kPreferencesOpenInTerminalTabKey         = @"openInTerminalTab";
-static NSString *const kPreferencesRdpApplicationKey            = @"rdpApplication";
-
-static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch";
+static NSString *const kPreferencesAccountIdKey                             = @"accountId";
+static NSString *const kPreferencesAWSRegionKey                             = @"awsRegion";
+static NSString *const kPreferencesRefreshIntervalKey                       = @"refreshInterval";
+static NSString *const kPreferencesRefreshOnMenuOpenKey                     = @"refreshOnMenuOpen";
+static NSString *const kPreferencesSortInstancesByTitleKey                  = @"sortInstancesByTitle";
+static NSString *const kPreferencesHideTerminatedInstancesKey               = @"hideTerminatedInstances";
+static NSString *const kPreferencesRegionUSEastActiveKey                    = @"regionUSEastActive";
+static NSString *const kPreferencesRegionUSWestNorthCaliforniaActiveKey     = @"regionUSWestNorthCaliforniaActive";
+static NSString *const kPreferencesRegionUSWestOregonActiveKey              = @"regionUSWestOregonActive";
+static NSString *const kPreferencesRegionEUActiveKey                        = @"regionEUActive";
+static NSString *const kPreferencesRegionAsiaPacificSingaporeActiveKey      = @"regionAsiaPacificSingaporeActive";
+static NSString *const kPreferencesRegionAsiaPacificJapanActiveKey          = @"regionAsiaPacificJapanActive";
+static NSString *const kPreferencesRegionSouthAmericaSaoPauloActiveKey      = @"regionSouthAmericaSaoPauloActive";
+static NSString *const kPreferencesRegionUSGovCloudActiveKey                = @"regionUSGovCloudActive";
+static NSString *const kPreferencesSshPrivateKeyFileKey                     = @"sshPrivateKeyFile";
+static NSString *const kPreferencesSshUserNameKey                           = @"sshUserName";
+static NSString *const kPreferencesSshPortKey                               = @"sshPort";
+static NSString *const kPreferencesTerminalApplicationKey                   = @"terminalApplication";
+static NSString *const kPreferencesOpenInTerminalTabKey                     = @"openInTerminalTab";
+static NSString *const kPreferencesRdpApplicationKey                        = @"rdpApplication";
+static NSString *const kPreferencesFirstLaunchKey                           = @"firstLaunch";
 
 @implementation NSUserDefaults (ElasticsPreferences)
 
@@ -40,14 +47,21 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 	if (!s_defaults) {
 		s_defaults = [[NSDictionary alloc]
 					 initWithObjectsAndKeys:
-						[NSNumber numberWithInt:kPreferencesAWSUSEastRegion], kPreferencesAWSRegionKey,
-						[NSNumber numberWithFloat:180], kPreferencesRefreshIntervalKey,
-						[NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
-						[NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
-                        [NSNumber numberWithBool:NO], kPreferencesHideTerminatedInstancesKey,
-//						@"root", kPreferencesSshUserNameKey,
-						[NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
-						nil];
+                      [NSNumber numberWithInt:kPreferencesAWSUSEastRegion], kPreferencesAWSRegionKey,
+                      [NSNumber numberWithFloat:180], kPreferencesRefreshIntervalKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
+                      [NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
+                      [NSNumber numberWithBool:NO], kPreferencesHideTerminatedInstancesKey,
+                      [NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionUSEastActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionUSWestNorthCaliforniaActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionUSWestOregonActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionEUActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionAsiaPacificSingaporeActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionAsiaPacificJapanActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionSouthAmericaSaoPauloActiveKey,
+                      [NSNumber numberWithBool:YES], kPreferencesRegionUSGovCloudActiveKey,
+                      nil];
 	}
 	return s_defaults;
 }
@@ -64,7 +78,16 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 
 - (NSInteger)region
 {
-	return [self integerForKey:kPreferencesAWSRegionKey];
+	NSInteger region = [self integerForKey:kPreferencesAWSRegionKey];
+    NSArray *activeRegions = self.activeRegions;
+    
+    // if currently selected default region was turned off, choose first active region as default
+    if (![activeRegions containsObject:[NSNumber numberWithInteger:region]]) {
+        region = [[activeRegions objectAtIndex:0] integerValue];
+        self.region = region;
+    }
+    
+    return region;
 }
 
 - (void)setRegion:(NSInteger)region
@@ -72,9 +95,9 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 	[self setInteger:region forKey:kPreferencesAWSRegionKey];
 }
 
-- (NSString *)awsRegion
+- (NSString *)_awsRegionFromRegion:(NSInteger)region
 {
-	switch ([self integerForKey:kPreferencesAWSRegionKey]) {
+	switch (region) {
 		case kPreferencesAWSUSEastRegion:
 			return kAWSUSEastRegion;
 		case kPreferencesAWSUSWestNorthCaliforniaRegion:
@@ -94,6 +117,11 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 		default:
 			return nil;
 	}
+}
+
+- (NSString *)awsRegion
+{
+	return [self _awsRegionFromRegion:self.region];
 }
 
 //- (void)setAwsRegion:(NSString *)value
@@ -150,6 +178,133 @@ static NSString *const kPreferencesFirstLaunchKey               = @"firstLaunch"
 - (void)setHideTerminatedInstances:(BOOL)value
 {
 	[self setBool:value forKey:kPreferencesHideTerminatedInstancesKey];
+}
+
+- (NSArray *)activeRegions
+{
+    NSMutableArray *result = [NSMutableArray array];
+    
+    if (self.isRegionUSEastActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSUSEastRegion]];
+    if (self.isRegionUSWestNorthCaliforniaActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSUSWestNorthCaliforniaRegion]];
+    if (self.isRegionUSWestOregonActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSUSWestOregonRegion]];
+    if (self.isRegionEUActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSEURegion]];
+    if (self.isRegionAsiaPacificSingaporeActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSAsiaPacificSingaporeRegion]];
+    if (self.isRegionAsiaPacificJapanActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSAsiaPacificJapanRegion]];
+    if (self.isRegionSouthAmericaSaoPauloActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSSouthAmericaSaoPauloRegion]];
+    if (self.isRegionUSGovCloudActive)
+        [result addObject:[NSNumber numberWithInteger:kPreferencesAWSUSGovCloudRegion]];
+    
+    return result;
+}
+
+- (void)setActiveRegions:(NSArray *)value
+{
+    self.regionUSEastActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSUSEastRegion]];
+    self.regionUSWestNorthCaliforniaActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSUSWestNorthCaliforniaRegion]];
+    self.regionUSWestOregonActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSUSWestOregonRegion]];
+    self.regionEUActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSEURegion]];
+    self.regionAsiaPacificSingaporeActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSAsiaPacificSingaporeRegion]];
+    self.regionAsiaPacificJapanActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSAsiaPacificJapanRegion]];
+    self.regionSouthAmericaSaoPauloActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSSouthAmericaSaoPauloRegion]];
+    self.regionUSGovCloudActive = [value containsObject:[NSNumber numberWithInteger:kPreferencesAWSUSGovCloudRegion]];
+}
+
+- (NSArray *)activeAWSRegions
+{
+    NSMutableArray *result = [NSMutableArray array];
+    
+    for (NSNumber *region in self.activeRegions) {
+        [result addObject:[self _awsRegionFromRegion:[region integerValue]]];
+    }
+    
+    return result;
+}
+
+- (BOOL)isRegionUSEastActive
+{
+    return [self boolForKey:kPreferencesRegionUSEastActiveKey];
+}
+
+- (void)setRegionUSEastActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionUSEastActiveKey];
+}
+
+- (BOOL)isRegionUSWestNorthCaliforniaActive
+{
+    return [self boolForKey:kPreferencesRegionUSWestNorthCaliforniaActiveKey];
+}
+
+- (void)setRegionUSWestNorthCaliforniaActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionUSWestNorthCaliforniaActiveKey];
+}
+
+- (BOOL)isRegionUSWestOregonActive
+{
+    return [self boolForKey:kPreferencesRegionUSWestOregonActiveKey];
+}
+
+- (void)setRegionUSWestOregonActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionUSWestOregonActiveKey];
+}
+
+- (BOOL)isRegionEUActive
+{
+    return [self boolForKey:kPreferencesRegionEUActiveKey];
+}
+
+- (void)setRegionEUActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionEUActiveKey];
+}
+
+- (BOOL)isRegionAsiaPacificSingaporeActive
+{
+    return [self boolForKey:kPreferencesRegionAsiaPacificSingaporeActiveKey];
+}
+
+- (void)setRegionAsiaPacificSingaporeActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionAsiaPacificSingaporeActiveKey];
+}
+
+- (BOOL)isRegionAsiaPacificJapanActive
+{
+    return [self boolForKey:kPreferencesRegionAsiaPacificJapanActiveKey];
+}
+
+- (void)setRegionAsiaPacificJapanActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionAsiaPacificJapanActiveKey];
+}
+
+- (BOOL)isRegionSouthAmericaSaoPauloActive
+{
+    return [self boolForKey:kPreferencesRegionSouthAmericaSaoPauloActiveKey];
+}
+
+- (void)setRegionSouthAmericaSaoPauloActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionSouthAmericaSaoPauloActiveKey];
+}
+
+- (BOOL)isRegionUSGovCloudActive
+{
+    return [self boolForKey:kPreferencesRegionUSGovCloudActiveKey];
+}
+
+- (void)setRegionUSGovCloudActive:(BOOL)value
+{
+    [self setBool:value forKey:kPreferencesRegionUSGovCloudActiveKey];
 }
 
 - (NSString *)sshPrivateKeyFile
