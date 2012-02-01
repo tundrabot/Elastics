@@ -17,8 +17,8 @@
 //const CGFloat kActionItemTableWidth             = 180.;
 const CGFloat kActionItemLabelColumnWidth       = 170.;
 
-const CGFloat kInstanceInfoTableWidth           = 220.;
-const CGFloat kInstanceInfoLabelColumnWidth     = 90.;
+const CGFloat kInstanceInfoTableWidth           = 230.;
+const CGFloat kInstanceInfoLabelColumnWidth     = 100.;
 
 const CGFloat kMessageTableWidth                = 180.;
 
@@ -574,15 +574,8 @@ static NSImage *_brImage;
 	NSMenuItem *menuItem = [[[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""] autorelease];
 	[menuItem setIndentationLevel:1];
 
-	NSString *nameTag = instance.nameTag;
-	NSAttributedString *attributedTitle = nil;
-
 	// set item title to Name tag if present, otherwise to Instance ID
-	if ([nameTag length] > 0)
-		attributedTitle = [[[NSAttributedString alloc] initWithString:nameTag attributes:_taggedInstanceAttributes] autorelease];
-	else
-		attributedTitle = [[[NSAttributedString alloc] initWithString:instance.instanceId attributes:_untaggedInstanceAttributes] autorelease];
-
+    NSAttributedString *attributedTitle = [[[NSAttributedString alloc] initWithString:instance.title attributes:_taggedInstanceAttributes] autorelease];
 	menuItem.attributedTitle = attributedTitle;
 
 	// set item image according to instance state
@@ -872,6 +865,8 @@ static NSImage *_brImage;
 	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Availability Zone" info:instance.placement.availabilityZone action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Security Group" info:instance.securityGroup action:NULL tooltip:nil]];
+    if (instance.autoscalingGroupName)
+        [menu addItem:[self infoItemWithLabel:@"Autoscaling Group" info:instance.autoscalingGroupName action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];
 
 	if ([instance.ipAddress length] > 0) {

@@ -51,6 +51,9 @@
 // Returns value of "Name" tag if present, nil otherwise
 - (NSString *)nameTag;
 
+// Returns value of "aws:autoscaling:groupName" tag if present, nil otherwise
+- (NSString *)autoscalingGroupName;
+
 // Return value of "Name" tag if present, instanceId otherwise
 - (NSString *)title;
 

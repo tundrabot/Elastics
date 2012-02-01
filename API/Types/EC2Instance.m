@@ -113,23 +113,43 @@
 
 - (NSString *)nameTag
 {
-	static NSString *const kNameTagKey = @"Name";
-	__block NSString *nameTagValue = nil;
+	static NSString *const tagName = @"Name";
+	__block NSString *tagValue = nil;
 
 	[_tagSet enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		if ([[obj key] compare:kNameTagKey options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-			nameTagValue = [obj value];
+		if ([[obj key] compare:tagName options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+			tagValue = [obj value];
 			*stop = YES;
 		}
 	}];
 
-	return [nameTagValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	return [tagValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSString *)autoscalingGroupName
+{
+	static NSString *const tagName = @"aws:autoscaling:groupName";
+	__block NSString *tagValue = nil;
+    
+	[_tagSet enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		if ([[obj key] compare:tagName options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+			tagValue = [obj value];
+			*stop = YES;
+		}
+	}];
+    
+	return [tagValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (NSString *)title
 {
 	NSString *nameTag = [self nameTag];
 	return [nameTag length] > 0 ? nameTag : _instanceId;
+}
+
+- (NSComparisonResult)compare:(EC2Instance *)instance
+{
+    return [self.title compare:instance.title];
 }
 
 @end

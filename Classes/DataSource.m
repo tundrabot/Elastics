@@ -349,7 +349,7 @@ TB_SINGLETON(DataSource);
 {
     NSString *currentRegion = [[NSUserDefaults standardUserDefaults] awsRegion];
     EC2DescribeInstancesRequest *request = [_instanceRequests objectForKey:currentRegion];
-	return [request.response.instancesSet sortedArrayUsingSelector:@selector(title)];
+	return [request.response.instancesSet sortedArrayUsingSelector:@selector(compare:)];
 }
 
 - (NSArray *)runningInstances
@@ -363,7 +363,7 @@ TB_SINGLETON(DataSource);
 
 - (NSArray *)sortedRunningInstances
 {
-    return [[self runningInstances] sortedArrayUsingSelector:@selector(title)];
+    return [[self runningInstances] sortedArrayUsingSelector:@selector(compare:)];
 }
 
 - (EC2Instance *)instance:(NSString *)instanceId
