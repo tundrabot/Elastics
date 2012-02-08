@@ -108,7 +108,10 @@
 
 - (NSString *)securityGroup
 {
-    return [[[self groupSet] objectAtIndex:0] groupId];
+    if ([[self groupSet] count])
+        return [[[self groupSet] objectAtIndex:0] groupId];
+    else
+        return nil;
 }
 
 - (NSString *)nameTag

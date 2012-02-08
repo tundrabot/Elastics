@@ -864,7 +864,8 @@ static NSImage *_brImage;
 	[menu addItem:[self infoItemWithLabel:@"Monitoring" info:instance.monitoring.monitoringType action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Launched At" info:[instance.launchTime localizedString] action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"Availability Zone" info:instance.placement.availabilityZone action:NULL tooltip:nil]];
-	[menu addItem:[self infoItemWithLabel:@"Security Group" info:instance.securityGroup action:NULL tooltip:nil]];
+    if (instance.securityGroup)
+        [menu addItem:[self infoItemWithLabel:@"Security Group" info:instance.securityGroup action:NULL tooltip:nil]];
     if (instance.autoscalingGroupName)
         [menu addItem:[self infoItemWithLabel:@"Autoscaling Group" info:instance.autoscalingGroupName action:NULL tooltip:nil]];
 	[menu addItem:[self infoItemWithLabel:@"State" info:instance.instanceState.name action:NULL tooltip:nil]];

@@ -117,7 +117,7 @@ static classname *_shared##classname = nil;								\
 
 // TB_VALIDATE_EXPIRATION_DATE
 
-#define __TB_EXPIRATION_INTERVAL (60 * 60 * 24 * 3) /* 3 days */
+#define __TB_EXPIRATION_INTERVAL (60 * 60 * 24 * 14) /* 14 days */
 
 #ifdef TB_USE_EXPIRATION_DATE
 
