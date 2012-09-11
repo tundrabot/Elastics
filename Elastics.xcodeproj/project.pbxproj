@@ -47,6 +47,7 @@
 		C32C32B112C23CDA00F2C136 /* NSString+DateConversions.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32B012C23CDA00F2C136 /* NSString+DateConversions.m */; };
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
+		C33F79B515FF4D310085CCE2 /* Icon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = C33F79B415FF4D310085CCE2 /* Icon.iconset */; };
 		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
 		C379FA7612D7F90300D055EF /* Elastics Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
@@ -68,13 +69,11 @@
 		C3D1DB4112DB3471005E576A /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D1DB4012DB3471005E576A /* Constants.m */; };
 		C3D1DC6912DB574F005E576A /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3D1DC6812DB574F005E576A /* Credits.html */; };
 		C3DAED6E12C34DE200A0106D /* ChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DAED6D12C34DE200A0106D /* ChartView.m */; };
-		C3E2048614A39CEA00AE23A6 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = C3E2048514A39CEA00AE23A6 /* TODO */; };
 		C3EA80EF13E1702A00FFFF7F /* EU.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80EB13E1702A00FFFF7F /* EU.png */; };
 		C3EA80F013E1702A00FFFF7F /* JP.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80EC13E1702A00FFFF7F /* JP.png */; };
 		C3EA80F113E1702A00FFFF7F /* SG.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80ED13E1702A00FFFF7F /* SG.png */; };
 		C3EA80F213E1702A00FFFF7F /* US.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80EE13E1702A00FFFF7F /* US.png */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
-		C3F1A4B912C78460001AB554 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A4B812C78460001AB554 /* Icon.icns */; };
 		C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* Preferences.m */; };
 /* End PBXBuildFile section */
 
@@ -184,6 +183,7 @@
 		C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringDatapoint.m; sourceTree = "<group>"; };
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
+		C33F79B415FF4D310085CCE2 /* Icon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; name = Icon.iconset; path = ../Icon.iconset; sourceTree = "<group>"; };
 		C3603E5912DC7AA100B13219 /* Progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Progress.png; sourceTree = "<group>"; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C38ACE2514D29F7900A7C1E0 /* EC2Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Group.h; sourceTree = "<group>"; };
@@ -222,7 +222,6 @@
 		C3EA80EE13E1702A00FFFF7F /* US.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = US.png; sourceTree = "<group>"; };
 		C3F19E6C12C60E87001AB554 /* EC2Monitoring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Monitoring.h; sourceTree = "<group>"; };
 		C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Monitoring.m; sourceTree = "<group>"; };
-		C3F1A4B812C78460001AB554 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
 		C3F1A54B12C78F98001AB554 /* ElasticsPreferences.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ElasticsPreferences.xcodeproj; path = ElasticsPreferences/ElasticsPreferences.xcodeproj; sourceTree = "<group>"; };
 		C3F1A65C12C7A7EF001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Preferences.h; path = ElasticsPreferences/Classes/Preferences.h; sourceTree = SOURCE_ROOT; };
 		C3F1A65D12C7A7EF001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Preferences.m; path = ElasticsPreferences/Classes/Preferences.m; sourceTree = SOURCE_ROOT; };
@@ -321,10 +320,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C33F79B415FF4D310085CCE2 /* Icon.iconset */,
 				C32C29EA12C0CB7200F2C136 /* Images */,
 				C3D1DC6812DB574F005E576A /* Credits.html */,
 				8D1107310486CEB800E47090 /* Info.plist */,
-				C3F1A4B812C78460001AB554 /* Icon.icns */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 			);
@@ -560,7 +559,6 @@
 				C32C2B5512C0E2B600F2C136 /* InstanceStateStopped.png in Resources */,
 				C32C2B5612C0E2B600F2C136 /* InstanceStateTerminated.png in Resources */,
 				C32C2B5712C0E2B600F2C136 /* StatusItem.png in Resources */,
-				C3F1A4B912C78460001AB554 /* Icon.icns in Resources */,
 				C3B3741C12D4B36200A1E47E /* Notification.png in Resources */,
 				C3B3741D12D4B36200A1E47E /* Error.png in Resources */,
 				C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */,
@@ -572,8 +570,8 @@
 				C3EA80F013E1702A00FFFF7F /* JP.png in Resources */,
 				C3EA80F113E1702A00FFFF7F /* SG.png in Resources */,
 				C3EA80F213E1702A00FFFF7F /* US.png in Resources */,
-				C3E2048614A39CEA00AE23A6 /* TODO in Resources */,
 				C3A3F3BF14C85F3100397B2D /* BR.png in Resources */,
+				C33F79B515FF4D310085CCE2 /* Icon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

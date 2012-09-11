@@ -33,9 +33,9 @@
 		if (refreshInterval == 1)
 			return [NSString stringWithFormat:@"1 minute"];
 		if (refreshInterval >= 1 && refreshInterval < 60)
-			return [NSString stringWithFormat:@"%d minutes", refreshInterval];
+			return [NSString stringWithFormat:@"%zd minutes", refreshInterval];
 		else
-			return [NSString stringWithFormat:@"%d hour", refreshInterval / 60];
+			return [NSString stringWithFormat:@"%zd hour", refreshInterval / 60];
 	}
 	else {
 		return @"Manually";

@@ -29,6 +29,7 @@
 	NSTextField			*_accountPanelSshPrivateKeyFileField;
 	NSTextField			*_accountPanelSshUserNameField;
 	NSTextField			*_accountPanelSshPortField;
+	NSTextField			*_accountPanelSshOptionsField;
 	NSButton			*_accountPanelSaveButton;
 	NSInteger			_accountActionType;
     NSString            *_lastValidSshPortValue;
@@ -61,6 +62,7 @@
 @property (assign) IBOutlet NSTextField *accountPanelSshPrivateKeyFileField;
 @property (assign) IBOutlet NSTextField *accountPanelSshUserNameField;
 @property (assign) IBOutlet NSTextField *accountPanelSshPortField;
+@property (assign) IBOutlet NSTextField *accountPanelSshOptionsField;
 
 @property (nonatomic, assign, getter=isRegionUSEastEnabled) BOOL regionUSEastEnabled;
 @property (nonatomic, assign, getter=isRegionUSWestNorthCaliforniaEnabled) BOOL regionUSWestNorthCaliforniaEnabled;

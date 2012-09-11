@@ -17,8 +17,23 @@
 - (void)loadAccounts;
 - (void)saveAccounts;
 
-- (OSStatus)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort;
-- (OSStatus)updateAccountAtIndex:(NSUInteger)idx withName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort;
+- (OSStatus)addAccountWithName:(NSString *)name
+                   accessKeyId:(NSString *)accessKeyId
+               secretAccessKey:(NSString *)secretAccessKey
+             sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+                   sshUserName:(NSString *)sshUserName
+                       sshPort:(NSUInteger)sshPort
+                    sshOptions:(NSString *)sshOptions;
+
+- (OSStatus)updateAccountAtIndex:(NSUInteger)idx
+                        withName:(NSString *)name
+                     accessKeyId:(NSString *)accessKeyId
+                 secretAccessKey:(NSString *)secretAccessKey
+               sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+                     sshUserName:(NSString *)sshUserName
+                         sshPort:(NSUInteger)sshPort
+                      sshOptions:(NSString *)sshOptions;
+
 - (void)removeAccountAtIndex:(NSUInteger)idx;
 
 - (Account *)accountWithId:(NSInteger)id;

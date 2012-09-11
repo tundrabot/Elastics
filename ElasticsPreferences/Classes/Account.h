@@ -22,13 +22,30 @@ extern NSString *const kAccountDidChangeNotification;
 	NSString			*_sshPrivateKeyFile;
 	NSString			*_sshUserName;
 	NSUInteger			_sshPort;
+    NSString            *_sshOptions;
 	SecKeychainItemRef	_itemRef;
 }
 
-+ (id)accountWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort;
++ (id)accountWithID:(NSInteger)accountId
+               name:(NSString *)name
+        accessKeyId:(NSString *)accessKeyId
+    secretAccessKey:(NSString *)secretAccessKey
+  sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+        sshUserName:(NSString *)sshUserName
+            sshPort:(NSUInteger)sshPort
+         sshOptions:(NSString *)sshOptions;
+
 + (id)accountWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
-- (id)initWithID:(NSInteger)accountId name:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort;
+- (id)initWithID:(NSInteger)accountId
+            name:(NSString *)name
+     accessKeyId:(NSString *)accessKeyId
+ secretAccessKey:(NSString *)secretAccessKey
+sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+     sshUserName:(NSString *)sshUserName
+         sshPort:(NSUInteger)sshPort
+      sshOptions:(NSString *)sshOptions;
+
 - (id)initWithKeychainItemRef:(SecKeychainItemRef)itemRef;
 
 - (OSStatus)save;
@@ -42,6 +59,7 @@ extern NSString *const kAccountDidChangeNotification;
 @property (nonatomic, copy) NSString *sshPrivateKeyFile;
 @property (nonatomic, copy) NSString *sshUserName;
 @property (nonatomic, assign) NSUInteger sshPort;
+@property (nonatomic, copy) NSString *sshOptions;
 @property (nonatomic, readonly) SecKeychainItemRef itemRef;
 
 @property (nonatomic, readonly) NSString *title;

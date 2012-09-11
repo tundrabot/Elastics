@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>Icon.icns</string>
+	<string>Icon</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.tundrabot.Elastics</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -17,22 +17,22 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.5.2</string>
+	<string>1.6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>152</string>
+	<string>160</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.6.6</string>
+	<key>LSUIElement</key>
+	<string>1</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2012, Tundra Bot</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2012, Tundra Bot</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.developer-tools</string>
-	<key>LSUIElement</key>
-	<string>1</string>
 </dict>
 </plist>

@@ -33,6 +33,8 @@ static NSString *const kPreferencesRegionUSGovCloudActiveKey                = @"
 static NSString *const kPreferencesSshPrivateKeyFileKey                     = @"sshPrivateKeyFile";
 static NSString *const kPreferencesSshUserNameKey                           = @"sshUserName";
 static NSString *const kPreferencesSshPortKey                               = @"sshPort";
+static NSString *const kPreferencesSshOptionsKey                            = @"sshOptions";
+static NSString *const kPreferencesUsingPublicDNSKey                        = @"sshUsingPublicDNS";
 static NSString *const kPreferencesTerminalApplicationKey                   = @"terminalApplication";
 static NSString *const kPreferencesOpenInTerminalTabKey                     = @"openInTerminalTab";
 static NSString *const kPreferencesRdpApplicationKey                        = @"rdpApplication";
@@ -52,6 +54,7 @@ static NSString *const kPreferencesFirstLaunchKey                           = @"
                       [NSNumber numberWithBool:YES], kPreferencesRefreshOnMenuOpenKey,
                       [NSNumber numberWithBool:NO], kPreferencesSortInstancesByTitleKey,
                       [NSNumber numberWithBool:NO], kPreferencesHideTerminatedInstancesKey,
+                      [NSNumber numberWithBool:NO], kPreferencesUsingPublicDNSKey,
                       [NSNumber numberWithBool:YES], kPreferencesFirstLaunchKey,
                       [NSNumber numberWithBool:YES], kPreferencesRegionUSEastActiveKey,
                       [NSNumber numberWithBool:YES], kPreferencesRegionUSWestNorthCaliforniaActiveKey,
@@ -335,6 +338,27 @@ static NSString *const kPreferencesFirstLaunchKey                           = @"
 - (void)setSshPort:(NSUInteger)value
 {
     [self setInteger:value forKey:kPreferencesSshPortKey];
+}
+
+- (NSString *)sshOptions
+{
+    return [self stringForKey:kPreferencesSshOptionsKey];
+}
+
+- (void)setSshOptions:(NSString *)value
+{
+    if (![self.sshOptions isEqualToString:value])
+        [self setObject:value forKey:kPreferencesSshOptionsKey];
+}
+
+- (BOOL)isUsingPublicDNS
+{
+	return [self boolForKey:kPreferencesUsingPublicDNSKey];
+}
+
+- (void)setUsingPublicDNS:(BOOL)value
+{
+	[self setBool:value forKey:kPreferencesUsingPublicDNSKey];
 }
 
 - (NSInteger)terminalApplication

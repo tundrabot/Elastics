@@ -115,7 +115,13 @@
 	}
 }
 
-- (OSStatus)addAccountWithName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
+- (OSStatus)addAccountWithName:(NSString *)name
+                   accessKeyId:(NSString *)accessKeyId
+               secretAccessKey:(NSString *)secretAccessKey
+             sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+                   sshUserName:(NSString *)sshUserName
+                       sshPort:(NSUInteger)sshPort
+                    sshOptions:(NSString *)sshOptions
 {
 	// make new account id to be max(existing IDs) + 1
 	NSInteger __block maxAccountId = -1;
@@ -131,7 +137,8 @@
 								 secretAccessKey:secretAccessKey
 							   sshPrivateKeyFile:sshPrivateKeyFile
 									 sshUserName:sshUserName
-                                         sshPort:sshPort];
+                                         sshPort:sshPort
+                                      sshOptions:sshOptions];
     
     OSStatus status = [newAccount save];
 
@@ -141,7 +148,14 @@
     return status;
 }
 
-- (OSStatus)updateAccountAtIndex:(NSUInteger)idx withName:(NSString *)name accessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey sshPrivateKeyFile:(NSString *)sshPrivateKeyFile sshUserName:(NSString *)sshUserName sshPort:(NSUInteger)sshPort
+- (OSStatus)updateAccountAtIndex:(NSUInteger)idx
+                        withName:(NSString *)name
+                     accessKeyId:(NSString *)accessKeyId
+                 secretAccessKey:(NSString *)secretAccessKey
+               sshPrivateKeyFile:(NSString *)sshPrivateKeyFile
+                     sshUserName:(NSString *)sshUserName
+                         sshPort:(NSUInteger)sshPort
+                      sshOptions:(NSString *)sshOptions
 {
     Account *account = [_accounts objectAtIndex:idx];
     
@@ -152,6 +166,7 @@
     NSString *sshPrivateKeyFileCopy = [account.sshPrivateKeyFile copy];
     NSString *sshUserNameCopy = [account.sshUserName copy];
     NSUInteger sshPortCopy = account.sshPort;
+    NSString *sshOptionsCopy = [account.sshOptions copy];
 
     account.name = name;
     account.accessKeyID = accessKeyId;
@@ -159,7 +174,8 @@
     account.sshPrivateKeyFile = sshPrivateKeyFile;
     account.sshUserName = sshUserName;
     account.sshPort = sshPort;
-    
+    account.sshOptions = sshOptions;
+
     OSStatus status = [account save];
     
     if (status != noErr) {
@@ -170,6 +186,7 @@
         account.sshPrivateKeyFile = sshPrivateKeyFileCopy;
         account.sshUserName = sshUserNameCopy;
         account.sshPort = sshPortCopy;
+        account.sshOptions = sshOptionsCopy;
     }
     
     [nameCopy release];
@@ -177,7 +194,8 @@
     [secretAccessKeyCopy release];
     [sshPrivateKeyFileCopy release];
     [sshUserNameCopy release];
-    
+    [sshOptions release];
+
     return status;
 }
 

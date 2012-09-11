@@ -440,7 +440,7 @@ static NSImage *_brImage;
             [_statusItem setImage:_statusItemImage];
             
             NSAttributedString *statusItemTitle = [[NSAttributedString alloc]
-                                                   initWithString:[NSString stringWithFormat:@"%d", instancesCount]
+                                                   initWithString:[NSString stringWithFormat:@"%zd", instancesCount]
                                                    attributes:_statusItemAttributes];
             [_statusItem setAttributedTitle:statusItemTitle];
             [statusItemTitle release];
@@ -486,7 +486,7 @@ static NSImage *_brImage;
             [self refreshSubmenu:instanceSubmenu forInstance:instance];
         }
         else
-            TBTrace(@"instance not found: %@ %d", instance, menuItemIdx);
+            TBTrace(@"instance not found: %@ %zd", instance, menuItemIdx);
     }
 }
 
@@ -1198,18 +1198,29 @@ static NSImage *_brImage;
 		else
 			sshPort = [[NSUserDefaults standardUserDefaults] sshPort];
 		
+		NSString *sshOptions = nil;
+		if ([account.sshOptions length] > 0)
+			sshOptions = account.sshOptions;
+		else
+			sshOptions = [[NSUserDefaults standardUserDefaults] sshOptions];
+
+        NSString *instanceAddress = [[NSUserDefaults standardUserDefaults] isUsingPublicDNS] ? instance.dnsName : instance.ipAddress;
+
 		NSString *cmd = @"ssh";
 
 		if (sshPort > 0)
-			cmd = [cmd stringByAppendingFormat:@" -p %d", sshPort];
+			cmd = [cmd stringByAppendingFormat:@" -p %zd", sshPort];
         
 		if ([sshPrivateKeyFile length] > 0)
 			cmd = [cmd stringByAppendingFormat:@" -i \'%@\'", sshPrivateKeyFile];
 		
+		if ([sshOptions length] > 0)
+			cmd = [cmd stringByAppendingFormat:@" %@", sshOptions];
+
 		if ([sshUserName length] > 0)
-			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instance.ipAddress];
+			cmd = [cmd stringByAppendingFormat:@" %@@%@", sshUserName, instanceAddress];
 		else
-			cmd = [cmd stringByAppendingFormat:@" %@", instance.ipAddress];
+			cmd = [cmd stringByAppendingFormat:@" %@", instanceAddress];
 
 		switch (terminalApplication) {
 			// use iTerm terminal
@@ -1312,7 +1323,8 @@ static NSImage *_brImage;
 		// TODO: switch ...
 		
 		NSString *cmd = nil;
-		
+        NSString *instanceAddress = [[NSUserDefaults standardUserDefaults] isUsingPublicDNS] ? instance.dnsName : instance.ipAddress;
+
 		cmd = [NSString stringWithFormat:
 			   @"tell application \"Finder\" to set the clipboard to \"%@\"\n"
 			   @"tell application \"CoRD\" to activate\n"
@@ -1322,7 +1334,7 @@ static NSImage *_brImage;
 			   @"	do shell script \"sleep 1\"\n"
 			   @"	keystroke return\n"
 			   @"end tell\n",
-			   instance.ipAddress];
+			   instanceAddress];
 
 		TBTrace(@"%@", cmd);
 		

@@ -370,8 +370,12 @@ void validateReceiptAtPath(NSString *path)
 		exit(VALIDATION_FAIL_EXIT_STATUS);
 	}
 	
-	NSData *guidData = nil;
-	
+	NSData *guidData = (NSData *)_macAddress();
+	if (!guidData) {
+		[pool release];
+		exit(VALIDATION_FAIL_EXIT_STATUS);
+	}
+
 	// as it turns out, it's a bad idea, to use these two NSBundle methods in your app:
 	//
 	// bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -384,12 +388,12 @@ void validateReceiptAtPath(NSString *path)
 
 //#undef TB_USE_SAMPLE_RECEIPT
 #ifdef TB_USE_SAMPLE_RECEIPT
-	bundleVersion = @"1.0.2";
-	bundleIdentifer = @"com.example.SampleApp";
+	bundleVersion = @"1.5.2";
+	bundleIdentifer = @"com.tundrabot.Elastics";
 
-	// example GUID for use with example receipt from Apple
-	unsigned char guid[] = { 0x00, 0x17, 0xf2, 0xc4, 0xbc, 0xc0 };		
-	guidData = [NSData dataWithBytes:guid length:sizeof(guid)];
+//	// example GUID for use with example receipt from Apple
+//	unsigned char guid[] = { 0x00, 0x17, 0xf2, 0xc4, 0xbc, 0xc0 };		
+//	guidData = [NSData dataWithBytes:guid length:sizeof(guid)];
 #else
 	bundleVersion = kElasticsBundleShortVersionString;
 	bundleIdentifer = kElasticsBundleIdentifier;

@@ -399,7 +399,7 @@ TB_SINGLETON(DataSource);
     NSUInteger count = [self instanceCountInRegion:awsRegion hideTerminatedInstances:hideTerminated];
     
     if (count != NSNotFound)
-        return count > 0 ? [NSString stringWithFormat:@"%d", count] : @"";
+        return count > 0 ? [NSString stringWithFormat:@"%zd", count] : @"";
     else
         return @"";
 }

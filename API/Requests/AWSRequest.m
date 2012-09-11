@@ -265,7 +265,7 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 	NSUInteger idx = 1;
 
 	for (id value in array) {
-		NSString *awsKey = [NSString stringWithFormat:@"%@.%d", key, idx];
+		NSString *awsKey = [NSString stringWithFormat:@"%@.%zd", key, idx];
 		[parameters setObject:value forKey:awsKey];
 	}
 
@@ -293,11 +293,11 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 			valuesArray = [NSArray arrayWithObject:value];
 		}
 
-		NSString *awsNameKey = [NSString stringWithFormat:@"Filter.%d.Name", idx];
+		NSString *awsNameKey = [NSString stringWithFormat:@"Filter.%zd.Name", idx];
 		[parameters setObject:key forKey:awsNameKey];
 
 		for (id valueItem in valuesArray) {
-			NSString *awsValueKey = [NSString stringWithFormat:@"Filter.%d.Value.%d", idx, valueIdx];
+			NSString *awsValueKey = [NSString stringWithFormat:@"Filter.%zd.Value.%zd", idx, valueIdx];
 			[parameters setObject:valueItem forKey:awsValueKey];
 			valueIdx++;
 		}
@@ -324,9 +324,9 @@ static NSMutableDictionary *_s_awsRequestDefaultOptions;
 		}
 
 		for (NSString *valueItem in valuesArray) {
-			NSString *awsNameKey = [NSString stringWithFormat:@"Dimensions.member.%d.Name", idx];
+			NSString *awsNameKey = [NSString stringWithFormat:@"Dimensions.member.%zd.Name", idx];
 			[parameters setObject:key forKey:awsNameKey];
-			NSString *awsValueKey = [NSString stringWithFormat:@"Dimensions.member.%d.Value", idx];
+			NSString *awsValueKey = [NSString stringWithFormat:@"Dimensions.member.%zd.Value", idx];
 			[parameters setObject:valueItem forKey:awsValueKey];
 			idx++;
 		}
