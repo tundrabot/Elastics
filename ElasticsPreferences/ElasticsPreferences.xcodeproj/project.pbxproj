@@ -12,7 +12,6 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		C30A507F13615BF200998D56 /* JP.png in Resources */ = {isa = PBXBuildFile; fileRef = C30A507E13615BF200998D56 /* JP.png */; };
 		C30F2CC412D60EEF00B5AB60 /* AWSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */; };
 		C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */ = {isa = PBXBuildFile; fileRef = C313CFA412DA0115007CB52D /* PreferencesConsole.png */; };
 		C31FFAF513DECA2300F5D20B /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C31FFAF413DECA2300F5D20B /* Account.m */; };
@@ -25,11 +24,10 @@
 		C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = C3603DCA12DC6D0B00B13219 /* Credits.html */; };
 		C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C3603F8D12DC87C200B13219 /* ElasticsIcon.icns */; };
 		C379FB0012D881B600D055EF /* AccountsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C379FAFF12D881B600D055EF /* AccountsManager.m */; };
+		C3CC6E5415FF83310051503D /* PreferencesConsole@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5215FF83310051503D /* PreferencesConsole@2x.png */; };
+		C3CC6E5515FF83310051503D /* PreferencesRegions@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5315FF83310051503D /* PreferencesRegions@2x.png */; };
 		C3CE00A112D739C4006E87EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3CE00A012D739C4006E87EF /* Security.framework */; };
 		C3EA80F513E1A04C00FFFF7F /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80F313E1A04C00FFFF7F /* Edit.png */; };
-		C3F1A5FF12C79B72001AB554 /* EU.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A5FC12C79B72001AB554 /* EU.png */; };
-		C3F1A60012C79B72001AB554 /* SG.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A5FD12C79B72001AB554 /* SG.png */; };
-		C3F1A60112C79B72001AB554 /* US.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F1A5FE12C79B72001AB554 /* US.png */; };
 		C3F1A65512C7A77D001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65412C7A77D001AB554 /* Preferences.m */; };
 		C3F1A78D12C8B514001AB554 /* RefreshIntervalLabelValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A78C12C8B514001AB554 /* RefreshIntervalLabelValueTransformer.m */; };
 		C3F1A7DD12C8BCB7001AB554 /* RefreshIntervalValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A7DC12C8BCB7001AB554 /* RefreshIntervalValueTransformer.m */; };
@@ -47,7 +45,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Elastics Preferences.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Elastics Preferences.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C30A507E13615BF200998D56 /* JP.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = JP.png; sourceTree = "<group>"; };
 		C30F2CC212D60EEF00B5AB60 /* AWSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AWSConstants.h; path = ../API/AWSConstants.h; sourceTree = SOURCE_ROOT; };
 		C30F2CC312D60EEF00B5AB60 /* AWSConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AWSConstants.m; path = ../API/AWSConstants.m; sourceTree = SOURCE_ROOT; };
 		C313CFA412DA0115007CB52D /* PreferencesConsole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PreferencesConsole.png; sourceTree = "<group>"; };
@@ -68,12 +65,11 @@
 		C379FAFF12D881B600D055EF /* AccountsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountsManager.m; sourceTree = "<group>"; };
 		C3C8A1C814C9AE2B00DF4E0E /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../../TBDebug.h; sourceTree = "<group>"; };
 		C3C8A1C914C9AE2B00DF4E0E /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../../TBMacros.h; sourceTree = "<group>"; };
+		C3CC6E5215FF83310051503D /* PreferencesConsole@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreferencesConsole@2x.png"; sourceTree = "<group>"; };
+		C3CC6E5315FF83310051503D /* PreferencesRegions@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreferencesRegions@2x.png"; sourceTree = "<group>"; };
 		C3CE00A012D739C4006E87EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C3EA80F313E1A04C00FFFF7F /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Edit.png; sourceTree = "<group>"; };
 		C3F1A54412C78F1E001AB554 /* ElasticsPreferences.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ElasticsPreferences.xcconfig; sourceTree = "<group>"; };
-		C3F1A5FC12C79B72001AB554 /* EU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EU.png; sourceTree = "<group>"; };
-		C3F1A5FD12C79B72001AB554 /* SG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SG.png; sourceTree = "<group>"; };
-		C3F1A5FE12C79B72001AB554 /* US.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = US.png; sourceTree = "<group>"; };
 		C3F1A65312C7A77D001AB554 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
 		C3F1A65412C7A77D001AB554 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
 		C3F1A78B12C8B514001AB554 /* RefreshIntervalLabelValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshIntervalLabelValueTransformer.h; sourceTree = "<group>"; };
@@ -87,9 +83,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C33E1F1114C6D26E0071C50D /* libicucore.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				C3CE00A112D739C4006E87EF /* Security.framework in Frameworks */,
+				C33E1F1114C6D26E0071C50D /* libicucore.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,12 +205,10 @@
 			isa = PBXGroup;
 			children = (
 				C332439B14D818BF00A21AB1 /* PreferencesRegions.png */,
+				C3CC6E5315FF83310051503D /* PreferencesRegions@2x.png */,
 				C3EA80F313E1A04C00FFFF7F /* Edit.png */,
-				C30A507E13615BF200998D56 /* JP.png */,
 				C313CFA412DA0115007CB52D /* PreferencesConsole.png */,
-				C3F1A5FC12C79B72001AB554 /* EU.png */,
-				C3F1A5FD12C79B72001AB554 /* SG.png */,
-				C3F1A5FE12C79B72001AB554 /* US.png */,
+				C3CC6E5215FF83310051503D /* PreferencesConsole@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -274,16 +268,14 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
-				C3F1A5FF12C79B72001AB554 /* EU.png in Resources */,
-				C3F1A60012C79B72001AB554 /* SG.png in Resources */,
-				C3F1A60112C79B72001AB554 /* US.png in Resources */,
 				C313CFA512DA0115007CB52D /* PreferencesConsole.png in Resources */,
 				C3603DCB12DC6D0B00B13219 /* Credits.html in Resources */,
 				C3603F8E12DC87C200B13219 /* ElasticsIcon.icns in Resources */,
-				C30A507F13615BF200998D56 /* JP.png in Resources */,
 				C3EA80F513E1A04C00FFFF7F /* Edit.png in Resources */,
 				C332439C14D818BF00A21AB1 /* PreferencesRegions.png in Resources */,
 				C33F79B315FF4D020085CCE2 /* Icon.iconset in Resources */,
+				C3CC6E5415FF83310051503D /* PreferencesConsole@2x.png in Resources */,
+				C3CC6E5515FF83310051503D /* PreferencesRegions@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,6 +355,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -386,6 +379,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
@@ -404,6 +398,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -441,6 +436,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;

@@ -193,14 +193,14 @@ static NSImage *_brImage;
 								  //infoParagraphStyle, NSParagraphStyleAttributeName,
 								  nil] retain];
 	
-	if (!_statusItemImage)		    _statusItemImage = [NSImage imageNamed:@"StatusItem.png"];
-	if (!_statusItemAlertImage)	    _statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert.png"];
+	if (!_statusItemImage)		    _statusItemImage = [NSImage imageNamed:@"StatusItem"];
+	if (!_statusItemAlertImage)	    _statusItemAlertImage = [NSImage imageNamed:@"StatusItemAlert"];
 	
-	if (!_usImage)	                _usImage = [NSImage imageNamed:@"US.png"];
-	if (!_euImage)	                _euImage = [NSImage imageNamed:@"EU.png"];
-	if (!_sgImage)	                _sgImage = [NSImage imageNamed:@"SG.png"];
-	if (!_jpImage)	                _jpImage = [NSImage imageNamed:@"JP.png"];
-	if (!_brImage)	                _brImage = [NSImage imageNamed:@"BR.png"];
+	if (!_usImage)	                _usImage = [NSImage imageNamed:@"US"];
+	if (!_euImage)	                _euImage = [NSImage imageNamed:@"EU"];
+	if (!_sgImage)	                _sgImage = [NSImage imageNamed:@"SG"];
+	if (!_jpImage)	                _jpImage = [NSImage imageNamed:@"JP"];
+	if (!_brImage)	                _brImage = [NSImage imageNamed:@"BR"];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -556,17 +556,17 @@ static NSImage *_brImage;
 
 - (NSMenuItem *)progressMessageItemWithTitle:(NSString *)title
 {
-	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Progress.png"]];
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Progress"]];
 }
 	 
 - (NSMenuItem *)errorMessageItemWithTitle:(NSString *)title
 {
-	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Error.png"]];
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Error"]];
 }
 
 - (NSMenuItem *)notificationMessageItemWithTitle:(NSString *)title
 {
-	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Notification.png"]];
+	return [self messageItemWithTitle:title image:[NSImage imageNamed:@"Notification"]];
 }
 
 - (NSMenuItem *)instanceItemWithInstance:(EC2Instance *)instance
@@ -582,22 +582,22 @@ static NSImage *_brImage;
 	NSImage *stateImage = nil;
 //	if (instance.instanceState.code == EC2_INSTANCE_STATE_RUNNING_272) {
 //		// special running state with 0x100 bit set to indicate problems with the host
-//		stateImage = [NSImage imageNamed:@"InstanceStateRunning272.png"];
+//		stateImage = [NSImage imageNamed:@"InstanceStateRunning272"];
 //	}
 //	else {
 //		// otherwise, according to API spec, high byte should be ignored
 		switch (instance.instanceState.code & 0xFF) {
 			case EC2_INSTANCE_STATE_RUNNING:
-				stateImage = [NSImage imageNamed:@"InstanceStateRunning.png"];
+				stateImage = [NSImage imageNamed:@"InstanceStateRunning"];
 				break;
 			case EC2_INSTANCE_STATE_STOPPED:
-				stateImage = [NSImage imageNamed:@"InstanceStateStopped.png"];
+				stateImage = [NSImage imageNamed:@"InstanceStateStopped"];
 				break;
 			case EC2_INSTANCE_STATE_TERMINATED:
-				stateImage = [NSImage imageNamed:@"InstanceStateTerminated.png"];
+				stateImage = [NSImage imageNamed:@"InstanceStateTerminated"];
 				break;
 			default:
-				stateImage = [NSImage imageNamed:@"InstanceStateOther.png"];
+				stateImage = [NSImage imageNamed:@"InstanceStateOther"];
 				break;
 		}
 //	}
@@ -978,7 +978,7 @@ static NSImage *_brImage;
                 for (NSMenuItem *menuItem in [_statusMenu itemArray]) {
                     // instanse items have negative tag
                     if ([menuItem tag] < 0) {
-                        [menuItem setImage:[NSImage imageNamed:@"InstanceStateRefreshing.png"]];
+                        [menuItem setImage:[NSImage imageNamed:@"InstanceStateRefreshing"]];
                         [menuItem setSubmenu:nil];
                     }
                 }

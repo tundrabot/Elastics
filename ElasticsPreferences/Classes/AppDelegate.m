@@ -20,9 +20,6 @@ enum {
     kConnectionsPaneIndex,
 };
 
-//#define GENERAL_PANE_INDEX				0
-//#define ADVANCED_PANE_INDEX				1
-
 #define PANE_SWITCH_ANIMATION_DURATION	0.25
 
 static NSString *const kElasticsWebsiteURL      = @"http://tundrabot.com";

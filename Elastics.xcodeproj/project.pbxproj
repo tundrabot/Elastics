@@ -48,6 +48,17 @@
 		C32C32F912C23FE000F2C136 /* MonitoringDatapoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C32F812C23FE000F2C136 /* MonitoringDatapoint.m */; };
 		C32C33C412C24F4200F2C136 /* MonitoringStatisticsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */; };
 		C33F79B515FF4D310085CCE2 /* Icon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = C33F79B415FF4D310085CCE2 /* Icon.iconset */; };
+		C33F79C215FF7ACC0085CCE2 /* EU@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79BE15FF7ACC0085CCE2 /* EU@2x.png */; };
+		C33F79C315FF7ACC0085CCE2 /* JP@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79BF15FF7ACC0085CCE2 /* JP@2x.png */; };
+		C33F79C415FF7ACC0085CCE2 /* SG@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79C015FF7ACC0085CCE2 /* SG@2x.png */; };
+		C33F79C515FF7ACC0085CCE2 /* US@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79C115FF7ACC0085CCE2 /* US@2x.png */; };
+		C33F79C715FF7B280085CCE2 /* BR@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79C615FF7B280085CCE2 /* BR@2x.png */; };
+		C33F79CE15FF7EAC0085CCE2 /* InstanceStateOther@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79C815FF7EAB0085CCE2 /* InstanceStateOther@2x.png */; };
+		C33F79CF15FF7EAC0085CCE2 /* InstanceStateRefreshing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79C915FF7EAB0085CCE2 /* InstanceStateRefreshing@2x.png */; };
+		C33F79D015FF7EAC0085CCE2 /* InstanceStateRunning@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79CA15FF7EAB0085CCE2 /* InstanceStateRunning@2x.png */; };
+		C33F79D115FF7EAC0085CCE2 /* InstanceStateRunning272@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79CB15FF7EAB0085CCE2 /* InstanceStateRunning272@2x.png */; };
+		C33F79D215FF7EAC0085CCE2 /* InstanceStateStopped@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79CC15FF7EAB0085CCE2 /* InstanceStateStopped@2x.png */; };
+		C33F79D315FF7EAC0085CCE2 /* InstanceStateTerminated@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C33F79CD15FF7EAC0085CCE2 /* InstanceStateTerminated@2x.png */; };
 		C3603E5A12DC7AA100B13219 /* Progress.png in Resources */ = {isa = PBXBuildFile; fileRef = C3603E5912DC7AA100B13219 /* Progress.png */; };
 		C379FA7612D7F90300D055EF /* Elastics Preferences.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C3BFED5B12D76B1A007A4EDF /* Elastics Preferences.app */; };
 		C379FD6612D89BB800D055EF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C379FD6512D89BB800D055EF /* Security.framework */; };
@@ -61,6 +72,11 @@
 		C3B3741D12D4B36200A1E47E /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B3741B12D4B36200A1E47E /* Error.png */; };
 		C3BC74DD13E13BFE0061D438 /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC74DA13E13BFE0061D438 /* Account.m */; };
 		C3BC74DE13E13BFE0061D438 /* AccountsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BC74DC13E13BFE0061D438 /* AccountsManager.m */; };
+		C3CC6E5915FF862B0051503D /* Error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5615FF862B0051503D /* Error@2x.png */; };
+		C3CC6E5A15FF862B0051503D /* Notification@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5715FF862B0051503D /* Notification@2x.png */; };
+		C3CC6E5B15FF862B0051503D /* Progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5815FF862B0051503D /* Progress@2x.png */; };
+		C3CC6E5E15FF86BC0051503D /* StatusItem@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5C15FF86BC0051503D /* StatusItem@2x.png */; };
+		C3CC6E5F15FF86BC0051503D /* StatusItemAlert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CC6E5D15FF86BC0051503D /* StatusItemAlert@2x.png */; };
 		C3CE021912D76678006E87EF /* StatusItemAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = C3CE021812D76678006E87EF /* StatusItemAlert.png */; };
 		C3D1D9C212DB2857005E576A /* InstanceStateRefreshing.png in Resources */ = {isa = PBXBuildFile; fileRef = C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */; };
 		C3D1DA6D12DB32C0005E576A /* ValidateReceipt.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D1DA6C12DB32C0005E576A /* ValidateReceipt.m */; };
@@ -184,6 +200,17 @@
 		C32C33C212C24F4200F2C136 /* MonitoringStatisticsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonitoringStatisticsResult.h; sourceTree = "<group>"; };
 		C32C33C312C24F4200F2C136 /* MonitoringStatisticsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MonitoringStatisticsResult.m; sourceTree = "<group>"; };
 		C33F79B415FF4D310085CCE2 /* Icon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; name = Icon.iconset; path = ../Icon.iconset; sourceTree = "<group>"; };
+		C33F79BE15FF7ACC0085CCE2 /* EU@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "EU@2x.png"; sourceTree = "<group>"; };
+		C33F79BF15FF7ACC0085CCE2 /* JP@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JP@2x.png"; sourceTree = "<group>"; };
+		C33F79C015FF7ACC0085CCE2 /* SG@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SG@2x.png"; sourceTree = "<group>"; };
+		C33F79C115FF7ACC0085CCE2 /* US@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "US@2x.png"; sourceTree = "<group>"; };
+		C33F79C615FF7B280085CCE2 /* BR@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BR@2x.png"; sourceTree = "<group>"; };
+		C33F79C815FF7EAB0085CCE2 /* InstanceStateOther@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateOther@2x.png"; sourceTree = "<group>"; };
+		C33F79C915FF7EAB0085CCE2 /* InstanceStateRefreshing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateRefreshing@2x.png"; sourceTree = "<group>"; };
+		C33F79CA15FF7EAB0085CCE2 /* InstanceStateRunning@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateRunning@2x.png"; sourceTree = "<group>"; };
+		C33F79CB15FF7EAB0085CCE2 /* InstanceStateRunning272@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateRunning272@2x.png"; sourceTree = "<group>"; };
+		C33F79CC15FF7EAB0085CCE2 /* InstanceStateStopped@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateStopped@2x.png"; sourceTree = "<group>"; };
+		C33F79CD15FF7EAC0085CCE2 /* InstanceStateTerminated@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InstanceStateTerminated@2x.png"; sourceTree = "<group>"; };
 		C3603E5912DC7AA100B13219 /* Progress.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Progress.png; sourceTree = "<group>"; };
 		C379FD6512D89BB800D055EF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C38ACE2514D29F7900A7C1E0 /* EC2Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Group.h; sourceTree = "<group>"; };
@@ -204,6 +231,11 @@
 		C3BC74DC13E13BFE0061D438 /* AccountsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountsManager.m; path = ElasticsPreferences/Classes/AccountsManager.m; sourceTree = SOURCE_ROOT; };
 		C3C8A1C614C9AE0F00DF4E0E /* TBDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBDebug.h; path = ../TBDebug.h; sourceTree = "<group>"; };
 		C3C8A1C714C9AE0F00DF4E0E /* TBMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBMacros.h; path = ../TBMacros.h; sourceTree = "<group>"; };
+		C3CC6E5615FF862B0051503D /* Error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Error@2x.png"; sourceTree = "<group>"; };
+		C3CC6E5715FF862B0051503D /* Notification@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Notification@2x.png"; sourceTree = "<group>"; };
+		C3CC6E5815FF862B0051503D /* Progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Progress@2x.png"; sourceTree = "<group>"; };
+		C3CC6E5C15FF86BC0051503D /* StatusItem@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "StatusItem@2x.png"; sourceTree = "<group>"; };
+		C3CC6E5D15FF86BC0051503D /* StatusItemAlert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "StatusItemAlert@2x.png"; sourceTree = "<group>"; };
 		C3CE021812D76678006E87EF /* StatusItemAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusItemAlert.png; sourceTree = "<group>"; };
 		C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = InstanceStateRefreshing.png; sourceTree = "<group>"; };
 		C3D1DA6B12DB32C0005E576A /* ValidateReceipt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ValidateReceipt.h; path = Classes/ValidateReceipt.h; sourceTree = "<group>"; };
@@ -444,21 +476,37 @@
 			isa = PBXGroup;
 			children = (
 				C3EA80EE13E1702A00FFFF7F /* US.png */,
+				C33F79C115FF7ACC0085CCE2 /* US@2x.png */,
 				C3EA80EB13E1702A00FFFF7F /* EU.png */,
+				C33F79BE15FF7ACC0085CCE2 /* EU@2x.png */,
 				C3EA80ED13E1702A00FFFF7F /* SG.png */,
+				C33F79C015FF7ACC0085CCE2 /* SG@2x.png */,
 				C3EA80EC13E1702A00FFFF7F /* JP.png */,
+				C33F79BF15FF7ACC0085CCE2 /* JP@2x.png */,
 				C3A3F3BE14C85F3100397B2D /* BR.png */,
+				C33F79C615FF7B280085CCE2 /* BR@2x.png */,
 				C3603E5912DC7AA100B13219 /* Progress.png */,
+				C3CC6E5815FF862B0051503D /* Progress@2x.png */,
 				C3B3741A12D4B36200A1E47E /* Notification.png */,
+				C3CC6E5715FF862B0051503D /* Notification@2x.png */,
 				C3B3741B12D4B36200A1E47E /* Error.png */,
+				C3CC6E5615FF862B0051503D /* Error@2x.png */,
 				C32C2B5212C0E2B600F2C136 /* StatusItem.png */,
+				C3CC6E5C15FF86BC0051503D /* StatusItem@2x.png */,
 				C3CE021812D76678006E87EF /* StatusItemAlert.png */,
+				C3CC6E5D15FF86BC0051503D /* StatusItemAlert@2x.png */,
 				C32C2B4E12C0E2B600F2C136 /* InstanceStateOther.png */,
+				C33F79C815FF7EAB0085CCE2 /* InstanceStateOther@2x.png */,
 				C32C2B4F12C0E2B600F2C136 /* InstanceStateRunning.png */,
+				C33F79CA15FF7EAB0085CCE2 /* InstanceStateRunning@2x.png */,
 				C32C2B5012C0E2B600F2C136 /* InstanceStateStopped.png */,
+				C33F79CC15FF7EAB0085CCE2 /* InstanceStateStopped@2x.png */,
 				C32C2B5112C0E2B600F2C136 /* InstanceStateTerminated.png */,
+				C33F79CD15FF7EAC0085CCE2 /* InstanceStateTerminated@2x.png */,
 				C3D1D9C112DB2857005E576A /* InstanceStateRefreshing.png */,
+				C33F79C915FF7EAB0085CCE2 /* InstanceStateRefreshing@2x.png */,
 				C39E88D2136A952C00397C30 /* InstanceStateRunning272.png */,
+				C33F79CB15FF7EAB0085CCE2 /* InstanceStateRunning272@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -572,6 +620,22 @@
 				C3EA80F213E1702A00FFFF7F /* US.png in Resources */,
 				C3A3F3BF14C85F3100397B2D /* BR.png in Resources */,
 				C33F79B515FF4D310085CCE2 /* Icon.iconset in Resources */,
+				C33F79C215FF7ACC0085CCE2 /* EU@2x.png in Resources */,
+				C33F79C315FF7ACC0085CCE2 /* JP@2x.png in Resources */,
+				C33F79C415FF7ACC0085CCE2 /* SG@2x.png in Resources */,
+				C33F79C515FF7ACC0085CCE2 /* US@2x.png in Resources */,
+				C33F79C715FF7B280085CCE2 /* BR@2x.png in Resources */,
+				C33F79CE15FF7EAC0085CCE2 /* InstanceStateOther@2x.png in Resources */,
+				C33F79CF15FF7EAC0085CCE2 /* InstanceStateRefreshing@2x.png in Resources */,
+				C33F79D015FF7EAC0085CCE2 /* InstanceStateRunning@2x.png in Resources */,
+				C33F79D115FF7EAC0085CCE2 /* InstanceStateRunning272@2x.png in Resources */,
+				C33F79D215FF7EAC0085CCE2 /* InstanceStateStopped@2x.png in Resources */,
+				C33F79D315FF7EAC0085CCE2 /* InstanceStateTerminated@2x.png in Resources */,
+				C3CC6E5915FF862B0051503D /* Error@2x.png in Resources */,
+				C3CC6E5A15FF862B0051503D /* Notification@2x.png in Resources */,
+				C3CC6E5B15FF862B0051503D /* Progress@2x.png in Resources */,
+				C3CC6E5E15FF86BC0051503D /* StatusItem@2x.png in Resources */,
+				C3CC6E5F15FF86BC0051503D /* StatusItemAlert@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +750,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -709,6 +774,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -726,6 +792,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -763,6 +830,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
