@@ -91,6 +91,7 @@
 		C3EA80F213E1702A00FFFF7F /* US.png in Resources */ = {isa = PBXBuildFile; fileRef = C3EA80EE13E1702A00FFFF7F /* US.png */; };
 		C3F19E6E12C60E87001AB554 /* EC2Monitoring.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F19E6D12C60E87001AB554 /* EC2Monitoring.m */; };
 		C3F1A65E12C7A7EF001AB554 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F1A65D12C7A7EF001AB554 /* Preferences.m */; };
+		E347F3BF864B12240C98FA2D /* libPods-Elastics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 003AE9D4D1E7AA3325CB24A9 /* libPods-Elastics.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +125,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		003AE9D4D1E7AA3325CB24A9 /* libPods-Elastics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Elastics.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -133,8 +135,12 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3020831BFDCCDD721E7EB304 /* Pods-Elastics.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Elastics.release.xcconfig"; path = "Pods/Target Support Files/Pods-Elastics/Pods-Elastics.release.xcconfig"; sourceTree = "<group>"; };
+		87EB7D96B198939682A612BD /* Pods-Elastics.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Elastics.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Elastics/Pods-Elastics.beta.xcconfig"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Elastics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Elastics.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C02C0999365F73C0ACE9E1B /* Pods-Elastics.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Elastics.distribution.xcconfig"; path = "Pods/Target Support Files/Pods-Elastics/Pods-Elastics.distribution.xcconfig"; sourceTree = "<group>"; };
+		A0C22F444421D2DA67DA12C0 /* Pods-Elastics.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Elastics.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Elastics/Pods-Elastics.debug.xcconfig"; sourceTree = "<group>"; };
 		C311E2DE14B1B177000CB004 /* EC2Placement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EC2Placement.h; sourceTree = "<group>"; };
 		C311E2DF14B1B177000CB004 /* EC2Placement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EC2Placement.m; sourceTree = "<group>"; };
 		C32823E112C90E1900020D48 /* AWSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSError.h; sourceTree = "<group>"; };
@@ -270,6 +276,7 @@
 				C3D1DA8412DB33E5005E576A /* IOKit.framework in Frameworks */,
 				C32C29CA12C0C9BB00F2C136 /* libz.dylib in Frameworks */,
 				C3D1DA8012DB33D8005E576A /* libcrypto.dylib in Frameworks */,
+				E347F3BF864B12240C98FA2D /* libPods-Elastics.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +343,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				C32C28C912C0C09200F2C136 /* Elastics.xcconfig */,
 				C3E2048514A39CEA00AE23A6 /* TODO */,
+				A638622C9D08E02E6D126C1A /* Pods */,
 			);
 			name = Elastics;
 			sourceTree = "<group>";
@@ -366,8 +374,20 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				003AE9D4D1E7AA3325CB24A9 /* libPods-Elastics.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A638622C9D08E02E6D126C1A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A0C22F444421D2DA67DA12C0 /* Pods-Elastics.debug.xcconfig */,
+				87EB7D96B198939682A612BD /* Pods-Elastics.beta.xcconfig */,
+				3020831BFDCCDD721E7EB304 /* Pods-Elastics.release.xcconfig */,
+				9C02C0999365F73C0ACE9E1B /* Pods-Elastics.distribution.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		C32C290912C0C60900F2C136 /* API */ = {
@@ -535,10 +555,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Elastics" */;
 			buildPhases = (
+				57C306C9744E2E743795257D /* 📦 Check Pods Manifest.lock */,
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				C3F1A56A12C79033001AB554 /* CopyFiles */,
+				520C514C6A6BA0DB0ADD94D9 /* 📦 Embed Pods Frameworks */,
+				D8D74B492BA46D8905D720DB /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -641,6 +664,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		520C514C6A6BA0DB0ADD94D9 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Elastics/Pods-Elastics-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		57C306C9744E2E743795257D /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D8D74B492BA46D8905D720DB /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Elastics/Pods-Elastics-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -722,6 +793,7 @@
 /* Begin XCBuildConfiguration section */
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0C22F444421D2DA67DA12C0 /* Pods-Elastics.debug.xcconfig */;
 			buildSettings = {
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -735,6 +807,7 @@
 		};
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3020831BFDCCDD721E7EB304 /* Pods-Elastics.release.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
@@ -813,6 +886,7 @@
 		};
 		C3511363144C26E4008F737C /* Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87EB7D96B198939682A612BD /* Pods-Elastics.beta.xcconfig */;
 			buildSettings = {
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -844,6 +918,7 @@
 		};
 		C3603AFC12DB93BA00B13219 /* Distribution */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C02C0999365F73C0ACE9E1B /* Pods-Elastics.distribution.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Elastics_Prefix.pch;
