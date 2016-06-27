@@ -1235,6 +1235,9 @@ static NSImage *_brImage;
                     // for iTerm 3+
                     new = [NSString stringWithFormat:
                            @"activate\n"
+                           @"if current window is missing value then\n"
+                           @"   create window with default profile\n"
+                           @"end if\n"
                            @"tell current window\n"
                            @"    set newTab to create tab with default profile\n"
                            @"    tell newTab\n"
