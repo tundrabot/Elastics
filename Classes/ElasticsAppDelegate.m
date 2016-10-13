@@ -1225,49 +1225,138 @@ static NSImage *_brImage;
 		switch (terminalApplication) {
 			// use iTerm terminal
 			case kPreferencesTerminalApplicationiTerm:
+            {
+                NSString *new = nil;
+                NSString *old = nil;
+
 				if (isOpenInTerminalTab) {
 					// new iTerm tab
 
-					cmd = [NSString stringWithFormat:
-						   @"tell application \"iTerm\"\n"
-						   @"	activate\n"
-						   @"	try\n"
-						   @"		set myterm to (current terminal)\n"
-						   @"		tell myterm\n"
-						   @"			launch session \"Default Session\"\n"
-						   @"			tell the last session\n"
-						   @"				write text \"%@\"\n"
-						   @"			end tell\n"
-						   @"		end tell\n"
-						   @"	on error\n"
-						   @"		set myterm to (make new terminal)\n"
-						   @"		tell myterm\n"
-						   @"			launch session \"Default Session\"\n"
-						   @"			tell the last session\n"
-						   @"				write text \"%@\"\n"
-						   @"			end tell\n"
-						   @"		end tell\n"
-						   @"	end try\n"
-						   @"end tell",
-						   cmd, cmd];
-				}
+                    // for iTerm 3+
+                    new = [NSString stringWithFormat:
+                           @"activate\n"
+                           @"if current window is missing value then\n"
+                           @"   create window with default profile\n"
+                           @"end if\n"
+                           @"tell current window\n"
+                           @"    set newTab to create tab with default profile\n"
+                           @"    tell newTab\n"
+                           @"        tell current session\n"
+                           @"            write text \"%@\"\n"
+                           @"        end tell\n"
+                           @"    end tell\n"
+                           @"end tell",
+                           cmd];
+
+                    // for older version
+                    old = [NSString stringWithFormat:
+                           @"	activate\n"
+                           @"	try\n"
+                           @"		set myterm to (current terminal)\n"
+                           @"		tell myterm\n"
+                           @"			launch session \"Default Session\"\n"
+                           @"			tell the last session\n"
+                           @"				write text \"%@\"\n"
+                           @"			end tell\n"
+                           @"		end tell\n"
+                           @"	on error\n"
+                           @"		set myterm to (make new terminal)\n"
+                           @"		tell myterm\n"
+                           @"			launch session \"Default Session\"\n"
+                           @"			tell the last session\n"
+                           @"				write text \"%@\"\n"
+                           @"			end tell\n"
+                           @"		end tell\n"
+                           @"	end try",
+                           cmd, cmd];
+                }
 				else {
 					// new iTerm window
-					
-					cmd = [NSString stringWithFormat:
-						   @"tell application \"iTerm\"\n"
-						   @"	activate\n"
-						   @"	set myterm to (make new terminal)\n"
-						   @"	tell myterm\n"
-						   @"		launch session \"Default Session\"\n"
-						   @"		tell the last session\n"
-						   @"			write text \"%@\"\n"
-						   @"		end tell\n"
-						   @"	end tell\n"
-						   @"end tell",
-						   cmd];
-				}
+
+                    // for iTerm 3+
+                    new = [NSString stringWithFormat:
+                           @"activate\n"
+                           @"set newWindow to create window with default profile\n"
+                           @"tell newWindow\n"
+                           @"    tell current session\n"
+                           @"        write text \"%@\"\n"
+                           @"    end tell\n"
+                           @"end tell",
+                           cmd];
+
+                    // for older versions
+                    old = [NSString stringWithFormat:
+                           @"	activate\n"
+                           @"	set myterm to (make new terminal)\n"
+                           @"	tell myterm\n"
+                           @"		launch session \"Default Session\"\n"
+                           @"		tell the last session\n"
+                           @"			write text \"%@\"\n"
+                           @"		end tell\n"
+                           @"	end tell",
+                           cmd];
+                }
+
+                new = [new stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+                old = [old stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+
+                cmd = [NSString stringWithFormat:
+                       @"on theSplit(theString, theDelimiter)\n"
+                       @"    set oldDelimiters to AppleScript's text item delimiters\n"
+                       @"    set AppleScript's text item delimiters to theDelimiter\n"
+                       @"    set theArray to every text item of theString\n"
+                       @"    set AppleScript's text item delimiters to oldDelimiters\n"
+                       @"    return theArray\n"
+                       @"end theSplit\n"
+                       @"\n"
+                       @"on IsModernVersion(version)\n"
+                       @"    set myArray to my theSplit(version, \".\")\n"
+                       @"    set major to item 1 of myArray\n"
+                       @"    set minor to item 2 of myArray\n"
+                       @"    set veryMinor to item 3 of myArray\n"
+                       @"    \n"
+                       @"    if major < 2 then\n"
+                       @"        return false\n"
+                       @"    end if\n"
+                       @"    if major > 2 then\n"
+                       @"        return true\n"
+                       @"    end if\n"
+                       @"    if minor < 9 then\n"
+                       @"        return false\n"
+                       @"    end if\n"
+                       @"    if minor > 9 then\n"
+                       @"        return true\n"
+                       @"    end if\n"
+                       @"    if veryMinor < 20140903 then\n"
+                       @"        return false\n"
+                       @"    end if\n"
+                       @"    return true\n"
+                       @"end IsModernVersion\n"
+                       @"\n"
+                       @"on NewScript()\n"
+                       @"    return \"%@\"\n"
+                       @"end NewScript\n"
+                       @"\n"
+                       @"on OldScript()\n"
+                       @"    return \"%@\"\n"
+                       @"end OldScript\n"
+                       @"\n"
+                       @"tell application \"iTerm\"\n"
+                       @"    if my IsModernVersion(version) then\n"
+                       @"        set myScript to my NewScript()\n"
+                       @"    else\n"
+                       @"        set myScript to my OldScript()\n"
+                       @"    end if\n"
+                       @"end tell\n"
+                       @"\n"
+                       @"set fullScript to \"tell application \\\"iTerm\\\"\n"
+                       @"\" & myScript & \"\n"
+                       @"end tell\"\n"
+                       @"\n"
+                       @"run script fullScript",
+                       new, old];
 				break;
+            }
 
 			// use Terminal terminal
 			default:
